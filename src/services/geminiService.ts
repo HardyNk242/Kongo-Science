@@ -1,38 +1,77 @@
-import { GoogleGenAI } from "@google/genai";
-import { ChatMessage } from "../types";
+import type { ChatMessage } from "../types";
 
-// Always use named parameter and process.env.API_KEY directly.
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+/**
+ * Flag injecté par Vite (vite.config.ts)
+ * true  = Gemini autorisé
+ * false = Gemini désactivé (prod sans backend)
+ */
+declare const __GEMINI_ENABLED__: boolean;
 
 const SYSTEM_INSTRUCTION = `
-Tu es l'assistant IA de "Kongo Science", un portail dédié à l'excellence scientifique en République Démocratique du Congo et dans le Bassin du Congo.
-Ton but est d'aider les chercheurs, étudiants et passionnés à comprendre des concepts scientifiques complexes.
-Sois précis, professionnel, et mets en avant les contextes locaux (faune, flore, géologie, culture scientifique congolaise) quand c'est pertinent.
+Tu es l'assistant IA de "Kongo Science", un portail dédié à l'excellence scientifique
+en République Démocratique du Congo et dans le Bassin du Congo.
+
+Ton but est d'aider les chercheurs, étudiants et passionnés à comprendre des concepts
+scientifiques complexes.
+
+Sois précis, professionnel, et mets en avant les contextes locaux
+(faune, flore, géologie, culture scientifique congolaise) quand c'est pertinent.
+
 Réponds en français de manière claire et structurée.
 `;
 
-export const getScientificResponse = async (history: ChatMessage[], userPrompt: string) => {
+export async function getScientificResponse(
+  history: ChatMessage[],
+  userPrompt: string
+): Promise<string> {
+  /**
+   * ✅ AUCUNE CLÉ → AUCUN APPEL GEMINI → AUCUN CRASH
+   */
+  if (!__GEMINI_ENABLED__) {
+    return "Assistant temporairement indisponible (clé API non configurée).";
+  }
+
   try {
-    // Use ai.models.generateContent to query GenAI with model and contents.
-    // systemInstruction is passed within the config object.
+    /**
+     * ✅ Import dynamique
+     * Empêche Vite / le navigateur de crasher au chargement
+     */
+    const { GoogleGenAI } = await import("@google/genai");
+
+    /**
+     * ⚠️ En frontend, NE PAS exposer de clé en prod.
+     * Cette variable sert uniquement en local si besoin.
+     */
+    const apiKey = (import.meta as any).env?.VITE_GEMINI_API_KEY as string | undefined;
+
+    if (!apiKey) {
+      return "Assistant indisponible (clé API absente côté client).";
+    }
+
+    const ai = new GoogleGenAI({ apiKey });
+
+    const contents = [
+      ...history.map((msg) => ({
+        role: msg.role === "user" ? "user" : "model",
+        parts: [{ text: msg.text }],
+      })),
+      {
+        role: "user",
+        parts: [{ text: userPrompt }],
+      },
+    ];
+
     const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
-      contents: [
-        ...history.map(msg => ({
-          role: msg.role === 'user' ? 'user' : 'model',
-          parts: [{ text: msg.text }]
-        })),
-        { role: 'user', parts: [{ text: userPrompt }] }
-      ],
+      model: "gemini-2.0-flash",
+      contents,
       config: {
         systemInstruction: SYSTEM_INSTRUCTION,
       },
     });
 
-    // Directly access the .text property of GenerateContentResponse.
-    return response.text;
+    return response.text ?? "Je n’ai pas pu générer de réponse.";
   } catch (error) {
     console.error("Gemini API Error:", error);
-    return "Désolé, j'ai rencontré une difficulté technique. Veuillez réessayer plus tard.";
+    return "Erreur technique de l’assistant. Veuillez réessayer plus tard.";
   }
-};
+}
