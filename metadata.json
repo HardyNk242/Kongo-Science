@@ -1,0 +1,8 @@
+{
+  "name": "Kongo Science",
+  "description": "A professional scientific portal dedicated to research, education, and innovation in the Congo Basin, featuring AI-powered scientific assistance.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
