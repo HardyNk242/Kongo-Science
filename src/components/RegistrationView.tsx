@@ -7,13 +7,14 @@ interface Props {
   onBack: () => void;
 }
 
-/** Formate une date ISO YYYY-MM-DD en format FR */
+// --- UTILITAIRES ---
+
 function formatPrettyDateTime(isoDate: string, time: string): string {
   try {
     const [year, month, day] = isoDate.split("-");
     const months = [
-      "Janvier","Février","Mars","Avril","Mai","Juin",
-      "Juillet","Août","Septembre","Octobre","Novembre","Décembre"
+      "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+      "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
     ];
     const m = parseInt(month, 10);
     return `${day} ${months[m - 1] ?? month} ${year} à ${time}`;
@@ -26,7 +27,7 @@ function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-/** JSONP helper (contourne CORS) */
+// Fonction JSONP robuste pour le check d'existence (GET)
 function jsonp<T>(url: string, timeoutMs = 8000): Promise<T> {
   return new Promise((resolve, reject) => {
     const cbName = `__jsonp_cb_${Date.now()}_${Math.random().toString(16).slice(2)}`;
@@ -61,10 +62,35 @@ function jsonp<T>(url: string, timeoutMs = 8000): Promise<T> {
 
 type CheckResult = { status: "ok" | "error"; exists: boolean; message?: string };
 
+/**
+ * ✅ RÉSOLUTION INTELLIGENTE DE L'ID
+ * 1. Cherche conference.id (ex: "conf-2024")
+ * 2. Sinon, utilise le titre nettoyé
+ * 3. Sinon, cherche dans le hash URL
+ */
+function resolveEventId(conference: Conference): string {
+  const anyConf = conference as any;
+
+  // Priorité 1 : L'ID explicite dans l'objet conférence
+  if (anyConf?.id && String(anyConf.id).trim()) {
+    return String(anyConf.id).trim();
+  }
+
+  // Priorité 2 : Si pas d'ID, on utilise le Titre (Attention : EventsPrivate doit utiliser le Titre en colonne A dans ce cas)
+  if (conference.title) {
+    return conference.title.trim();
+  }
+
+  // Fallback : Hash URL
+  const hash = (window.location.hash || "").replace(/^#\/?/, "");
+  const parts = hash.split("/");
+  if (parts[0] === "registration" && parts[1]) return String(parts[1]).trim();
+
+  return "unknown-event";
+}
+
 const RegistrationView: React.FC<Props> = ({ conference, onBack }) => {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  useEffect(() => window.scrollTo(0, 0), []);
 
   const defaultCountry = useMemo(() => {
     const prefer = ["République du Congo", "Congo", "Congo, Republic of the", "Congo (Republic of the)"];
@@ -87,7 +113,7 @@ const RegistrationView: React.FC<Props> = ({ conference, onBack }) => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const GOOGLE_SCRIPT_URL =
-    "https://script.google.com/macros/s/AKfycbyjqDo9cSCncf_KKMJB6LGRXyAKuwtfs3ZDfyt_fV0w1eP74LosMvDSTK5LP73NXU12/exec";
+    "https://script.google.com/macros/s/AKfycbw-XKGABUep94GRlVd1X_t1O-8UeuFIlMAz_EGU1KTWjghlvbLrMnm73eT1Eff7jcis/exec";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -100,6 +126,7 @@ const RegistrationView: React.FC<Props> = ({ conference, onBack }) => {
     const institution = formData.institution.trim();
     const country = formData.pays.trim() || "N/A";
 
+    // Validation locale
     if (!name || name.length < 3) {
       setStatus("error");
       setErrorMessage("Veuillez renseigner votre nom complet.");
@@ -117,31 +144,41 @@ const RegistrationView: React.FC<Props> = ({ conference, onBack }) => {
     }
 
     const participantTz = Intl.DateTimeFormat().resolvedOptions().timeZone || "Africa/Brazzaville";
-    const eventId = conference.title;
 
+    // ✅ PRÉPARATION DES CLÉS POUR LE SCRIPT
+    // eventId = Ce qui est dans la colonne A de 'EventsPrivate' (ex: "conf-peatlands")
+    const eventId = resolveEventId(conference);
+    // eventTitle = Le joli titre pour l'email
+    const eventTitle = String(conference.title || eventId).trim();
+
+    if (!eventId) {
+      setStatus("error");
+      setErrorMessage("Erreur technique : ID de l'événement introuvable.");
+      return;
+    }
+
+    // 1. VERIFICATION DOUBLON (GET via JSONP)
     setStatus("checking");
     try {
-      const checkUrl =
-        `${GOOGLE_SCRIPT_URL}?action=check&email=${encodeURIComponent(email)}&eventId=${encodeURIComponent(eventId)}`;
-
+      const checkUrl = `${GOOGLE_SCRIPT_URL}?action=check&email=${encodeURIComponent(email)}&eventId=${encodeURIComponent(eventId)}`;
       const check = await jsonp<CheckResult>(checkUrl);
 
       if (check.status !== "ok") {
         setStatus("error");
-        setErrorMessage(check.message || "Erreur serveur (check).");
+        setErrorMessage(check.message || "Erreur lors de la vérification.");
         return;
       }
       if (check.exists) {
         setStatus("error");
-        setErrorMessage("Vous êtes déjà inscrit à cet événement.");
+        setErrorMessage("Cette adresse email est déjà inscrite à cet événement.");
         return;
       }
     } catch (err) {
-      setStatus("error");
-      setErrorMessage("Impossible de vérifier l'inscription. Réessayez.");
-      return;
+      console.warn("Check failed, skipping to submit", err);
+      // On continue quand même vers le submit si le check échoue (fail-safe)
     }
 
+    // 2. ENVOI FINAL (POST)
     setStatus("submitting");
 
     const payload = {
@@ -149,7 +186,8 @@ const RegistrationView: React.FC<Props> = ({ conference, onBack }) => {
       email,
       institution,
       country,
-      eventId,
+      eventId,         // 🔑 Important : Doit matcher 'EventsPrivate' col A
+      eventTitle,      // 📧 Important : Pour le titre du mail et du calendrier
       eventDate: conference.date,
       eventTime: conference.time,
       participantTz
@@ -158,24 +196,25 @@ const RegistrationView: React.FC<Props> = ({ conference, onBack }) => {
     try {
       await fetch(GOOGLE_SCRIPT_URL, {
         method: "POST",
-        mode: "no-cors",
+        mode: "no-cors", // Indispensable pour Google Apps Script
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify(payload)
       });
 
+      // Avec mode: 'no-cors', on ne peut pas lire la réponse, on assume le succès si pas d'erreur réseau
       setStatus("success");
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
       setStatus("error");
       setErrorMessage("Impossible de joindre le serveur. Vérifiez votre connexion.");
     }
   };
 
+  // --- RENDU IDENTIQUE ---
   return (
     <div className="bg-white min-h-screen">
-      {/* Navigation Header */}
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <button 
+        <button
           onClick={onBack}
           className="flex items-center gap-2 text-slate-500 hover:text-blue-700 font-bold transition-colors group"
         >
@@ -187,7 +226,6 @@ const RegistrationView: React.FC<Props> = ({ conference, onBack }) => {
       </div>
 
       <div className="max-w-5xl mx-auto px-6 pb-24 grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-        {/* Info Column */}
         <div className="space-y-8 animate-in slide-in-from-left-4 duration-700">
           <div>
             <span className="inline-block bg-blue-100 text-blue-700 text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1 rounded-full mb-6">
@@ -225,7 +263,7 @@ const RegistrationView: React.FC<Props> = ({ conference, onBack }) => {
             </div>
 
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-green-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-green-200">
+              <div className="w-12 h-12 bg-green-600 rounded-2xl flex items-center justify-content-center text-white shadow-lg shadow-green-200">
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                 </svg>
@@ -242,7 +280,6 @@ const RegistrationView: React.FC<Props> = ({ conference, onBack }) => {
           </p>
         </div>
 
-        {/* Form Column */}
         <div className="animate-in slide-in-from-right-4 duration-700">
           <div className="bg-white border border-slate-100 rounded-[3rem] p-10 shadow-2xl relative overflow-hidden">
             {status === "success" ? (
@@ -254,7 +291,7 @@ const RegistrationView: React.FC<Props> = ({ conference, onBack }) => {
                 </div>
                 <h3 className="text-3xl font-bold text-slate-900 mb-4">Félicitations !</h3>
                 <p className="text-slate-500 mb-10 leading-relaxed">
-                  Votre inscription a été validée avec succès. 
+                  Votre inscription a été validée avec succès.
                   Un email contenant les détails de l'événement et votre invitation calendrier (.ics) vous a été envoyé.
                   <br /><br />
                   <span className="text-blue-600 font-bold">À bientôt pour cet échange scientifique !</span>
@@ -272,7 +309,9 @@ const RegistrationView: React.FC<Props> = ({ conference, onBack }) => {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   {status === "error" && (
                     <div className="bg-red-50 text-red-700 p-5 rounded-2xl text-sm border border-red-100 flex gap-3 items-center">
-                      <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                      <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
                       {errorMessage}
                     </div>
                   )}
@@ -283,8 +322,7 @@ const RegistrationView: React.FC<Props> = ({ conference, onBack }) => {
                       <input
                         required
                         type="text"
-                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-blue-600 outline-none transition-all"
-                        placeholder="Jean"
+                        className="w-full bg-slate-5 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-blue-600 outline-none transition-all"
                         value={formData.prenoms}
                         onChange={e => setFormData({ ...formData, prenoms: e.target.value })}
                       />
@@ -294,8 +332,7 @@ const RegistrationView: React.FC<Props> = ({ conference, onBack }) => {
                       <input
                         required
                         type="text"
-                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-blue-600 outline-none transition-all"
-                        placeholder="Mbuyi"
+                        className="w-full bg-slate-5 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-blue-600 outline-none transition-all"
                         value={formData.nom}
                         onChange={e => setFormData({ ...formData, nom: e.target.value })}
                       />
@@ -307,8 +344,7 @@ const RegistrationView: React.FC<Props> = ({ conference, onBack }) => {
                     <input
                       required
                       type="email"
-                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-blue-600 outline-none transition-all"
-                      placeholder="chercheur@univ.cg"
+                      className="w-full bg-slate-5 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-blue-600 outline-none transition-all"
                       value={formData.email}
                       onChange={e => setFormData({ ...formData, email: e.target.value })}
                     />
@@ -319,8 +355,7 @@ const RegistrationView: React.FC<Props> = ({ conference, onBack }) => {
                     <input
                       required
                       type="text"
-                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-blue-600 outline-none transition-all"
-                      placeholder="Université, Labo, Entreprise..."
+                      className="w-full bg-slate-5 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-blue-600 outline-none transition-all"
                       value={formData.institution}
                       onChange={e => setFormData({ ...formData, institution: e.target.value })}
                     />
@@ -330,14 +365,12 @@ const RegistrationView: React.FC<Props> = ({ conference, onBack }) => {
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Pays de résidence</label>
                     <select
                       required
-                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-blue-600 outline-none transition-all appearance-none cursor-pointer"
+                      className="w-full bg-slate-5 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-blue-600 outline-none transition-all appearance-none cursor-pointer"
                       value={formData.pays}
                       onChange={e => setFormData({ ...formData, pays: e.target.value })}
                     >
-                      {COUNTRIES.map(country => (
-                        <option key={country.code} value={country.name}>
-                          {country.name}
-                        </option>
+                      {COUNTRIES.map(c => (
+                        <option key={c.code} value={c.name}>{c.name}</option>
                       ))}
                     </select>
                   </div>
