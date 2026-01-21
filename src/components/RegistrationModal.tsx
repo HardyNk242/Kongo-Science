@@ -85,8 +85,13 @@ const RegistrationModal: React.FC<Props> = ({ conference, onClose }) => {
   const [errorMessage, setErrorMessage] = useState("");
 
   // ⚠️ Ton URL Apps Script (celle qui finit par /exec)
-  const GOOGLE_SCRIPT_URL =
+  const DEFAULT_SCRIPT_URL =
     "https://script.google.com/macros/s/AKfycbyjqDo9cSCncf_KKMJB6LGRXyAKuwtfs3ZDfyt_fV0w1eP74LosMvDSTK5LP73NXU12/exec";
+  const SCRIPT_URLS: Record<string, string> = {
+    "conf-ingenierie-petroliere":
+      "https://script.google.com/macros/s/AKfycbxj29r4wCZte8QJBBIuE-JCTVQdh404NvuW3Hq6Hdy6ON4ZGw4uyu9jWTfDj3YLMDSKRg/exec"
+  };
+  const GOOGLE_SCRIPT_URL = SCRIPT_URLS[conference.id] ?? DEFAULT_SCRIPT_URL;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

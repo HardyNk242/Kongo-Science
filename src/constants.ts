@@ -1,7 +1,10 @@
 import { Article, NavItem, Objective, Conference } from './types';
+import peatlandsCard from "./assets/conf-peatlands-conferencecard.png";
+import petroleumCard from "./assets/conf-ingenierie-petroliere.png";
 
 export const NAV_ITEMS: NavItem[] = [
   { label: 'Accueil', path: 'home' },
+  { label: 'Agenda', path: 'agenda' },
   { label: 'Programmes', path: 'programmes' },
   { label: 'Historique', path: 'history' },
   { label: 'Équipe', path: 'team' },
@@ -29,19 +32,60 @@ export const OBJECTIFS: Objective[] = [
   }
 ];
 
-export const UPCOMING_CONFERENCES: (Conference & { imageUrl: string })[] = [
+export const CONFERENCES: (Conference & { imageUrl: string })[] = [
   {
     id: 'conf-peatlands',
     title: 'Tourbières du Congo : mémoire climatique et enjeux de protection',
     description: 'Présentation scientifique basée sur une étude publiée dans Palaeogeography (2025) par Henrique Gloire Lungela Tchimpa, doctorant à l\'Université Marien Ngouabi.',
     date: '2026-01-13',
+    replayUrl: 'https://www.youtube.com/watch?v=7PQs6Kbol_8',
     time: '21:00',
     day: '13',
     month: 'JAN',
     location: 'En ligne (Zoom)',
     type: 'Webinaire',
     organizer: 'Univ. Marien Ngouabi',
-    imageUrl: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&q=80&w=1080&h=1080'
+    imageUrl: peatlandsCard
+  },
+  {
+    id: 'conf-ingenierie-petroliere',
+    title: 'Les métiers de l\'ingénierie pétrolière face aux défis de la transition énergétique',
+    description: 'Conférence animée par Japhet MAVOUNGOU, de 20h00 à 21h00 (heure de Brazzaville).',
+    date: '2026-01-28',
+    time: '20:00',
+    day: '28',
+    month: 'JAN',
+    location: 'Brazzaville (heure locale)',
+    type: 'Webinaire',
+    organizer: 'Japhet MAVOUNGOU',
+    imageUrl: petroleumCard
+  },
+  {
+    id: 'conf-atlas-fluvial',
+    title: 'Atlas fluvial du bassin du Congo : cartographie dynamique et crues extremes',
+    description: 'Lecture scientifique sur les nouvelles donnees hydrographiques et leur impact sur la planification territoriale.',
+    date: '2024-09-22',
+    replayUrl: 'https://www.youtube.com/watch?v=1a2b3c4d5e6',
+    time: '18:00',
+    day: '22',
+    month: 'SEP',
+    location: 'Brazzaville (Campus ENS)',
+    type: 'Hybride',
+    organizer: 'Laboratoire Hydrologie KS',
+    imageUrl: peatlandsCard
+  },
+  {
+    id: 'conf-technologies-geographiques',
+    title: 'Les technologies geographiques au service du developpement',
+    description: 'Conference animee par Nicy Bazebizonza, de 20h30 a 21h30 (heure de Brazzville).',
+    date: '2026-02-07',
+    time: '20:30',
+    day: '07',
+    month: 'FEV',
+    location: 'En ligne (Zoom)',
+    type: 'Webinaire',
+    organizer: 'Institut Geographique du Congo',
+    imageUrl: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=='
   }
 ];
 

@@ -27,6 +27,7 @@ export interface Conference {
   title: string;
   description: string;
   date: string; // Format YYYY-MM-DD
+  replayUrl?: string;
   time: string; // Format HH:mm
   day: string;
   month: string;

@@ -6,13 +6,6 @@ interface Props {
 }
 
 const Hero: React.FC<Props> = ({ onNavigate }) => {
-  const scrollToConferences = () => {
-    const section = document.getElementById('conferences-section');
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   return (
     <div className="relative bg-blue-900 text-white overflow-hidden">
       <div className="absolute inset-0 opacity-20">
@@ -32,7 +25,7 @@ const Hero: React.FC<Props> = ({ onNavigate }) => {
           </p>
           <div className="flex flex-col sm:flex-row gap-5">
             <button 
-              onClick={scrollToConferences}
+              onClick={() => onNavigate('agenda')}
               className="bg-blue-600 hover:bg-blue-500 text-white px-10 py-5 rounded-2xl font-black text-lg shadow-2xl shadow-blue-900/50 transition-all active:scale-95 flex items-center justify-center gap-3"
             >
               Agenda Scientifique
