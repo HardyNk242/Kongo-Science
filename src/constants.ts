@@ -91,7 +91,7 @@ export const CONFERENCES: (Conference & { imageUrl: string })[] = [
   },
   {
     id: 'conf-technologies-geographiques',
-    title: 'Les technologies géographiques au service du développement',
+    title: 'Les technologies géospatiales au service du développement',
     description: 'Une conférence de Nicy Bazebizonza (Doctorant en Géologie & Cartographe à l\'IGN). Exploration de l\'impact de la géomatique et des SIG sur la planification et le développement.',
     date: '2026-02-14', // Date corrigée (était le 07 avant)
     time: '20:30',
