@@ -84,23 +84,23 @@ export const CONFERENCES: (Conference & { imageUrl: string })[] = [
     time: '18:00',
     day: '22',
     month: 'SEP',
-    location: 'Brazzaville (Campus ENS)',
+    location: 'Brazzaville (heure locale)',
     type: 'Hybride',
     organizer: 'Kongo Science',
     imageUrl: peatlandsCard
   },
   {
     id: 'conf-technologies-geographiques',
-    title: 'Les technologies geographiques au service du developpement',
-    description: 'Conference animee par Nicy Bazebizonza, de 20h30 a 21h30 (heure de Brazzville).',
-    date: '2026-02-14',
+    title: 'Les technologies géographiques au service du développement',
+    description: 'Une conférence de Nicy Bazebizonza (Doctorant en Géologie & Cartographe à l\'IGN). Exploration de l\'impact de la géomatique et des SIG sur la planification et le développement.',
+    date: '2026-02-14', // Date corrigée (était le 07 avant)
     time: '20:30',
-    day: '14',
+    day: '14',      // Jour corrigé
     month: 'FEV',
-    location: 'En ligne (Zoom)',
+    location: 'Brazzaville (heure locale)',
     type: 'Webinaire',
     organizer: 'Kongo Science',
-    imageUrl: technoGeoCard
+    imageUrl: technoGeoCard 
   }
 ];
 
