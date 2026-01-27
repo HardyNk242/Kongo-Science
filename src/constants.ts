@@ -2,6 +2,7 @@ import { Article, NavItem, Objective, Conference } from './types';
 import peatlandsCard from "./assets/conf-peatlands-conferencecard.png";
 import petroleumCard from "./assets/conf-ingenierie-petroliere.png";
 import geotechCard from "./assets/conf-risques-geotech.png";
+import technoGeoCard from "./assets/conf-techno-geo.png"
 
 export const NAV_ITEMS: NavItem[] = [
   { label: 'Accueil', path: 'home' },
@@ -45,7 +46,7 @@ export const CONFERENCES: (Conference & { imageUrl: string })[] = [
     month: 'JAN',
     location: 'En ligne (Zoom)',
     type: 'Webinaire',
-    organizer: 'Univ. Marien Ngouabi',
+    organizer: 'Kongo Science',
     imageUrl: peatlandsCard
   },
   {
@@ -58,7 +59,7 @@ export const CONFERENCES: (Conference & { imageUrl: string })[] = [
     month: 'JAN',
     location: 'Brazzaville (heure locale)',
     type: 'Webinaire',
-    organizer: 'Japhet MAVOUNGOU',
+    organizer: 'Kongo Science',
     imageUrl: petroleumCard
   },
   {
@@ -71,7 +72,7 @@ export const CONFERENCES: (Conference & { imageUrl: string })[] = [
     month: 'FEV',
     location: 'Brazzaville (heure locale)',
     type: 'Webinaire',
-    organizer: 'Yves Ngoma',
+    organizer: 'Kongo Science',
     imageUrl: geotechCard // La variable importée en haut
   },
   {
@@ -85,7 +86,7 @@ export const CONFERENCES: (Conference & { imageUrl: string })[] = [
     month: 'SEP',
     location: 'Brazzaville (Campus ENS)',
     type: 'Hybride',
-    organizer: 'Laboratoire Hydrologie KS',
+    organizer: 'Kongo Science',
     imageUrl: peatlandsCard
   },
   {
@@ -98,8 +99,8 @@ export const CONFERENCES: (Conference & { imageUrl: string })[] = [
     month: 'FEV',
     location: 'En ligne (Zoom)',
     type: 'Webinaire',
-    organizer: 'Institut Geographique du Congo',
-    imageUrl: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=='
+    organizer: 'Kongo Science',
+    imageUrl: technoGeoCard
   }
 ];
 
