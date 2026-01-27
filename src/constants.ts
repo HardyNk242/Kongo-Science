@@ -62,6 +62,19 @@ export const CONFERENCES: (Conference & { imageUrl: string })[] = [
     imageUrl: petroleumCard
   },
   {
+    id: 'conf-risques-geotechniques',
+    title: 'Gestion des risques géotechniques pour les infrastructures linéaires',
+    description: 'Caractérisation & amélioration des sols pour les infrastructures de transport en milieu tropical. Présenté par Yves Ngoma (Doctorant FST, Univ. Marien Ngouabi).',
+    date: '2026-02-08',
+    time: '19:30', // Heure de début
+    day: '08',
+    month: 'FEV',
+    location: 'Brazzaville (heure locale)',
+    type: 'Webinaire',
+    organizer: 'Yves Ngoma',
+    imageUrl: geotechCard // La variable importée en haut
+  },
+  {
     id: 'conf-atlas-fluvial',
     title: 'Atlas fluvial du bassin du Congo : cartographie dynamique et crues extremes',
     description: 'Lecture scientifique sur les nouvelles donnees hydrographiques et leur impact sur la planification territoriale.',
@@ -79,9 +92,9 @@ export const CONFERENCES: (Conference & { imageUrl: string })[] = [
     id: 'conf-technologies-geographiques',
     title: 'Les technologies geographiques au service du developpement',
     description: 'Conference animee par Nicy Bazebizonza, de 20h30 a 21h30 (heure de Brazzville).',
-    date: '2026-02-07',
+    date: '2026-02-14',
     time: '20:30',
-    day: '07',
+    day: '14',
     month: 'FEV',
     location: 'En ligne (Zoom)',
     type: 'Webinaire',
