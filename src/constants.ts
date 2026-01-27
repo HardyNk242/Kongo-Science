@@ -1,6 +1,7 @@
 import { Article, NavItem, Objective, Conference } from './types';
 import peatlandsCard from "./assets/conf-peatlands-conferencecard.png";
 import petroleumCard from "./assets/conf-ingenierie-petroliere.png";
+import geotechCard from "./assets/conf-risques-geotech.png";
 
 export const NAV_ITEMS: NavItem[] = [
   { label: 'Accueil', path: 'home' },
