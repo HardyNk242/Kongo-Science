@@ -2,7 +2,8 @@ import { Article, NavItem, Objective, Conference } from './types';
 import peatlandsCard from "./assets/conf-peatlands-conferencecard.png";
 import petroleumCard from "./assets/conf-ingenierie-petroliere.png";
 import geotechCard from "./assets/conf-risques-geotech.png";
-import technoGeoCard from "./assets/conf-techno-geo.png"
+import technoGeoCard from "./assets/conf-techno-geo.png";
+import solKoutikaCard from "./assets/conf-sol-koutika.png";
 
 export const NAV_ITEMS: NavItem[] = [
   { label: 'Accueil', path: 'home' },
@@ -101,6 +102,19 @@ export const CONFERENCES: (Conference & { imageUrl: string })[] = [
     type: 'Webinaire',
     organizer: 'Kongo Science',
     imageUrl: technoGeoCard 
+  }
+  {
+    id: 'conf-sol-koutika',
+    title: 'Le Sol : Fondement invisible de la sécurité alimentaire et du développement durable',
+    description: 'Keynote par Dr. Lydie-Stella Koutika (Prix Glinka FAO, Prix Kwame Nkrumah UA, Auteure GIEC). Une intervention de haut niveau sur le rôle vital des sols.',
+    date: '2026-03-02',
+    time: '14:00',
+    day: '02',
+    month: 'MAR',
+    location: 'Brazzaville (heure locale)',
+    type: 'Webinaire', // ou 'Keynote' si tu veux distinguer ce type d'événement
+    organizer: 'Kongo Science',
+    imageUrl: solKoutikaCard
   }
 ];
 
