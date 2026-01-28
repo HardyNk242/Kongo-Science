@@ -102,7 +102,7 @@ export const CONFERENCES: (Conference & { imageUrl: string })[] = [
     type: 'Webinaire',
     organizer: 'Kongo Science',
     imageUrl: technoGeoCard 
-  }
+  },
   {
     id: 'conf-sol-koutika',
     title: 'Le Sol : Fondement invisible de la sécurité alimentaire et du développement durable',
