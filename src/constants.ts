@@ -1,10 +1,18 @@
-import { Article, NavItem, Objective, Conference } from './types';
+import { Article, NavItem, Conference } from './types';
+
+// --- IMPORTS DES IMAGES (ASSETS) ---
+// Conférences
 import peatlandsCard from "./assets/conf-peatlands-conferencecard.png";
 import petroleumCard from "./assets/conf-ingenierie-petroliere.png";
 import geotechCard from "./assets/conf-risques-geotech.png";
 import technoGeoCard from "./assets/conf-techno-geo.png";
 import solKoutikaCard from "./assets/conf-sol-koutika.png";
 
+// Équipe (Assurez-vous que ces fichiers existent dans src/assets/)
+import hardyImg from './assets/hardy.png';
+// import princeImg from './assets/prince.jpg'; // Décommentez quand vous aurez la photo
+
+// --- NAVIGATION ---
 export const NAV_ITEMS: NavItem[] = [
   { label: 'Accueil', path: 'home' },
   { label: 'Bibliothèque', path: 'library' },
@@ -15,12 +23,13 @@ export const NAV_ITEMS: NavItem[] = [
   { label: 'À Propos', path: 'about' }
 ];
 
+// --- OBJECTIFS / VISION ---
 export const OBJECTIFS = [
   {
     id: 1,
     title: "Mémoire & Souveraineté Numérique",
     description: "Centraliser et immortaliser la production scientifique congolaise (Thèses, Mémoires) via une bibliothèque numérique indexée aux standards internationaux (Zenodo/DOI), rendant notre savoir accessible et visible mondialement.",
-    iconPath: "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+    iconPath: "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253",
     linkTo: 'library'
   },
   {
@@ -37,6 +46,7 @@ export const OBJECTIFS = [
   }
 ];
 
+// --- CONFÉRENCES ---
 export const CONFERENCES: (Conference & { imageUrl: string })[] = [
   {
     id: 'conf-peatlands',
@@ -121,6 +131,7 @@ export const CONFERENCES: (Conference & { imageUrl: string })[] = [
   }
 ];
 
+// --- ARTICLES ---
 export const ARTICLES: Article[] = [
   {
     id: 'art-1',
@@ -142,6 +153,7 @@ export const ARTICLES: Article[] = [
   }
 ];
 
+// --- PARTENAIRES ---
 export const PARTNERS = [
   { name: 'FCRM', logo: 'FCRM' },
   { name: 'IGN', logo: 'IGN' },
@@ -150,6 +162,7 @@ export const PARTNERS = [
   { name: 'Luzabu Group', logo: 'LG' }
 ];
 
+// --- PAYS (Formulaires) ---
 export const COUNTRIES = [
   {name: 'Congo, Republic of', code: 'CG'},
   {name: 'Congo, Democratic Republic of', code: 'CD'},
@@ -162,6 +175,7 @@ export const COUNTRIES = [
   {name: 'United States', code: 'US'}
 ];
 
+// --- LOGIQUE DE PROPOSITION ---
 export const PROPOSAL_PSYCHOLOGY = {
   main_promise: "Kongo Science transforme un événement en référence scientifique.",
   strategic_question: "À la fin de cette conférence, qu’est-ce que vous voulez que les participants disent de vous ?",
@@ -188,6 +202,8 @@ export const PROPOSAL_PSYCHOLOGY = {
     }
   }
 };
+
+// --- BIBLIOTHÈQUE (THÈSES) ---
 export const THESES_LIBRARY = [
   {
     id: 'th-hardy-2017',
@@ -202,4 +218,17 @@ export const THESES_LIBRARY = [
     isExclusive: true,
     pdfUrl: "https://zenodo.org/records/18408747/files/Master_thesis_25_07_2017_%20H_NKODIA.pdf?download=1"
   }
+];
+
+// --- ÉQUIPE (TEAM) ---
+// Ajoutez cette section pour que TeamView puisse l'utiliser (si vous décidez de passer par constants plus tard)
+// Pour l'instant, TeamView utilise ses données internes, mais c'est bien de préparer le terrain.
+export const TEAM = [
+  {
+    id: 'hardy',
+    name: "Dr. Hardy Nkodia",
+    role: "Président du bureau exécutif",
+    image: hardyImg,
+  },
+  // Les autres membres sont gérés directement dans TeamView pour l'instant car nous n'avons pas toutes les images locales
 ];
