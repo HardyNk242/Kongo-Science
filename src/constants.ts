@@ -217,6 +217,19 @@ export const THESES_LIBRARY = [
     pages: 68,
     isExclusive: true,
     pdfUrl: "https://zenodo.org/records/18408747/files/Master_thesis_25_07_2017_%20H_NKODIA.pdf?download=1"
+  },
+  {
+    id: 'th-mouellet-2019',
+    title: "Implication des bactéries du genre Bacillus dans la bioconversion du jus de gingembre (Zingiber officinale Roscoe)",
+    author: "Rodd Jurah Mouellet Maboulou",
+    year: "2019",
+    institution: "Université Marien Ngouabi (FST)",
+    domain: "Biologie & Biochimie",
+    type: "Mémoire de Master",
+    abstract: "Ce travail de recherche examine le potentiel des souches bactériennes du genre Bacillus pour la fermentation et la bioconversion du jus de gingembre. L'étude analyse les modifications biochimiques induites par ces bactéries, visant à améliorer la conservation, les qualités organoleptiques et la valeur nutritionnelle de cette boisson locale.",
+    pages: 49,
+    isExclusive: false, // Mis à false car le lien vient de ResearchGate
+    pdfUrl: "https://www.researchgate.net/profile/Aime-Christian-Kayath/publication/348153985_IMPLICATION_DES_BACTERIES_DU_GENRE_BACILLUS_DANS_LA_BIOCONVERSION_DU_JUS_DE_GINGEMBRE_Zingiber_officinale_Roscoe/links/5ff0b0e4299bf1408868599b/IMPLICATION-DES-BACTERIES-DU-GENRE-BACILLUS-DANS-LA-BIOCONVERSION-DU-JUS-DE-GINGEMBRE-Zingiber-officinale-Roscoe.pdf"
   }
 ];
 
