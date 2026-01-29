@@ -2,7 +2,8 @@ import React from 'react';
 
 // --- IMPORTS LOCAUX ---
 import hardyImg from '../assets/hardy.png'; 
-import princeImg from '../assets/prince.jpeg'; 
+import princeImg from '../assets/prince.jpeg';
+import jemimaImg from '..//assets/jemima.png';
 
 const TeamView: React.FC = () => {
   const members = [
@@ -24,7 +25,7 @@ const TeamView: React.FC = () => {
       name: "Jemima Bounkouta",
       role: "Secrétaire Générale",
       bio: "Spécialiste en hydrogéologie environnementale et coordination de projets. Entrepreneure indépendante en QHSE et analyse de données (Sphinx, Excel).",
-      image: "https://media.licdn.com/dms/image/v2/D4D03AQFFm71naVJTfg/profile-displayphoto-scale_200_200/B4DZp.nOErJUAY-/0/1763060803743?e=1771459200&v=beta&t=4qRVKg1-j7Vx9k2yRfOf1AZ1M8w84KpBawyGvt6K9pI",
+      image: jemimaImg,
       tags: ["Hydrogéologie", "QHSE", "Data Analysis"]
     },
     {
