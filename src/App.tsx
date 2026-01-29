@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import ConferenceCard from './components/ConferenceCard';
+import LibraryView from './components/LibraryView';
 import ConferencesView from './components/ConferencesView';
 import ArticleCard from './components/ArticleCard';
 import RegistrationView from './components/RegistrationView';
@@ -80,6 +81,9 @@ const App: React.FC = () => {
 
       case 'programmes':
         return <ProgramsView />;
+        
+      case 'library':
+        return <LibraryView />;
 
       case 'agenda':
         return (
