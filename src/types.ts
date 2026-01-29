@@ -1,4 +1,4 @@
-
+// --- ARTICLES (Blog/News) ---
 export interface Article {
   id: string;
   title: string;
@@ -10,19 +10,22 @@ export interface Article {
   content?: string;
 }
 
+// --- NAVIGATION ---
 export interface NavItem {
   label: string;
   path: string;
 }
 
+// --- OBJECTIFS (Vision) ---
 export interface Objective {
-  id: string;
+  id: number; // Corrigé en number pour correspondre à constants.ts
   title: string;
   description: string;
   iconPath: string;
-  linkTo?: string;
+  linkTo?: string; // Permet le clic vers la bibliothèque
 }
 
+// --- CONFÉRENCES (Agenda) ---
 export interface Conference {
   id: string;
   title: string;
@@ -37,6 +40,7 @@ export interface Conference {
   organizer: string;
 }
 
+// --- CHATBOT ---
 export enum MessageRole {
   USER = 'user',
   MODEL = 'model'
@@ -47,17 +51,18 @@ export interface ChatMessage {
   text: string;
 }
 
+// --- BIBLIOTHÈQUE (Thèses & Publications) ---
 export interface Thesis {
   id: string;
   title: string;
   author: string;
   year: string;
   institution: string;
-  domain: string; // ex: 'Géologie', 'Santé Publique', 'Environnement'
-  type: 'Thèse Doctorat' | 'Mémoire Master' | 'Article' | 'Rapport';
+  domain: string; // ex: 'Géologie', 'Santé Publique', 'Histoire'
+  type: string;   // ex: 'Thèse Doctorat', 'Article Scientifique', 'Livre / Guide'
   abstract: string;
-  pages: number;
-  pdfUrl?: string; // Lien vers le fichier (optionnel pour l'instant)
-  isExclusive?: boolean; // Si c'est un document qu'on ne trouve que chez vous
-  isRestricted?: boolean;
+  pages?: number | string; // Accepte "49" (number) ou "Vol 18, Art. 144" (string)
+  pdfUrl: string; // Lien vers le fichier ou la référence
+  isExclusive?: boolean; // Badge "Exclusif Kongo Science"
+  isRestricted?: boolean; // Déclenche le bouton "Demande de copie privée"
 }
