@@ -12,6 +12,28 @@ import solKoutikaCard from "./assets/conf-sol-koutika.png";
 import hardyImg from './assets/hardy.png';
 // import princeImg from './assets/prince.jpg'; 
 
+// --- DOMAINES OFFICIELS (Classification SCIMAGO) ---
+// Utilisés pour les filtres et le formulaire de soumission
+export const SCIMAGO_DOMAINS = [
+  { value: "Earth and Planetary Sciences", label: "Sciences de la Terre & Planétaires" },
+  { value: "Environmental Science", label: "Sciences de l'Environnement" },
+  { value: "Agricultural and Biological Sciences", label: "Agriculture & Biologie" },
+  { value: "Energy", label: "Énergie" },
+  { value: "Engineering", label: "Ingénierie" },
+  { value: "Social Sciences", label: "Sciences Sociales" },
+  { value: "Economics, Econometrics and Finance", label: "Économie & Finance" },
+  { value: "Business, Management and Accounting", label: "Business & Management" },
+  { value: "Medicine", label: "Médecine & Santé" },
+  { value: "Immunology and Microbiology", label: "Immunologie & Microbiologie" },
+  { value: "Biochemistry, Genetics and Molecular Biology", label: "Biochimie & Génétique" },
+  { value: "Computer Science", label: "Informatique" },
+  { value: "Mathematics", label: "Mathématiques" },
+  { value: "Physics and Astronomy", label: "Physique & Astronomie" },
+  { value: "Chemistry", label: "Chimie" },
+  { value: "Arts and Humanities", label: "Arts & Humanités" },
+  { value: "Multidisciplinary", label: "Multidisciplinaire" }
+].sort((a, b) => a.label.localeCompare(b.label)); // Trié par ordre alphabétique Français
+
 // --- NAVIGATION ---
 export const NAV_ITEMS: NavItem[] = [
   { label: 'Accueil', path: 'home' },
@@ -211,25 +233,25 @@ export const THESES_LIBRARY = [
     author: "Hardy M. D.-V. Nkodia",
     year: "2017",
     institution: "Université Marien Ngouabi (FST)",
-    domain: "Géologie Structurale",
+    domain: "Earth and Planetary Sciences", // Migré vers Scimago
     type: "Mémoire Master",
-    abstract: "Cette étude démontre que la Formation de l’Inkisi en République du Congo a été affectée par deux phases de tectonique décrochante associées chacune à une transpression. Lesquelles ont engendré deux systèmes de fracturation qui ont permis de déterminer les paléocontraintes. L’analyse structurale a permis d’identifier : les failles décrochantes senestres (Z1) et dextres (Z2), les fractures cisaillantes et les joints (les uns parallèles aux failles Z1 et les autres parallèles aux failles Z2) ; le tout s’organisant en deux systèmes de fractures presque orthogonaux. Le premier système présente la direction majeure de NW-SE et le second présente la direction majeure de NE-SW. Plusieurs marqueurs cinématiques du sens du mouvement (galets coupés déplacés, les fractures d’extension en zone de relais, des terminaisons en queue de cheval, gradins de cristallisation, des stries, des miroirs de failles) ou d’extension (structures en plumes) ont permis à partir du programme WinTensor de déterminer les stades de contraintes et l’évolution des structures. Les deux systèmes ont débuté par le développement des joints plumes, qui ont progressivement évolué en fractures hybrides à cisaillantes et en longue zone (jusqu’à quatre cent mètres) de faille décrochante. Le premier système résulterait probablement de la propagation à longue distance des contraintes à partir de la marge de subduction au Sud du Gondwana au Permo-Trias. Il a commencé à se développer sous une extension NE-SW puis à évoluer sous régime décrochant à compressif avec une contrainte horizontale NNW-SSE. Le second système (le dernier), qui résulterait probablement de la propagation des contraintes intraplaques due à l’ouverture de l’océan Atlantique Sud, a commencé sous une extension NW-SE, ensuite à évoluer sous un régime décrochant à compressif avec une contrainte principale subhorizontale WWS-EEN.",
+    abstract: "Cette étude démontre que la Formation de l’Inkisi en République du Congo a été affectée par deux phases de tectonique décrochante associées chacune à une transpression. Lesquelles ont engendré deux systèmes de fracturation qui ont permis de déterminer les paléocontraintes...",
     pages: 68,
     isExclusive: true,
     pdfUrl: "https://zenodo.org/records/18408747/files/Master_thesis_25_07_2017_%20H_NKODIA.pdf?download=1"
   },
   {
     id: 'th-mouellet-2019',
-    title: "Implication des bactéries du genre Bacillus dans la bioconversion du jus de gingembre (Zingiber officinale Roscoe)",
+    title: "Implication des bactéries du genre Bacillus dans la bioconversion du jus de gingembre",
     author: "Rodd Jurah Mouellet Maboulou",
     year: "2019",
     institution: "Université Marien Ngouabi (FST)",
-    domain: "Biologie & Biochimie",
+    domain: "Agricultural and Biological Sciences", // Migré vers Scimago
     type: "Mémoire de Master",
-    abstract: "Ce travail de recherche examine le potentiel des souches bactériennes du genre Bacillus pour la fermentation et la bioconversion du jus de gingembre. L'étude analyse les modifications biochimiques induites par ces bactéries, visant à améliorer la conservation, les qualités organoleptiques et la valeur nutritionnelle de cette boisson locale.",
+    abstract: "Ce travail de recherche examine le potentiel des souches bactériennes du genre Bacillus pour la fermentation et la bioconversion du jus de gingembre...",
     pages: 49,
     isExclusive: false, 
-    pdfUrl: "https://www.researchgate.net/profile/Aime-Christian-Kayath/publication/348153985_IMPLICATION_DES_BACTERIES_DU_GENRE_BACILLUS_DANS_LA_BIOCONVERSION_DU_JUS_DE_GINGEMBRE_Zingiber_officinale_Roscoe/links/5ff0b0e4299bf1408868599b/IMPLICATION-DES-BACTERIES-DU-GENRE-BACILLUS-DANS-LA-BIOCONVERSION-DU-JUS-DE-GINGEMBRE-Zingiber-officinale-Roscoe.pdf"
+    pdfUrl: "https://www.researchgate.net/profile/Aime-Christian-Kayath/publication/348153985..."
   },
   {
     id: 'bk-georisques-2024',
@@ -237,87 +259,87 @@ export const THESES_LIBRARY = [
     author: "Camille François, J.M. Akame, Nicy Bazebizonza et al.",
     year: "2024",
     institution: "UNESCO / MRAC / GeoRiskA",
-    domain: "Géosciences & Risques",
+    domain: "Earth and Planetary Sciences", // Migré vers Scimago
     type: "Livre / Guide",
-    abstract: "Publié par l'UNESCO et le MRAC, cet ouvrage de référence analyse les risques géologiques majeurs en Afrique centrale (Congo, RDC, Cameroun, etc.). Il détaille quatre aléas critiques : glissements de terrain, séismes, éruptions volcaniques et effondrements karstiques, en proposant des stratégies de prévention pour les populations et les décideurs.",
+    abstract: "Publié par l'UNESCO et le MRAC, cet ouvrage de référence analyse les risques géologiques majeurs en Afrique centrale...",
     pages: "Multiple",
     isExclusive: false,
-    pdfUrl: "https://www.researchgate.net/profile/Camille-Francois-2/publication/387662450_L'Afrique_centrale_face_aux_georisques_-_Origine_naturelle/links/67768731fb9aff6eaa004093/LAfrique-centrale-face-aux-georisques-Origine-naturelle.pdf"
+    pdfUrl: "https://www.researchgate.net/profile/Camille-Francois-2/publication/387662450..."
   },
   {
     id: 'art-nkodia-2022-seismo',
-    title: "Seismogenic Fault Reactivation in Western Central Africa: Insights From Regional Stress Analysis",
+    title: "Seismogenic Fault Reactivation in Western Central Africa",
     author: "Hardy M. Nkodia, Nicy Bazebizonza, Damien Delvaux et al.",
     year: "2022",
     institution: "AGU Geochemistry, Geophysics, Geosystems",
-    domain: "Tectonique & Risques",
+    domain: "Earth and Planetary Sciences", // Migré vers Scimago
     type: "Article Scientifique",
-    abstract: "Cette étude majeure analyse le potentiel sismogène des failles en Afrique centrale. Elle démontre comment les régimes de contraintes changent de la marge côtière vers le continent et identifie quelles failles préexistantes sont susceptibles d'être réactivées, posant des risques pour les infrastructures.",
+    abstract: "Cette étude majeure analyse le potentiel sismogène des failles en Afrique centrale...",
     pages: 23,
     isExclusive: false,
     pdfUrl: "https://agupubs.onlinelibrary.wiley.com/doi/epdf/10.1029/2022GC010377"
   },
   {
     id: 'art-nkodia-2020-flower',
-    title: "Flower structures in sandstones of the Paleozoic Inkisi Group: evidence for two major strike-slip fault systems",
+    title: "Flower structures in sandstones of the Paleozoic Inkisi Group",
     author: "Hardy M. Nkodia, T. Miyouna, Damien Delvaux et al.",
     year: "2020",
     institution: "South African Journal of Geology",
-    domain: "Géologie Structurale",
+    domain: "Earth and Planetary Sciences", // Migré vers Scimago
     type: "Article Scientifique",
-    abstract: "Cette étude décrit pour la première fois les structures en fleur ('flower structures') dans les grès du groupe de l'Inkisi à Brazzaville. L'analyse révèle deux systèmes majeurs de failles décrochantes. Les paléocontraintes identifiées relient ces déformations à l'histoire tectonique du Gondwana (Permo-Trias) et à l'ouverture de l'Atlantique (Miocène).",
+    abstract: "Cette étude décrit pour la première fois les structures en fleur ('flower structures') dans les grès du groupe de l'Inkisi...",
     pages: 20,
     isExclusive: false,
-    pdfUrl: "https://www.researchgate.net/profile/Hardy-Medry-Dieu-Veil-Nkodia/publication/346398097_Flower_structures_in_sandstones_of_the_Paleozoic_Inkisi_Group_Brazzaville_Republic_of_Congo_evidence_for_two_major_strike-slip_fault_systems_and_geodynamic_implications/links/5ff5da7c45851553a0233da7/Flower-structures-in-sandstones-of-the-Paleozoic-Inkisi-Group-Brazzaville-Republic-of-Congo-evidence-for-two-major-strike-slip-fault-systems-and-geodynamic-implications.pdf"
+    pdfUrl: "https://www.researchgate.net/profile/Hardy-Medry-Dieu-Veil-Nkodia/publication/346398097..."
   },
   {
     id: 'art-bazebizonza-2020-neotect',
-    title: "Detection of Neotectonic Signatures by Morphometric Analysis of Inkisi Group on Both Banks of the Congo River",
+    title: "Detection of Neotectonic Signatures by Morphometric Analysis",
     author: "Nicy C. Bazebizonza, Hardy M. Nkodia, T. Miyouna et al.",
     year: "2020",
     institution: "Journal of Geosciences and Geomatics",
-    domain: "Géomatique & Néotectonique",
+    domain: "Earth and Planetary Sciences", // Migré vers Scimago
     type: "Article Scientifique",
-    abstract: "Cette étude utilise l'analyse morphométrique et les SIG pour détecter des signatures néotectoniques dans le groupe de l'Inkisi. Les résultats montrent que le cours du fleuve Congo correspond à une zone tectoniquement active, révélant un risque sismique élevé sur les deux rives. Les auteurs recommandent l'installation de sismographes pour surveiller cette activité.",
+    abstract: "Cette étude utilise l'analyse morphométrique et les SIG pour détecter des signatures néotectoniques...",
     pages: 11,
     isExclusive: false,
-    pdfUrl: "https://www.researchgate.net/profile/Nicy-Carmel-Bazebizonza/publication/344635627_Detection_of_Neotectonic_Signatures_by_Morphometric_Analysis_of_Inkisi_Group_on_Both_Banks_of_the_Congo_River/links/5f85f250a6fdccfd7b5fb030/Detection-of-Neotectonic-Signatures-by-Morphometric-Analysis-of-Inkisi-Group-on-Both-Banks-of-the-Congo-River.pdf"
+    pdfUrl: "https://www.researchgate.net/profile/Nicy-Carmel-Bazebizonza/publication/344635627..."
   },
   {
     id: 'art-okouakoua-2024-bacillus',
-    title: "Involvement of the Bacillus SecYEG Pathway in Biosurfactant Production and Biofilm Formation",
+    title: "Involvement of the Bacillus SecYEG Pathway in Biosurfactant Production",
     author: "F. Y. Okouakoua, C. A. Kayath, E. Nguimbi et al.",
     year: "2024",
     institution: "Wiley / Université Marien Ngouabi",
-    domain: "Microbiologie & Biotech",
+    domain: "Biochemistry, Genetics and Molecular Biology", // Migré vers Scimago
     type: "Article Scientifique",
-    abstract: "Cette étude explore le rôle du système de transport membranaire SecYEG chez les bactéries Bacillus. Les auteurs démontrent pour la première fois que ce système est crucial pour la sécrétion de biosurfactants (molécules d'intérêt industriel) et la formation de biofilms. Ils présentent également une nouvelle méthode PCR pour identifier les espèces de Bacillus issues d'aliments fermentés locaux.",
+    abstract: "Cette étude explore le rôle du système de transport membranaire SecYEG chez les bactéries Bacillus...",
     pages: 12,
     isExclusive: false,
     pdfUrl: "https://onlinelibrary.wiley.com/doi/epdf/10.1155/2024/6627190"
   },
   {
     id: 'art-nganga-2025-origines-kongo',
-    title: "De la terre de Canaan au fleuve Congo : une histoire des origines du peuple et de la civilisation du Kongo",
+    title: "De la terre de Canaan au fleuve Congo : origines du peuple Kongo",
     author: "Arsène Francœur Nganga",
     year: "2025",
     institution: "Revue Congolaise d'Histoire (MAZAYU) - UMNG",
-    domain: "Histoire & Anthropologie",
+    domain: "Arts and Humanities", // Migré vers Scimago
     type: "Article Scientifique",
-    abstract: "Cet article fondamental reconstruit la migration plurimillénaire du peuple Kongo depuis l'Israël antique (Canaan) jusqu'au bassin du Congo. En croisant linguistique, ethnographie et histoire, l'auteur retrace le parcours des exilés hébreux via l'Égypte, l'Éthiopie (Quara) et le Zimbabwe, liant l'identité Kongo à un héritage culturel et spirituel solaire (Ra/Baal) préservé à travers les siècles.",
+    abstract: "Cet article fondamental reconstruit la migration plurimillénaire du peuple Kongo depuis l'Israël antique...",
     pages: 20,
     isExclusive: true, 
     pdfUrl: "https://drive.google.com/file/d/1dHCIWGSfophBuEcLCK9tT8-QyplARkT2/view?usp=drive_link"
   },
   {
     id: 'art-mavoungou-2025-bikelele',
-    title: "Petrology and geochemistry of the metamorphic rocks from the Bikélélé area, the Chaillu Massif, southwestern Republic of the Congo",
+    title: "Petrology and geochemistry of the metamorphic rocks from the Bikélélé area",
     author: "Yarsé B. Mavoungou, Hardy M. Nkodia, N. Watha-Ndoudy et al.",
     year: "2025",
     institution: "Arabian Journal of Geosciences",
-    domain: "Pétrologie & Géochimie",
+    domain: "Earth and Planetary Sciences", // Migré vers Scimago
     type: "Article Scientifique",
-    abstract: "Cette étude présente les données pétrographiques et géochimiques des roches métamorphiques de la zone de Bikélélé (Massif du Chaillu). Elle analyse l'évolution pétrogénétique et le cadre tectonique des gneiss à biotite et amphibolites, suggérant un environnement d'arc de subduction associé à un bassin arrière-arc.",
+    abstract: "Cette étude présente les données pétrographiques et géochimiques des roches métamorphiques...",
     pages: "Vol 18, Art. 144",
     isRestricted: true,
     isExclusive: true,
@@ -329,33 +351,29 @@ export const THESES_LIBRARY = [
     author: "Hardy Nkodia",
     year: "2023",
     institution: "Kongo Science (Éditions)",
-    domain: "Méthodologie de Recherche",
+    domain: "Multidisciplinary", // Migré vers Scimago
     type: "Livre / Guide Pratique",
-    abstract: "Avez-vous du mal à organiser vos documents et à extraire les données pour réaliser une revue pertinente ? Ce guide pratique révolutionne votre approche de la littérature académique. En s'inspirant des maîtres comme Newton et Hooke, il offre des stratégies concrètes pour optimiser votre temps de lecture, cibler l'essentiel et transformer votre bibliographie en un levier puissant pour vos expériences scientifiques.",
+    abstract: "Avez-vous du mal à organiser vos documents et à extraire les données pour réaliser une revue pertinente...",
     pages: "89 pages",
-    
-    // --- CONFIGURATION VENTE AMAZON ---
     isForSale: true,
     price: "3.66 € (Kindle) / 12.00 € (Broché)",
-    purchaseUrl: "https://www.amazon.fr/Maitriser-lArt-Revue-Bibliographique-Pratique-ebook/dp/B0CG2B65WP", // Lien direct via ASIN
-    pdfUrl: "" // Pas de PDF gratuit
+    purchaseUrl: "https://www.amazon.fr/Maitriser-lArt-Revue-Bibliographique-Pratique-ebook/dp/B0CG2B65WP",
+    pdfUrl: ""
   },
   {
     id: 'bk-kinouani-2025-therapeutique',
-    title: "Repenser la thérapeutique: Un point de vue heuristique sur les rapports thérapeutiques - dynamiques du vivant",
+    title: "Repenser la thérapeutique: Un point de vue heuristique",
     author: "Duchel Kinouani",
     year: "2025",
     institution: "Upway Books",
-    domain: "Médecine & Biologie",
+    domain: "Medicine", // Migré vers Scimago
     type: "Livre / Essai",
-    abstract: "Notre compréhension du vivant a atteint des sommets, pourtant la médecine contemporaine peine face aux maladies chroniques et résistantes. Ce paradoxe révèle les limites de nos approches actuelles. Cet ouvrage défend l'urgence d'une médecine évolutive, capable d'intégrer les mécanismes d'adaptation et de transformation propres au vivant, proposant ainsi une refondation complète du soin pour répondre aux défis sanitaires futurs.",
+    abstract: "Notre compréhension du vivant a atteint des sommets, pourtant la médecine contemporaine peine...",
     pages: "300 pages",
-    
-    // --- CONFIGURATION VENTE ---
     isForSale: true,
     price: "48.98 €",
     purchaseUrl: "https://www.amazon.fr/Repenser-th%C3%A9rapeutique-heuristique-th%C3%A9rapeutiques-dynamiques/dp/1917916647",
-    pdfUrl: "" // Vide car payant
+    pdfUrl: ""
   },
 ];
 
@@ -366,22 +384,5 @@ export const TEAM = [
     name: "Dr. Hardy Nkodia",
     role: "Président du bureau exécutif",
     image: hardyImg,
-  },
-  {
-    id: 'bk-kinouani-2025-therapeutique',
-    title: "Repenser la thérapeutique: Un point de vue heuristique sur les rapports thérapeutiques - dynamiques du vivant",
-    author: "Duchel Kinouani",
-    year: "2025",
-    institution: "Upway Books",
-    domain: "Médecine & Biologie",
-    type: "Livre / Essai",
-    abstract: "Notre compréhension du vivant a atteint des sommets, pourtant la médecine contemporaine peine face aux maladies chroniques et résistantes. Ce paradoxe révèle les limites de nos approches actuelles. Cet ouvrage défend l'urgence d'une médecine évolutive, capable d'intégrer les mécanismes d'adaptation et de transformation propres au vivant, proposant ainsi une refondation complète du soin pour répondre aux défis sanitaires futurs.",
-    pages: "300 pages",
-    
-    // --- CONFIGURATION VENTE ---
-    isForSale: true,
-    price: "48.98 €",
-    purchaseUrl: "https://www.amazon.fr/Repenser-th%C3%A9rapeutique-heuristique-th%C3%A9rapeutiques-dynamiques/dp/1917916647",
-    pdfUrl: "" // Vide car payant
   },
 ];
