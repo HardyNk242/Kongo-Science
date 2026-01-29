@@ -322,6 +322,25 @@ export const THESES_LIBRARY = [
     isExclusive: true, // Disponible via votre Drive
     pdfUrl: "https://drive.google.com/file/d/1dHCIWGSfophBuEcLCK9tT8-QyplARkT2/view?usp=drive_link"
   },
+  {
+    id: 'art-mavoungou-2025-bikelele',
+    title: "Petrology and geochemistry of the metamorphic rocks from the Bikélélé area...",
+    author: "Yarsé B. Mavoungou, Hardy M. Nkodia, N. Watha-Ndoudy et al.",
+    year: "2025",
+    institution: "Arabian Journal of Geosciences",
+    domain: "Pétrologie & Géochimie",
+    type: "Article Scientifique",
+    abstract: "Cette étude présente les données pétrographiques...",
+    pages: "Vol 18, Art. 144",
+    
+    // --- AJOUTEZ CETTE LIGNE ---
+    isRestricted: true, 
+    // ---------------------------
+    
+    // Garde le lien, il servira de référence pour toi, mais ne sera pas public
+    isExclusive: true,
+    pdfUrl: "https://drive.google.com/file/d/1QliljB9o6unoIMtKXvEJgWq9DrpUA8cX/view?usp=drive_link"
+  },
 ];
 
 // --- ÉQUIPE (TEAM) ---
