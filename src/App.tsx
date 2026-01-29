@@ -1,188 +1,267 @@
-import { Article, NavItem, Objective, Conference } from './types';
-import peatlandsCard from "./assets/conf-peatlands-conferencecard.png";
-import petroleumCard from "./assets/conf-ingenierie-petroliere.png";
-import geotechCard from "./assets/conf-risques-geotech.png";
-import technoGeoCard from "./assets/conf-techno-geo.png";
-import solKoutikaCard from "./assets/conf-sol-koutika.png";
+import React, { useState, useEffect, useMemo } from 'react';
+import Header from './components/Header';
+import Hero from './components/Hero';
+import ConferenceCard from './components/ConferenceCard';
+import ConferencesView from './components/ConferencesView';
+import ArticleCard from './components/ArticleCard';
+import RegistrationView from './components/RegistrationView';
+import ProposalView from './components/ProposalView';
+import ChatAssistant from './components/ChatAssistant';
+import Footer from './components/Footer';
+import HistoryView from './components/HistoryView';
+import TeamView from './components/TeamView';
+import ProgramsView from './components/ProgramsView';
+import { OBJECTIFS, CONFERENCES, ARTICLES, PARTNERS } from './constants';
+import { Conference } from './types';
 
-export const NAV_ITEMS: NavItem[] = [
-  { label: 'Accueil', path: 'home' },
-  { label: 'Agenda', path: 'agenda' },
-  { label: 'Programmes', path: 'programmes' },
-  { label: 'Historique', path: 'history' },
-  { label: 'Équipe', path: 'team' },
-  { label: 'À Propos', path: 'about' }
-];
+const App: React.FC = () => {
+  const [selectedConference, setSelectedConference] = useState<Conference | null>(null);
+  const [currentPath, setCurrentPath] = useState('home');
 
-export const OBJECTIFS: Objective[] = [
-  {
-    id: 'renforcement-competences',
-    title: 'Excellence & Production Académique',
-    description: 'Renforcer les capacités des chercheurs africains pour propulser la production d\'articles scientifiques de 20% par an.',
-    iconPath: 'M12 14l9-5-9-5-9 5 9 5zm0 0l9-5-9-5-9 5 9 5zm0 0l9-5-9-5-9 5 9 5zm0 0v6m0-6L3 9m18 0l-9 5'
-  },
-  {
-    id: 'acces-connaissance',
-    title: 'Démocratisation du Savoir',
-    description: 'Ouvrir des plateformes de conférences publiques d\'élite, garantissant un accès massif à la connaissance pour les universitaires.',
-    iconPath: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253'
-  },
-  {
-    id: 'developpement-science',
-    title: 'Science & Impact Régional',
-    description: 'Transformer les défis sociétaux en solutions durables par l\'application rigoureuse des approches scientifiques.',
-    iconPath: 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
-  }
-];
+  const upcomingConferences = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-export const CONFERENCES: (Conference & { imageUrl: string })[] = [
-  {
-    id: 'conf-peatlands',
-    title: 'Tourbières du Congo : mémoire climatique et enjeux de protection',
-    description: 'Présentation scientifique basée sur une étude publiée dans Palaeogeography (2025) par Henrique Gloire Lungela Tchimpa, doctorant à l\'Université Marien Ngouabi.',
-    date: '2026-01-13',
-    replayUrl: 'https://www.youtube.com/watch?v=7PQs6Kbol_8',
-    time: '21:00',
-    day: '13',
-    month: 'JAN',
-    location: 'En ligne (Zoom)',
-    type: 'Webinaire',
-    organizer: 'Kongo Science',
-    imageUrl: peatlandsCard
-  },
-  {
-    id: 'conf-ingenierie-petroliere',
-    title: 'Les métiers de l\'ingénierie pétrolière face aux défis de la transition énergétique',
-    description: 'Conférence animée par Japhet MAVOUNGOU, de 20h00 à 21h00 (heure de Brazzaville).',
-    date: '2026-01-28',
-    replayUrl: 'https://www.youtube.com/watch?v=9N9SuiV9Cf8',
-    time: '20:00',
-    day: '28',
-    month: 'JAN',
-    location: 'Brazzaville (heure locale)',
-    type: 'Webinaire',
-    organizer: 'Kongo Science',
-    imageUrl: petroleumCard
-  },
-  {
-    id: 'conf-risques-geotechniques',
-    title: 'Gestion des risques géotechniques pour les infrastructures linéaires',
-    description: 'Caractérisation & amélioration des sols pour les infrastructures de transport en milieu tropical. Présenté par Yves Ngoma (Doctorant FST, Univ. Marien Ngouabi).',
-    date: '2026-02-08',
-    time: '19:30',
-    day: '08',
-    month: 'FEV',
-    location: 'Brazzaville (heure locale)',
-    type: 'Webinaire',
-    organizer: 'Kongo Science',
-    imageUrl: geotechCard
-  },
-  {
-    id: 'conf-atlas-fluvial',
-    title: 'Atlas fluvial du bassin du Congo : cartographie dynamique et crues extremes',
-    description: 'Lecture scientifique sur les nouvelles donnees hydrographiques et leur impact sur la planification territoriale.',
-    date: '2024-09-22',
-    replayUrl: 'https://www.youtube.com/watch?v=1a2b3c4d5e6',
-    time: '18:00',
-    day: '22',
-    month: 'SEP',
-    location: 'Brazzaville (heure locale)',
-    type: 'Hybride',
-    organizer: 'Kongo Science',
-    imageUrl: peatlandsCard
-  },
-  {
-    id: 'conf-technologies-geographiques',
-    title: 'Les technologies géospatiales au service du développement',
-    description: 'Une conférence de Nicy Bazebizonza (Doctorant en Géologie & Cartographe à l\'IGN). Exploration de l\'impact de la géomatique et des SIG sur la planification et le développement.',
-    date: '2026-02-14',
-    time: '20:30',
-    day: '14',
-    month: 'FEV',
-    location: 'Brazzaville (heure locale)',
-    type: 'Webinaire',
-    organizer: 'Kongo Science',
-    imageUrl: technoGeoCard
-  },
-  {
-    id: 'conf-sol-koutika',
-    title: 'Le Sol : Fondement invisible de la sécurité alimentaire et du développement durable',
-    description: 'Keynote par Dr. Lydie-Stella Koutika (Prix Glinka FAO, Prix Kwame Nkrumah UA, Auteure GIEC). Une intervention de haut niveau sur le rôle vital des sols.',
-    date: '2026-03-02',
-    time: '14:00',
-    day: '02',
-    month: 'MAR',
-    location: 'Brazzaville (heure locale)',
-    type: 'Webinaire',
-    organizer: 'Kongo Science',
-    imageUrl: solKoutikaCard
-  }
-];
+    return CONFERENCES
+      .filter((conf) => new Date(conf.date) >= today)
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  }, []);
 
-export const ARTICLES: Article[] = [
-  {
-    id: 'art-1',
-    title: 'Impact des érosions à Brazzaville : Cas des quartiers Mfilou et Jacques Opangault',
-    excerpt: 'Une étude géologique approfondie sur les mécanismes de dégradation des sols urbains et les solutions de stabilisation durable.',
-    category: 'Géosciences',
-    author: 'Dr. Hardy Nkodia',
-    date: 'Oct 2024',
-    imageUrl: 'https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?auto=format&fit=crop&q=80&w=800'
-  },
-  {
-    id: 'art-2',
-    title: 'Géomatique et Santé : Cartographie prédictive des zones à risque COVID-19',
-    excerpt: 'Collaboration avec la Fondation Ntoumi pour l\'utilisation du SIG dans la gestion des crises sanitaires en République du Congo.',
-    category: 'Santé Publique',
-    author: 'Dr. Nicy Bazebizonza',
-    date: 'Jan 2025',
-    imageUrl: 'https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=800'
-  }
-];
+  // ✅ Parse hash robuste: accepte "#registration/id" ET "#/registration/id"
+  const syncFromHash = () => {
+    const raw = window.location.hash || '';
+    const cleaned = raw.replace(/^#\/?/, ''); // enlève "#", et aussi "#/"
+    const [path = 'home', id] = cleaned.split('/');
 
-export const PARTNERS = [
-  { name: 'FCRM', logo: 'FCRM' },
-  { name: 'IGN', logo: 'IGN' },
-  { name: 'MRAC Tervuren', logo: 'MRAC' },
-  { name: 'Univ. Marien Ngouabi', logo: 'UMNG' },
-  { name: 'Luzabu Group', logo: 'LG' }
-];
+    setCurrentPath(path || 'home');
 
-export const COUNTRIES = [
-  {name: 'Congo, Republic of', code: 'CG'},
-  {name: 'Congo, Democratic Republic of', code: 'CD'},
-  {name: 'Angola', code: 'AO'},
-  {name: 'Gabon', code: 'GA'},
-  {name: 'Cameroon', code: 'CM'},
-  {name: 'France', code: 'FR'},
-  {name: 'Belgium', code: 'BE'},
-  {name: 'Canada', code: 'CA'},
-  {name: 'United States', code: 'US'}
-];
-
-export const PROPOSAL_PSYCHOLOGY = {
-  main_promise: "Kongo Science transforme un événement en référence scientifique.",
-  strategic_question: "À la fin de cette conférence, qu’est-ce que vous voulez que les participants disent de vous ?",
-  formats: {
-    "Recherche scientifique": {
-      want: "Sérieux, citabilité et respect académique.",
-      promise: "Une intervention scientifiquement défendable, référencée et alignée avec les standards internationaux."
-    },
-    "Formation académique": {
-      want: "Montée en niveau et avantage compétitif.",
-      promise: "Une formation qui transforme la compréhension en compétence réelle."
-    },
-    "Atelier technique": {
-      want: "Savoir-faire et résultat immédiat.",
-      promise: "À la fin, les participants repartent avec quelque chose de concret."
-    },
-    "Séminaire professionnel": {
-      want: "Clarté stratégique et vision.",
-      promise: "Des idées exploitables dès le lendemain."
-    },
-    "Colloque scientifique": {
-      want: "Statut, réseau et trace durable.",
-      promise: "Un événement qui laisse une trace scientifique et institutionnelle."
+    if (path === 'registration') {
+      if (id) {
+        const conf = CONFERENCES.find(c => c.id === id);
+        setSelectedConference(conf ?? null);
+      } else {
+        setSelectedConference(null);
+      }
+    } else {
+      // ✅ si on quitte registration, on reset
+      setSelectedConference(null);
     }
-  }
+  };
+
+  useEffect(() => {
+    // ✅ écouter hashchange (principal) + popstate (back/forward)
+    window.addEventListener('hashchange', syncFromHash);
+    window.addEventListener('popstate', syncFromHash);
+
+    // init
+    syncFromHash();
+
+    return () => {
+      window.removeEventListener('hashchange', syncFromHash);
+      window.removeEventListener('popstate', syncFromHash);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const navigateTo = (path: string, conf?: Conference) => {
+    if (conf) {
+      setSelectedConference(conf);
+      setCurrentPath(path);
+      window.location.hash = `${path}/${conf.id}`;
+    } else {
+      setSelectedConference(null);
+      setCurrentPath(path);
+      window.location.hash = path;
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const renderContent = () => {
+    switch (currentPath) {
+      case 'history':
+        return <HistoryView />;
+
+      case 'team':
+        return <TeamView />;
+
+      case 'programmes':
+        return <ProgramsView />;
+
+      case 'agenda':
+        return (
+          <ConferencesView
+            onRegister={(conf) => navigateTo('registration', conf)}
+            onProposal={() => navigateTo('proposal')}
+          />
+        );
+
+      case 'proposal':
+        return <ProposalView onBack={() => navigateTo('home')} />;
+
+      case 'registration':
+        return selectedConference ? (
+          <RegistrationView
+            conference={selectedConference}
+            onBack={() => navigateTo('agenda')}
+          />
+        ) : (
+          <div className="py-32 text-center">
+            <h2 className="text-2xl font-bold">Conférence non trouvée</h2>
+            <p className="mt-2 text-slate-500">
+              Vérifie que l’URL contient un id valide (ex: #registration/conf-peatlands).
+            </p>
+            <button
+              onClick={() => navigateTo('home')}
+              className="mt-4 text-blue-700 font-bold"
+            >
+              Retour à l'accueil
+            </button>
+          </div>
+        );
+
+      case 'home':
+      default:
+        return (
+          <>
+            <Hero onNavigate={navigateTo} />
+
+            <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center mb-16">
+                <span className="text-blue-700 font-black text-[10px] uppercase tracking-[0.4em] mb-4 block">
+                  Notre Engagement
+                </span>
+                <h2 className="text-3xl md:text-5xl font-serif font-bold text-slate-900 mb-4 tracking-tight italic">
+                  Vision Scientifique
+                </h2>
+                <div className="w-20 h-1.5 bg-blue-700 mx-auto rounded-full"></div>
+                <p className="mt-8 text-slate-600 max-w-2xl mx-auto text-lg leading-relaxed">
+                  Kongo Science œuvre pour l'éveil de la conscience scientifique à travers des piliers stratégiques d'excellence souveraine.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {OBJECTIFS.map((objectif) => (
+                  <div
+                    key={objectif.id}
+                    className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-100 group hover:shadow-xl hover:border-blue-100 transition-all duration-500 flex flex-col items-center text-center"
+                  >
+                    <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-700 mb-8 mx-auto group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all duration-500">
+                      <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={objectif.iconPath} />
+                      </svg>
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-900 mb-4 group-hover:text-blue-700 transition-colors">
+                      {objectif.title}
+                    </h3>
+                    <p className="text-slate-600 leading-relaxed text-sm">{objectif.description}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section className="py-24 bg-white relative">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-16">
+                  <div className="max-w-2xl">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-8 h-8 bg-blue-700 text-white rounded-lg flex items-center justify-center shadow-lg shadow-blue-200">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                      <span className="text-blue-700 font-black text-[10px] uppercase tracking-[0.2em]">
+                        Agenda Scientifique
+                      </span>
+                    </div>
+                    <h2 className="text-4xl md:text-5xl font-serif font-bold text-slate-900 leading-tight">
+                      Conférences en cours
+                    </h2>
+                    <p className="mt-4 text-slate-600 text-lg leading-relaxed">
+                      Les sessions ouvertes à l'inscription et les prochains rendez-vous majeurs.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-4">
+                    <button
+                      onClick={() => navigateTo('agenda')}
+                      className="bg-slate-900 text-white px-6 py-3 rounded-2xl font-bold text-sm hover:bg-slate-800 transition-all shadow-lg"
+                    >
+                      Voir tout l'agenda
+                    </button>
+                    <button
+                      onClick={() => navigateTo('proposal')}
+                      className="bg-blue-700 text-white px-6 py-3 rounded-2xl font-bold text-sm hover:bg-blue-800 transition-all shadow-lg shadow-blue-200"
+                    >
+                      Proposer une conférence
+                    </button>
+                  </div>
+                </div>
+
+                {upcomingConferences.length === 0 ? (
+                  <div className="text-center text-slate-500 py-12">
+                    Aucune conférence en cours pour le moment.
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    {upcomingConferences.map(conference => (
+                      <ConferenceCard
+                        key={conference.id}
+                        conference={conference}
+                        onRegister={(conf) => navigateTo('registration', conf)}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </section>
+
+            <section className="py-24 bg-slate-50">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="text-center mb-16">
+                  <span className="text-blue-700 font-black text-[10px] uppercase tracking-[0.4em] mb-4 block">
+                    Savoir & Publication
+                  </span>
+                  <h2 className="text-4xl font-serif font-bold text-slate-900 italic">
+                    Actualités Scientifiques
+                  </h2>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {ARTICLES.map(article => (
+                    <ArticleCard key={article.id} article={article} />
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            <section className="py-20 bg-white">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-40 hover:opacity-100 transition-opacity grayscale hover:grayscale-0">
+                  {PARTNERS.map(partner => (
+                    <div key={partner.name} className="flex flex-col items-center gap-2">
+                      <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center font-bold text-slate-400 border border-slate-200">
+                        {partner.logo}
+                      </div>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-600">
+                        {partner.name}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          </>
+        );
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col bg-slate-50 selection:bg-blue-100 selection:text-blue-900">
+      <Header onNavigate={navigateTo} currentPath={currentPath} />
+      <main className="flex-grow">{renderContent()}</main>
+      <ChatAssistant />
+      <Footer />
+    </div>
+  );
 };
+
+export default App;
