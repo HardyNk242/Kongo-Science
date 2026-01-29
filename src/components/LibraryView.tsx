@@ -25,6 +25,35 @@ const LibraryView: React.FC = () => {
     alert('Citation copiée au format APA !');
   };
 
+  /**
+   * Génère les métadonnées COinS invisibles pour Zotero.
+   * Zotero détectera automatiquement ces balises et proposera l'enregistrement.
+   */
+  const renderZoteroCoins = (thesis: Thesis) => {
+    // On nettoie les données pour l'URL
+    const title = encodeURIComponent(thesis.title);
+    const author = encodeURIComponent(thesis.author); // Nom complet, idéalement "Nom, Prénom"
+    const date = encodeURIComponent(thesis.year);
+    const publisher = encodeURIComponent(thesis.institution);
+    
+    // Déterminer le type pour Zotero (dissertation = thèse/mémoire, journal = article)
+    const isThesis = thesis.type.includes('Thèse') || thesis.type.includes('Mémoire');
+    const genre = isThesis ? 'dissertation' : 'article';
+    const fmt = isThesis ? 'info:ofi/fmt:kev:mtx:dissertation' : 'info:ofi/fmt:kev:mtx:journal';
+
+    // Construction de la chaîne OpenURL (COinS)
+    // rft.title (ou rft.atitle pour article), rft.au (auteur), rft.date, rft.inst (institution)
+    const coinsData = `ctx_ver=Z39.88-2004&rft_val_fmt=${fmt}&rft.title=${title}&rft.au=${author}&rft.date=${date}&rft.inst=${publisher}&rft.genre=${genre}`;
+
+    return (
+      <span 
+        className="Z3988" 
+        title={coinsData} 
+        style={{ display: 'none' }} // Invisible pour l'humain, visible pour Zotero
+      ></span>
+    );
+  };
+
   return (
     <div className="bg-white min-h-screen">
       {/* --- HERO SECTION (Recherche) --- */}
@@ -87,6 +116,9 @@ const LibraryView: React.FC = () => {
             filteredTheses.map((thesis) => (
               <div key={thesis.id} className="group bg-white rounded-[2.5rem] border border-slate-100 p-8 md:p-12 hover:shadow-2xl hover:border-blue-100 transition-all duration-500 flex flex-col md:flex-row gap-10 items-start">
                 
+                {/* INJECTION ZOTERO ICI (Invisible) */}
+                {renderZoteroCoins(thesis)}
+
                 {/* Bloc Icône & Type */}
                 <div className="w-full md:w-32 flex flex-col items-center flex-shrink-0">
                    <div className="w-20 h-24 bg-slate-50 rounded-xl border border-slate-200 flex flex-col items-center justify-center relative group-hover:bg-blue-50 group-hover:border-blue-200 transition-colors shadow-inner">
@@ -150,7 +182,6 @@ const LibraryView: React.FC = () => {
                          Citer cette publication
                       </button>
                       
-                      {/* BOUTON LIRE : Changé en <a> pour lien direct */}
                       <a 
                         href={thesis.pdfUrl} 
                         target="_blank" 
@@ -174,7 +205,7 @@ const LibraryView: React.FC = () => {
         </div>
       </section>
 
-      {/* --- BANDEAU APPEL À ACTION (Soumettre) --- */}
+      {/* --- BANDEAU APPEL À ACTION --- */}
       <section className="bg-blue-50 py-24">
          <div className="max-w-4xl mx-auto px-6 text-center">
             <h2 className="text-3xl font-serif font-bold text-slate-900 italic mb-6">
@@ -185,8 +216,6 @@ const LibraryView: React.FC = () => {
                Ne laissez pas vos découvertes dans l'ombre.
             </p>
             
-            {/* BOUTON SOUMETTRE : Pointe vers votre futur Google Form */}
-            {/* REMPLACEZ LE LIEN CI-DESSOUS PAR VOTRE PROPRE LIEN GOOGLE FORM */}
             <a 
               href="https://forms.google.com/" 
               target="_blank" 
