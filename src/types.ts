@@ -59,4 +59,5 @@ export interface Thesis {
   pages: number;
   pdfUrl?: string; // Lien vers le fichier (optionnel pour l'instant)
   isExclusive?: boolean; // Si c'est un document qu'on ne trouve que chez vous
+  isRestricted?: boolean;
 }
