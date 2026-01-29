@@ -323,6 +323,23 @@ export const THESES_LIBRARY = [
     isExclusive: true,
     pdfUrl: "https://drive.google.com/file/d/1QliljB9o6unoIMtKXvEJgWq9DrpUA8cX/view?usp=drive_link"
   },
+  {
+    id: 'bk-nkodia-2023-revue',
+    title: "Maitriser l'Art de la Revue Bibliographique: Guide Pratique",
+    author: "Hardy Nkodia",
+    year: "2023",
+    institution: "Kongo Science (Éditions)",
+    domain: "Méthodologie de Recherche",
+    type: "Livre / Guide Pratique",
+    abstract: "Avez-vous du mal à organiser vos documents et à extraire les données pour réaliser une revue pertinente ? Ce guide pratique révolutionne votre approche de la littérature académique. En s'inspirant des maîtres comme Newton et Hooke, il offre des stratégies concrètes pour optimiser votre temps de lecture, cibler l'essentiel et transformer votre bibliographie en un levier puissant pour vos expériences scientifiques.",
+    pages: "89 pages",
+    
+    // --- CONFIGURATION VENTE AMAZON ---
+    isForSale: true,
+    price: "3.66 € (Kindle) / 12.00 € (Broché)",
+    purchaseUrl: "https://www.amazon.fr/Maitriser-lArt-Revue-Bibliographique-Pratique-ebook/dp/B0CG2B65WP", // Lien direct via ASIN
+    pdfUrl: "" // Pas de PDF gratuit
+  },
 ];
 
 // --- ÉQUIPE (TEAM) ---
