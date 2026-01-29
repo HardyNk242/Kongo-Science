@@ -1,41 +1,44 @@
-
 import React from 'react';
+
+// --- IMPORTS LOCAUX ---
+// Seule votre photo est importée localement pour l'instant
+import hardyImg from '../assets/hardy.png'; 
 
 const TeamView: React.FC = () => {
   const members = [
     {
       name: "Dr. Hardy Nkodia",
       role: "Président du bureau exécutif",
-      bio: "Géologue et Assistant à l'Université Marien Ngouabi, spécialisé dans l'étude tectonique du Congo. Son travail de recherche combine expertise en géologie structurale, gestion de projets et enseignement. Passionné par la promotion de la science en Afrique, il a publié des articles de renom et dirigé des conférences internationales.",
-      image: "https://media.licdn.com/dms/image/v2/D4E03AQHVL0NAf_mDiA/profile-displayphoto-scale_200_200/B4EZq9z1M_IwAY-/0/1764121076711?e=1771459200&v=beta&t=lflYAyYGAgClv1prYtRxPPLAYrIWq4Q92beL9Q5A2oY",
+      bio: "Géologue et Assistant à l'Université Marien Ngouabi, spécialisé dans l'étude tectonique du Congo. Son travail de recherche combine expertise en géologie structurale, gestion de projets et enseignement.",
+      image: hardyImg, // ✅ Utilise l'image locale
       tags: ["Tectonique", "Géologie Structurale", "Univ. Marien Ngouabi"]
     },
     {
       name: "Richy Mobongui",
       role: "Vice-Président",
-      bio: "Expert en Field Network Services chez MTN Congo depuis 2018. Responsable du suivi de la disponibilité du réseau et de l'énergie, de l'exécution des projets Field Services et de la maintenance des centres de données. Licence en Technologies de l'information (ISTP Brazzaville).",
-      image: "https://media.licdn.com/dms/image/v2/D5603AQHro7zxMEhr5A/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1682344408178?e=2147483647&v=beta&t=HPYX0Fab5hX4v3Lgo_hHw4yocQHbdYczKS-xvI0rCB4",
+      bio: "Expert en Field Network Services chez MTN Congo depuis 2018. Responsable du suivi de la disponibilité du réseau et de l'énergie, de l'exécution des projets Field Services.",
+      image: "https://media.licdn.com/dms/image/v2/D5603AQHro7zxMEhr5A/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1682344408178?e=2147483647&v=beta&t=HPYX0Fab5hX4v3Lgo_hHw4yocQHbdYczKS-xvI0rCB4", // 🌐 Lien Web
       tags: ["Network Services", "MTN Congo", "IT Systems"]
     },
     {
       name: "Jemima Bounkouta",
       role: "Secrétaire Générale",
-      bio: "Spécialiste en hydrogéologie environnementale et coordination de projets. Entrepreneure indépendante en QHSE et analyse de données (Sphinx, Excel). Master 2 en Sciences de la Terre (Univ. Marien Ngouabi), experte en analyse chimique des eaux.",
-      image: "https://media.licdn.com/dms/image/v2/D4D03AQFFm71naVJTfg/profile-displayphoto-scale_200_200/B4DZp.nOErJUAY-/0/1763060803743?e=1771459200&v=beta&t=4qRVKg1-j7Vx9k2yRfOf1AZ1M8w84KpBawyGvt6K9pI",
+      bio: "Spécialiste en hydrogéologie environnementale et coordination de projets. Entrepreneure indépendante en QHSE et analyse de données (Sphinx, Excel).",
+      image: "https://media.licdn.com/dms/image/v2/D4D03AQFFm71naVJTfg/profile-displayphoto-scale_200_200/B4DZp.nOErJUAY-/0/1763060803743?e=1771459200&v=beta&t=4qRVKg1-j7Vx9k2yRfOf1AZ1M8w84KpBawyGvt6K9pI", // 🌐 Lien Web
       tags: ["Hydrogéologie", "QHSE", "Data Analysis"]
     },
     {
       name: "Dr. Nicy Bazebizonza",
       role: "V.P. Commission Contrôle & Évaluation",
-      bio: "Géologue-Cartographe à l'Institut Géographique National (IGN) du Congo. Ambassadeur de la Géomatique. Doctorant sur les cavités karstiques du Congo en collaboration avec le MRAC de Tervuren (Belgique). Auteur de sept articles scientifiques.",
-      image: "https://media.licdn.com/dms/image/v2/C4E03AQHfkdOUCiq4ow/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1602615122649?e=2147483647&v=beta&t=KsWld7LEDpc6ykQu4nz8gQJXiYDIVjgdXx-pWq4dn0w",
+      bio: "Géologue-Cartographe à l'Institut Géographique National (IGN) du Congo. Ambassadeur de la Géomatique. Doctorant sur les cavités karstiques du Congo.",
+      image: "https://media.licdn.com/dms/image/v2/C4E03AQHfkdOUCiq4ow/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1602615122649?e=2147483647&v=beta&t=KsWld7LEDpc6ykQu4nz8gQJXiYDIVjgdXx-pWq4dn0w", // 🌐 Lien Web
       tags: ["Géomatique", "Cartographie", "IGN Congo"]
     },
     {
       name: "Hathor Régina Kintono",
       role: "Secrétaire Adjointe",
-      bio: "Détentrice d'un Master en hydrogéologie à l'université Mariën NGOUABI. Elle apporte une expertise pointue dans la gestion des ressources hydriques et le suivi administratif des projets scientifiques de la communauté.",
-      image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=400&h=500",
+      bio: "Détentrice d'un Master en hydrogéologie à l'université Mariën NGOUABI. Elle apporte une expertise pointue dans la gestion des ressources hydriques.",
+      image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=400&h=500", // 🌐 Lien Web (Image générique temporaire)
       tags: ["Hydrogéologie", "Expertise Scientifique"]
     }
   ];
@@ -110,9 +113,13 @@ const TeamView: React.FC = () => {
                    </div>
                  ))}
               </div>
-              <button className="bg-white text-blue-900 px-10 py-5 rounded-2xl font-black text-lg hover:bg-blue-50 transition-all shadow-xl">
+              
+              <a 
+                href="mailto:contact@kongoscience.com" 
+                className="inline-block bg-white text-blue-900 px-10 py-5 rounded-2xl font-black text-lg hover:bg-blue-50 transition-all shadow-xl"
+              >
                  Postuler pour nous rejoindre
-              </button>
+              </a>
            </div>
            <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-blue-700 rounded-full translate-x-1/2 translate-y-1/2 blur-[120px] opacity-20"></div>
         </section>
