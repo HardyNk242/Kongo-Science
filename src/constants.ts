@@ -189,39 +189,16 @@ export const PROPOSAL_PSYCHOLOGY = {
 };
 export const THESES_LIBRARY = [
   {
-    id: 'th-1',
-    title: 'Caractérisation géotechnique des sols de Brazzaville : Impact sur la stabilité des infrastructures routières',
-    author: 'Dr. Hardy Nkodia',
-    year: '2024',
-    institution: 'Université Marien Ngouabi',
-    domain: 'Géologie & BTP',
-    type: 'Thèse Doctorat',
-    abstract: 'Une analyse approfondie des propriétés physico-mécaniques des sols urbains soumis à une forte érosion, proposant de nouvelles normes de construction pour la zone nord de Brazzaville.',
-    pages: 245,
-    isExclusive: true
-  },
-  {
-    id: 'th-2',
-    title: 'Épidémiologie moléculaire du paludisme dans les zones forestières du Pool',
-    author: 'Sarah Mvouama',
-    year: '2023',
-    institution: 'FCRM / Univ. Marien Ngouabi',
-    domain: 'Santé Publique',
-    type: 'Mémoire Master',
-    abstract: 'Étude de la résistance aux antipaludiques chez les populations autochtones. Données collectées sur 3 ans avec le soutien de la Fondation Ntoumi.',
-    pages: 112,
-    isExclusive: false
-  },
-  {
-    id: 'th-3',
-    title: 'Stockage de carbone dans les tourbières de la Cuvette Centrale : Nouvelles estimations',
-    author: 'Jean-Pierre Mokoko',
-    year: '2025',
-    institution: 'CRGM (Centre de Recherches Géologiques et Minières)',
-    domain: 'Environnement',
-    type: 'Article',
-    abstract: 'Revue des données satellites couplées aux relevés de terrain effectués lors de la mission "Congo Peatlands 2024".',
-    pages: 18,
-    isExclusive: true
+    id: 'th-hardy-2017',
+    title: "Style structural et tectonique de la Formation de l'Inkisi",
+    author: "Hardy M. D.-V. Nkodia",
+    year: "2017",
+    institution: "Université Marien Ngouabi (FST)",
+    domain: "Géologie Structurale",
+    type: "Mémoire Master",
+    abstract: "Cette étude démontre que la Formation de l’Inkisi en République du Congo a été affectée par deux phases de tectonique décrochante associées chacune à une transpression. Lesquelles ont engendré deux systèmes de fracturation qui ont permis de déterminer les paléocontraintes. L’analyse structurale a permis d’identifier : les failles décrochantes senestres (Z1) et dextres (Z2), les fractures cisaillantes et les joints (les uns parallèles aux failles Z1 et les autres parallèles aux failles Z2) ; le tout s’organisant en deux systèmes de fractures presque orthogonaux. Le premier système présente la direction majeure de NW-SE et le second présente la direction majeure de NE-SW. Plusieurs marqueurs cinématiques du sens du mouvement (galets coupés déplacés, les fractures d’extension en zone de relais, des terminaisons en queue de cheval, gradins de cristallisation, des stries, des miroirs de failles) ou d’extension (structures en plumes) ont permis à partir du programme WinTensor de déterminer les stades de contraintes et l’évolution des structures. Les deux systèmes ont débuté par le développement des joints plumes, qui ont progressivement évolué en fractures hybrides à cisaillantes et en longue zone (jusqu’à quatre cent mètres) de faille décrochante. Le premier système résulterait probablement de la propagation à longue distance des contraintes à partir de la marge de subduction au Sud du Gondwana au Permo-Trias. Il a commencé à se développer sous une extension NE-SW puis à évoluer sous régime décrochant à compressif avec une contrainte horizontale NNW-SSE. Le second système (le dernier), qui résulterait probablement de la propagation des contraintes intraplaques due à l’ouverture de l’océan Atlantique Sud, a commencé sous une extension NW-SE, ensuite à évoluer sous un régime décrochant à compressif avec une contrainte principale subhorizontale WWS-EEN.",
+    pages: 68,
+    isExclusive: true,
+    pdfUrl: "https://zenodo.org/records/18408747/files/Master_thesis_25_07_2017_%20H_NKODIA.pdf?download=1"
   }
 ];
