@@ -27,13 +27,12 @@ const TeamView: React.FC = () => {
       image: "https://media.licdn.com/dms/image/v2/D4D03AQFFm71naVJTfg/profile-displayphoto-scale_200_200/B4DZp.nOErJUAY-/0/1763060803743?e=1771459200&v=beta&t=4qRVKg1-j7Vx9k2yRfOf1AZ1M8w84KpBawyGvt6K9pI",
       tags: ["Hydrogéologie", "QHSE", "Data Analysis"]
     },
-    // --- NOUVEAU MEMBRE AJOUTÉ ICI ---
     {
       name: "Prince Espoir Wamene Okumel",
       role: "Pdt. Commission Contrôle & Évaluation",
       bio: "Doctorant en Géologie Économique et Enseignant à l'Université Marien Ngouabi. Expert certifié en management de projets numériques. Ses recherches se concentrent sur l'exploration aurifère et l'extraction durable des ressources.",
       // Remplacez le lien ci-dessous par "image: princeImg," une fois la photo dans assets
-      image: "https://ui-avatars.com/api/?name=Prince+Wamene&background=0D8ABC&color=fff&size=200", 
+      image: princeImg, 
       tags: ["Géologie Économique", "Gestion de Projet", "Univ. Marien Ngouabi"]
     },
     // ----------------------------------
