@@ -45,3 +45,17 @@ export interface ChatMessage {
   role: MessageRole;
   text: string;
 }
+
+export interface Thesis {
+  id: string;
+  title: string;
+  author: string;
+  year: string;
+  institution: string;
+  domain: string; // ex: 'Géologie', 'Santé Publique', 'Environnement'
+  type: 'Thèse Doctorat' | 'Mémoire Master' | 'Article' | 'Rapport';
+  abstract: string;
+  pages: number;
+  pdfUrl?: string; // Lien vers le fichier (optionnel pour l'instant)
+  isExclusive?: boolean; // Si c'est un document qu'on ne trouve que chez vous
+}
