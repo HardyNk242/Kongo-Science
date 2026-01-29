@@ -8,9 +8,9 @@ import geotechCard from "./assets/conf-risques-geotech.png";
 import technoGeoCard from "./assets/conf-techno-geo.png";
 import solKoutikaCard from "./assets/conf-sol-koutika.png";
 
-// Équipe (Assurez-vous que ces fichiers existent dans src/assets/)
+// Équipe
 import hardyImg from './assets/hardy.png';
-// import princeImg from './assets/prince.jpg'; // Décommentez quand vous aurez la photo
+// import princeImg from './assets/prince.jpg'; 
 
 // --- NAVIGATION ---
 export const NAV_ITEMS: NavItem[] = [
@@ -228,7 +228,7 @@ export const THESES_LIBRARY = [
     type: "Mémoire de Master",
     abstract: "Ce travail de recherche examine le potentiel des souches bactériennes du genre Bacillus pour la fermentation et la bioconversion du jus de gingembre. L'étude analyse les modifications biochimiques induites par ces bactéries, visant à améliorer la conservation, les qualités organoleptiques et la valeur nutritionnelle de cette boisson locale.",
     pages: 49,
-    isExclusive: false, // Mis à false car le lien vient de ResearchGate
+    isExclusive: false, 
     pdfUrl: "https://www.researchgate.net/profile/Aime-Christian-Kayath/publication/348153985_IMPLICATION_DES_BACTERIES_DU_GENRE_BACILLUS_DANS_LA_BIOCONVERSION_DU_JUS_DE_GINGEMBRE_Zingiber_officinale_Roscoe/links/5ff0b0e4299bf1408868599b/IMPLICATION-DES-BACTERIES-DU-GENRE-BACILLUS-DANS-LA-BIOCONVERSION-DU-JUS-DE-GINGEMBRE-Zingiber-officinale-Roscoe.pdf"
   },
   {
@@ -240,7 +240,7 @@ export const THESES_LIBRARY = [
     domain: "Géosciences & Risques",
     type: "Livre / Guide",
     abstract: "Publié par l'UNESCO et le MRAC, cet ouvrage de référence analyse les risques géologiques majeurs en Afrique centrale (Congo, RDC, Cameroun, etc.). Il détaille quatre aléas critiques : glissements de terrain, séismes, éruptions volcaniques et effondrements karstiques, en proposant des stratégies de prévention pour les populations et les décideurs.",
-    pages: "Multiple", // ou mettez le nombre exact si vous l'avez (ex: 80)
+    pages: "Multiple",
     isExclusive: false,
     pdfUrl: "https://www.researchgate.net/profile/Camille-Francois-2/publication/387662450_L'Afrique_centrale_face_aux_georisques_-_Origine_naturelle/links/67768731fb9aff6eaa004093/LAfrique-centrale-face-aux-georisques-Origine-naturelle.pdf"
   },
@@ -297,19 +297,6 @@ export const THESES_LIBRARY = [
     pdfUrl: "https://onlinelibrary.wiley.com/doi/epdf/10.1155/2024/6627190"
   },
   {
-    id: 'art-okouakoua-2024-bacillus',
-    title: "Involvement of the Bacillus SecYEG Pathway in Biosurfactant Production and Biofilm Formation",
-    author: "F. Y. Okouakoua, C. A. Kayath, E. Nguimbi et al.",
-    year: "2024",
-    institution: "Wiley / Université Marien Ngouabi",
-    domain: "Microbiologie & Biotech",
-    type: "Article Scientifique",
-    abstract: "Cette étude explore le rôle du système de transport membranaire SecYEG chez les bactéries Bacillus. Les auteurs démontrent pour la première fois que ce système est crucial pour la sécrétion de biosurfactants (molécules d'intérêt industriel) et la formation de biofilms. Ils présentent également une nouvelle méthode PCR pour identifier les espèces de Bacillus issues d'aliments fermentés locaux.",
-    pages: 12,
-    isExclusive: false,
-    pdfUrl: "https://onlinelibrary.wiley.com/doi/epdf/10.1155/2024/6627190"
-  },
-  {
     id: 'art-nganga-2025-origines-kongo',
     title: "De la terre de Canaan au fleuve Congo : une histoire des origines du peuple et de la civilisation du Kongo",
     author: "Arsène Francœur Nganga",
@@ -318,34 +305,27 @@ export const THESES_LIBRARY = [
     domain: "Histoire & Anthropologie",
     type: "Article Scientifique",
     abstract: "Cet article fondamental reconstruit la migration plurimillénaire du peuple Kongo depuis l'Israël antique (Canaan) jusqu'au bassin du Congo. En croisant linguistique, ethnographie et histoire, l'auteur retrace le parcours des exilés hébreux via l'Égypte, l'Éthiopie (Quara) et le Zimbabwe, liant l'identité Kongo à un héritage culturel et spirituel solaire (Ra/Baal) préservé à travers les siècles.",
-    pages: 20, // Pages 37-57 dans la revue
-    isExclusive: true, // Disponible via votre Drive
+    pages: 20,
+    isExclusive: true, 
     pdfUrl: "https://drive.google.com/file/d/1dHCIWGSfophBuEcLCK9tT8-QyplARkT2/view?usp=drive_link"
   },
   {
     id: 'art-mavoungou-2025-bikelele',
-    title: "Petrology and geochemistry of the metamorphic rocks from the Bikélélé area...",
+    title: "Petrology and geochemistry of the metamorphic rocks from the Bikélélé area, the Chaillu Massif, southwestern Republic of the Congo",
     author: "Yarsé B. Mavoungou, Hardy M. Nkodia, N. Watha-Ndoudy et al.",
     year: "2025",
     institution: "Arabian Journal of Geosciences",
     domain: "Pétrologie & Géochimie",
     type: "Article Scientifique",
-    abstract: "Cette étude présente les données pétrographiques...",
+    abstract: "Cette étude présente les données pétrographiques et géochimiques des roches métamorphiques de la zone de Bikélélé (Massif du Chaillu). Elle analyse l'évolution pétrogénétique et le cadre tectonique des gneiss à biotite et amphibolites, suggérant un environnement d'arc de subduction associé à un bassin arrière-arc.",
     pages: "Vol 18, Art. 144",
-    
-    // --- AJOUTEZ CETTE LIGNE ---
-    isRestricted: true, 
-    // ---------------------------
-    
-    // Garde le lien, il servira de référence pour toi, mais ne sera pas public
+    isRestricted: true,
     isExclusive: true,
     pdfUrl: "https://drive.google.com/file/d/1QliljB9o6unoIMtKXvEJgWq9DrpUA8cX/view?usp=drive_link"
   },
 ];
 
 // --- ÉQUIPE (TEAM) ---
-// Ajoutez cette section pour que TeamView puisse l'utiliser (si vous décidez de passer par constants plus tard)
-// Pour l'instant, TeamView utilise ses données internes, mais c'est bien de préparer le terrain.
 export const TEAM = [
   {
     id: 'hardy',
@@ -353,5 +333,4 @@ export const TEAM = [
     role: "Président du bureau exécutif",
     image: hardyImg,
   },
-  // Les autres membres sont gérés directement dans TeamView pour l'instant car nous n'avons pas toutes les images locales
 ];
