@@ -350,4 +350,21 @@ export const TEAM = [
     role: "Président du bureau exécutif",
     image: hardyImg,
   },
+  {
+    id: 'bk-kinouani-2025-therapeutique',
+    title: "Repenser la thérapeutique: Un point de vue heuristique sur les rapports thérapeutiques - dynamiques du vivant",
+    author: "Duchel Kinouani",
+    year: "2025",
+    institution: "Upway Books",
+    domain: "Médecine & Biologie",
+    type: "Livre / Essai",
+    abstract: "Notre compréhension du vivant a atteint des sommets, pourtant la médecine contemporaine peine face aux maladies chroniques et résistantes. Ce paradoxe révèle les limites de nos approches actuelles. Cet ouvrage défend l'urgence d'une médecine évolutive, capable d'intégrer les mécanismes d'adaptation et de transformation propres au vivant, proposant ainsi une refondation complète du soin pour répondre aux défis sanitaires futurs.",
+    pages: "300 pages",
+    
+    // --- CONFIGURATION VENTE ---
+    isForSale: true,
+    price: "48.98 €",
+    purchaseUrl: "https://www.amazon.fr/Repenser-th%C3%A9rapeutique-heuristique-th%C3%A9rapeutiques-dynamiques/dp/1917916647",
+    pdfUrl: "" // Vide car payant
+  },
 ];
