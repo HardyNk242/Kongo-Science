@@ -4,6 +4,7 @@ import React from 'react';
 import hardyImg from '../assets/hardy.png'; 
 import princeImg from '../assets/prince.jpeg';
 import jemimaImg from '..//assets/jemima.png';
+import nicyImg from '..//assets/nicy.jpeg';
 
 const TeamView: React.FC = () => {
   const members = [
@@ -41,7 +42,7 @@ const TeamView: React.FC = () => {
       name: "Dr. Nicy Bazebizonza",
       role: "V.P. Commission Contrôle & Évaluation",
       bio: "Géologue-Cartographe à l'Institut Géographique National (IGN) du Congo. Ambassadeur de la Géomatique. Doctorant sur les cavités karstiques du Congo.",
-      image: "https://media.licdn.com/dms/image/v2/C4E03AQHfkdOUCiq4ow/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1602615122649?e=2147483647&v=beta&t=KsWld7LEDpc6ykQu4nz8gQJXiYDIVjgdXx-pWq4dn0w",
+      image: nicyImg,
       tags: ["Géomatique", "Cartographie", "IGN Congo"]
     },
     {
