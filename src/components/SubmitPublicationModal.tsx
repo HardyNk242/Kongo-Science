@@ -5,41 +5,42 @@ interface Props {
   onClose: () => void;
 }
 
-// Type pour un auteur
+// Type pour un auteur (Structure Zotero : Nom, Prénom)
 interface Author {
   firstName: string;
   lastName: string;
 }
 
 const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
-  // --- ÉTATS ---
+  // --- ÉTATS DU FORMULAIRE ---
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
   
-  // Données de base
-  const [submitterEmail, setSubmitterEmail] = useState(''); // Email de celui qui soumet
+  // 1. Info de base
+  const [submitterEmail, setSubmitterEmail] = useState('');
   const [docType, setDocType] = useState('Article de Revue');
   const [domain, setDomain] = useState(SCIMAGO_DOMAINS[0].value);
   
-  // Données Zotero-like
+  // 2. Données Zotero
   const [title, setTitle] = useState('');
   const [abstract, setAbstract] = useState('');
-  const [authors, setAuthors] = useState<Author[]>([{ lastName: '', firstName: '' }]); // Au moins un auteur
+  const [authors, setAuthors] = useState<Author[]>([{ lastName: '', firstName: '' }]); 
   
-  // Champs bibliométriques spécifiques
-  const [publication, setPublication] = useState(''); // Journal ou Éditeur
+  // 3. Champs Bibliométriques Contextuels
+  const [publication, setPublication] = useState(''); // Sert pour "Publication" (Journal) ou "Éditeur"
   const [volume, setVolume] = useState('');
   const [issue, setIssue] = useState('');
   const [pages, setPages] = useState('');
-  const [date, setDate] = useState(''); // Année ou Date
-  const [doi, setDoi] = useState('');
-  const [university, setUniversity] = useState(''); // Pour les thèses
+  const [date, setDate] = useState(''); // Date ou Année
+  const [doi, setDoi] = useState('');   // DOI ou ISBN
+  const [university, setUniversity] = useState(''); 
+  const [place, setPlace] = useState(''); // Nouveau : Lieu/Place (pour Thèse/Livre)
   
-  // Gestion des Droits (Rights)
+  // 4. Gestion des Droits (Access)
   const [accessMode, setAccessMode] = useState<'open' | 'restricted' | 'paid'>('open');
-  const [link, setLink] = useState(''); // Lien PDF ou Lien Achat
+  const [link, setLink] = useState(''); // URL PDF ou Achat
   const [price, setPrice] = useState('');
 
-  // --- GESTION DES AUTEURS ---
+  // --- LOGIQUE AUTEURS (Ajout/Retrait dynamique) ---
   const addAuthor = () => {
     setAuthors([...authors, { lastName: '', firstName: '' }]);
   };
@@ -58,34 +59,35 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
     setAuthors(newAuthors);
   };
 
-  // --- ENVOI ---
+  // --- SOUMISSION ---
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('submitting');
 
-    // Formatage des auteurs
+    // Mise en forme des auteurs pour l'email
     const formattedAuthors = authors.map(a => `${a.lastName.toUpperCase()} ${a.firstName}`).join(', ');
 
-    // Construction du corps du mail (Format Zotero lisible)
+    // Construction des détails bibliographiques selon le type
     let biblioInfo = "";
     if (docType === 'Article de Revue') {
-      biblioInfo = `Journal: ${publication}\nVol: ${volume} | Issue: ${issue} | Pages: ${pages}\nDOI: ${doi}`;
+      biblioInfo = `Journal: ${publication}\nVol: ${volume} | No: ${issue} | pp: ${pages}\nDOI: ${doi}`;
     } else if (docType.includes('Thèse') || docType.includes('Mémoire')) {
-      biblioInfo = `Université: ${university}\nType: ${docType}`;
+      biblioInfo = `Université: ${university}\nLieu: ${place}\nType: ${docType}\nPages: ${pages}`;
     } else {
-      biblioInfo = `Éditeur: ${publication}\nPages: ${pages}`;
+      // Livres
+      biblioInfo = `Éditeur: ${publication}\nLieu: ${place}\nISBN: ${doi}\nPages: ${pages}`;
     }
 
     const rightsInfo = accessMode === 'open' 
-      ? "✅ OPEN ACCESS (Lien direct fourni)" 
+      ? "✅ OPEN ACCESS (Lien direct)" 
       : accessMode === 'paid' 
-        ? `💰 PAYANT / LIVRE (Prix: ${price})` 
-        : "🔒 RESTREINT (Copie privée sur demande)";
+        ? `💰 PAYANT (Prix: ${price})` 
+        : "🔒 RESTREINT (Sur demande)";
 
-    const subject = encodeURIComponent(`Nouvelle Soumission : ${title.substring(0, 40)}...`);
+    const subject = encodeURIComponent(`Soumission : ${title.substring(0, 50)}...`);
     
     const bodyText = `
---- SOUMISSION KONGO SCIENCE ---
+--- SOUMISSION ZOTERO KONGO SCIENCE ---
 
 👤 SOUMIS PAR : ${submitterEmail}
 
@@ -94,22 +96,21 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
 
 📝 TITRE : ${title}
 👥 AUTEURS : ${formattedAuthors}
-📅 DATE/ANNÉE : ${date}
+📅 DATE : ${date}
 
-📊 BIBLIOMÉTRIE :
+📊 DÉTAILS :
 ${biblioInfo}
 
-🔐 DROITS & ACCÈS :
+🔐 ACCÈS :
 Statut : ${rightsInfo}
-Lien (PDF ou Achat) : ${link}
+Lien : ${link}
 
-📄 RÉSUMÉ :
+📄 ABSTRACT :
 ${abstract}
 `;
 
     const body = encodeURIComponent(bodyText);
     
-    // Simulation d'attente pour UX
     setTimeout(() => {
         window.location.href = `mailto:nkodiahardy@gmail.com?subject=${subject}&body=${body}`;
         setStatus('success');
@@ -121,7 +122,7 @@ ${abstract}
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
         
-        {/* Header Zotero Style */}
+        {/* HEADER */}
         <div className="bg-slate-800 p-4 text-white flex justify-between items-center flex-shrink-0">
           <div className="flex items-center gap-3">
              <div className="bg-white/10 p-2 rounded-lg">
@@ -129,7 +130,7 @@ ${abstract}
              </div>
              <div>
                 <h2 className="text-lg font-bold font-serif">Ajouter un document</h2>
-                <p className="text-xs text-slate-400">Standard Zotero & Bibliométrique</p>
+                <p className="text-xs text-slate-400">Standard Zotero</p>
              </div>
           </div>
           <button onClick={onClose} className="hover:bg-white/20 p-2 rounded-full transition-colors">✕</button>
@@ -138,13 +139,13 @@ ${abstract}
         {status === 'success' ? (
            <div className="flex-grow flex flex-col items-center justify-center p-12 text-center">
              <div className="text-6xl mb-4">✅</div>
-             <h3 className="text-2xl font-bold text-slate-800">Données prêtes !</h3>
-             <p className="text-slate-500 mt-2">Votre client mail va s'ouvrir pour valider l'envoi.</p>
+             <h3 className="text-2xl font-bold text-slate-800">Prêt à envoyer !</h3>
+             <p className="text-slate-500 mt-2">Votre application mail va s'ouvrir pour confirmer l'envoi.</p>
            </div>
         ) : (
           <form onSubmit={handleSubmit} className="p-6 space-y-6 overflow-y-auto custom-scrollbar bg-slate-50">
             
-            {/* 1. INFO GÉNÉRALE (Type & Item Type Zotero) */}
+            {/* 1. TYPE & DOMAINE */}
             <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
                <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">1. Type de Document</h3>
                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -154,8 +155,8 @@ ${abstract}
                       <option value="Article de Revue">Journal Article</option>
                       <option value="Thèse">Thesis (Thèse/Mémoire)</option>
                       <option value="Livre">Book (Livre)</option>
-                      <option value="Chapitre">Book Section (Chapitre)</option>
-                      <option value="Rapport">Report (Rapport)</option>
+                      <option value="Chapitre">Book Section</option>
+                      <option value="Rapport">Report</option>
                     </select>
                   </div>
                   <div>
@@ -165,17 +166,16 @@ ${abstract}
                     </select>
                   </div>
                </div>
-               
                <div>
                  <label className="label-zotero">Titre (Title)</label>
-                 <input required className="input-zotero font-serif font-medium text-slate-800" placeholder="Titre complet du papier..." value={title} onChange={e => setTitle(e.target.value)} />
+                 <input required className="input-zotero font-serif font-medium text-slate-800" placeholder="Titre complet..." value={title} onChange={e => setTitle(e.target.value)} />
                </div>
             </div>
 
-            {/* 2. AUTEURS (Liste Dynamique) */}
+            {/* 2. AUTEURS (Liste) */}
             <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
                <div className="flex justify-between items-center border-b border-slate-100 pb-2">
-                 <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest">2. Auteurs (Authors)</h3>
+                 <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest">2. Auteurs</h3>
                  <button type="button" onClick={addAuthor} className="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded hover:bg-blue-100 font-bold flex items-center gap-1">
                    <span>+</span> Ajouter
                  </button>
@@ -202,11 +202,11 @@ ${abstract}
                ))}
             </div>
 
-            {/* 3. BIBLIOMÉTRIE (Dynamique selon Type) */}
+            {/* 3. DÉTAILS (Dynamique) */}
             <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
                <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">3. Détails Bibliographiques</h3>
                
-               {/* CAS: ARTICLE DE REVUE */}
+               {/* --- ARTICLE DE REVUE --- */}
                {docType === 'Article de Revue' && (
                  <>
                    <div className="grid grid-cols-3 gap-4">
@@ -225,7 +225,7 @@ ${abstract}
                         <input className="input-zotero" placeholder="18" value={volume} onChange={e => setVolume(e.target.value)} />
                       </div>
                       <div>
-                        <label className="label-zotero">Issue (Numéro)</label>
+                        <label className="label-zotero">Numéro (Issue)</label>
                         <input className="input-zotero" placeholder="144" value={issue} onChange={e => setIssue(e.target.value)} />
                       </div>
                       <div>
@@ -240,7 +240,7 @@ ${abstract}
                  </>
                )}
 
-               {/* CAS: THÈSE / MÉMOIRE */}
+               {/* --- THÈSE / MÉMOIRE --- */}
                {(docType === 'Thèse' || docType.includes('Mémoire')) && (
                  <>
                    <div>
@@ -250,21 +250,27 @@ ${abstract}
                    <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="label-zotero">Type</label>
-                        <input className="input-zotero" placeholder="ex: Master, PhD..." value={docType} onChange={e => setDocType(e.target.value)} />
+                        <input className="input-zotero" placeholder="ex: Master, PhD" value={docType} onChange={e => setDocType(e.target.value)} />
                       </div>
                       <div>
-                        <label className="label-zotero">Année</label>
-                        <input className="input-zotero" placeholder="2024" value={date} onChange={e => setDate(e.target.value)} />
+                        <label className="label-zotero">Lieu (Place)</label>
+                        <input className="input-zotero" placeholder="Brazzaville, Congo" value={place} onChange={e => setPlace(e.target.value)} />
                       </div>
                    </div>
-                   <div>
-                      <label className="label-zotero">Nombre de pages</label>
-                      <input className="input-zotero" placeholder="ex: 120" value={pages} onChange={e => setPages(e.target.value)} />
+                   <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="label-zotero">Date / Année</label>
+                        <input className="input-zotero" placeholder="2024" value={date} onChange={e => setDate(e.target.value)} />
+                      </div>
+                      <div>
+                        <label className="label-zotero">Nb de pages</label>
+                        <input className="input-zotero" placeholder="120" value={pages} onChange={e => setPages(e.target.value)} />
+                      </div>
                    </div>
                  </>
                )}
 
-               {/* CAS: LIVRE */}
+               {/* --- LIVRE --- */}
                {(docType === 'Livre' || docType === 'Chapitre') && (
                  <>
                    <div>
@@ -273,57 +279,57 @@ ${abstract}
                    </div>
                    <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="label-zotero">ISBN</label>
-                        <input className="input-zotero" placeholder="" value={doi} onChange={e => setDoi(e.target.value)} />
+                        <label className="label-zotero">Lieu (Place)</label>
+                        <input className="input-zotero" placeholder="Paris, France" value={place} onChange={e => setPlace(e.target.value)} />
                       </div>
                       <div>
                         <label className="label-zotero">Année</label>
                         <input className="input-zotero" placeholder="2025" value={date} onChange={e => setDate(e.target.value)} />
                       </div>
                    </div>
+                   <div>
+                      <label className="label-zotero">ISBN</label>
+                      <input className="input-zotero" placeholder="978-..." value={doi} onChange={e => setDoi(e.target.value)} />
+                   </div>
                  </>
                )}
             </div>
 
-            {/* 4. DROITS & ACCÈS (Crucial) */}
+            {/* 4. DROITS & ACCÈS */}
             <div className="bg-amber-50 p-5 rounded-xl border border-amber-200 shadow-sm space-y-4">
-               <h3 className="text-xs font-black text-amber-700 uppercase tracking-widest border-b border-amber-200 pb-2">4. Droits & Partage (Rights)</h3>
+               <h3 className="text-xs font-black text-amber-700 uppercase tracking-widest border-b border-amber-200 pb-2">4. Droits & Partage</h3>
                
                <div className="space-y-3">
-                 {/* Option 1: Open Access */}
                  <label className="flex items-start gap-3 cursor-pointer p-3 bg-white rounded-lg border border-amber-100 hover:border-blue-400 transition-all">
                     <input type="radio" name="access" className="mt-1" checked={accessMode === 'open'} onChange={() => setAccessMode('open')} />
                     <div>
-                      <span className="block font-bold text-slate-800">🔓 Open Access / Libre de droits</span>
-                      <span className="text-xs text-slate-500">L'auteur détient les droits ou l'article est sous licence CC-BY. Tout le monde pourra télécharger le PDF directement.</span>
+                      <span className="block font-bold text-slate-800">🔓 Open Access</span>
+                      <span className="text-xs text-slate-500">Accessible à tous (PDF public).</span>
                     </div>
                  </label>
 
-                 {/* Option 2: Restreint (Copyright) */}
                  <label className="flex items-start gap-3 cursor-pointer p-3 bg-white rounded-lg border border-amber-100 hover:border-blue-400 transition-all">
                     <input type="radio" name="access" className="mt-1" checked={accessMode === 'restricted'} onChange={() => setAccessMode('restricted')} />
                     <div>
-                      <span className="block font-bold text-slate-800">🔒 Accès Restreint (Copyright Éditeur)</span>
-                      <span className="text-xs text-slate-500">Document soumis aux droits d'un éditeur (Elsevier, Springer...). Le PDF ne sera PAS public. Les chercheurs devront cliquer sur <strong>"Demander une copie privée"</strong>.</span>
+                      <span className="block font-bold text-slate-800">🔒 Accès Restreint (Copyright)</span>
+                      <span className="text-xs text-slate-500">PDF privé. Lecture sur demande à l'auteur uniquement.</span>
                     </div>
                  </label>
 
-                 {/* Option 3: Payant */}
                  <label className="flex items-start gap-3 cursor-pointer p-3 bg-white rounded-lg border border-amber-100 hover:border-blue-400 transition-all">
                     <input type="radio" name="access" className="mt-1" checked={accessMode === 'paid'} onChange={() => setAccessMode('paid')} />
                     <div>
-                      <span className="block font-bold text-slate-800">💰 En Vente (Livre / Ouvrage)</span>
-                      <span className="text-xs text-slate-500">Ouvrage commercial. Un bouton <strong>"Acheter"</strong> redirigera vers la boutique (Amazon, etc.).</span>
+                      <span className="block font-bold text-slate-800">💰 En Vente (Livre)</span>
+                      <span className="text-xs text-slate-500">Lien vers Amazon ou éditeur externe.</span>
                     </div>
                  </label>
                </div>
 
-               {/* Champs conditionnels selon le mode */}
                <div className="pt-2 animate-fadeIn">
                   <label className="label-zotero">
                     {accessMode === 'open' ? "Lien vers le PDF (Drive/Zenodo)" : 
                      accessMode === 'paid' ? "Lien d'achat (Amazon/Site)" : 
-                     "Lien vers le fichier (Pour l'admin seulement)"}
+                     "Lien vers le fichier (Pour l'admin)"}
                   </label>
                   <input required type="url" className="input-zotero bg-amber-50/50 border-amber-300" placeholder="https://..." value={link} onChange={e => setLink(e.target.value)} />
                   
@@ -342,7 +348,7 @@ ${abstract}
                <textarea required rows={5} className="input-zotero resize-none" placeholder="Copiez le résumé ici..." value={abstract} onChange={e => setAbstract(e.target.value)} />
             </div>
 
-            {/* EMAIL SOUMISSIONNAIRE */}
+            {/* EMAIL */}
             <div>
                <label className="label-zotero">Votre Email (Pour confirmation)</label>
                <input required type="email" className="input-zotero border-blue-300 bg-blue-50/20" value={submitterEmail} onChange={e => setSubmitterEmail(e.target.value)} />
@@ -361,7 +367,7 @@ ${abstract}
           display: block;
           font-size: 0.7rem;
           font-weight: 700;
-          color: #64748b; /* Slate-500 */
+          color: #64748b;
           text-transform: uppercase;
           margin-bottom: 0.25rem;
           letter-spacing: 0.05em;
