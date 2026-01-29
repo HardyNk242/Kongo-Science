@@ -1,157 +1,386 @@
-import React, { useState } from "react";
-import { SCIMAGO_DOMAINS } from "../constants"; // On importe la liste
+import React, { useState } from 'react';
+import { SCIMAGO_DOMAINS } from '../constants';
 
 interface Props {
   onClose: () => void;
 }
 
-type Status = "idle" | "submitting" | "success" | "error";
-type Tab = "form" | "guide";
+// Type pour un auteur
+interface Author {
+  firstName: string;
+  lastName: string;
+}
 
 const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
-  const [activeTab, setActiveTab] = useState<Tab>("guide");
-  const [formData, setFormData] = useState({
-    nom: "", prenoms: "", email: "", institution: "",
-    titre: "", 
-    type: "Mémoire de Master", 
-    domaine: "Earth and Planetary Sciences", // Valeur par défaut
-    pdfLink: "", abstract: "",
-  });
-  const [status, setStatus] = useState<Status>("idle");
+  // --- ÉTATS ---
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
+  
+  // Données de base
+  const [submitterEmail, setSubmitterEmail] = useState(''); // Email de celui qui soumet
+  const [docType, setDocType] = useState('Article de Revue');
+  const [domain, setDomain] = useState(SCIMAGO_DOMAINS[0].value);
+  
+  // Données Zotero-like
+  const [title, setTitle] = useState('');
+  const [abstract, setAbstract] = useState('');
+  const [authors, setAuthors] = useState<Author[]>([{ lastName: '', firstName: '' }]); // Au moins un auteur
+  
+  // Champs bibliométriques spécifiques
+  const [publication, setPublication] = useState(''); // Journal ou Éditeur
+  const [volume, setVolume] = useState('');
+  const [issue, setIssue] = useState('');
+  const [pages, setPages] = useState('');
+  const [date, setDate] = useState(''); // Année ou Date
+  const [doi, setDoi] = useState('');
+  const [university, setUniversity] = useState(''); // Pour les thèses
+  
+  // Gestion des Droits (Rights)
+  const [accessMode, setAccessMode] = useState<'open' | 'restricted' | 'paid'>('open');
+  const [link, setLink] = useState(''); // Lien PDF ou Lien Achat
+  const [price, setPrice] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // --- GESTION DES AUTEURS ---
+  const addAuthor = () => {
+    setAuthors([...authors, { lastName: '', firstName: '' }]);
+  };
+
+  const removeAuthor = (index: number) => {
+    if (authors.length > 1) {
+      const newAuthors = [...authors];
+      newAuthors.splice(index, 1);
+      setAuthors(newAuthors);
+    }
+  };
+
+  const updateAuthor = (index: number, field: keyof Author, value: string) => {
+    const newAuthors = [...authors];
+    newAuthors[index][field] = value;
+    setAuthors(newAuthors);
+  };
+
+  // --- ENVOI ---
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus("submitting");
+    setStatus('submitting');
+
+    // Formatage des auteurs
+    const formattedAuthors = authors.map(a => `${a.lastName.toUpperCase()} ${a.firstName}`).join(', ');
+
+    // Construction du corps du mail (Format Zotero lisible)
+    let biblioInfo = "";
+    if (docType === 'Article de Revue') {
+      biblioInfo = `Journal: ${publication}\nVol: ${volume} | Issue: ${issue} | Pages: ${pages}\nDOI: ${doi}`;
+    } else if (docType.includes('Thèse') || docType.includes('Mémoire')) {
+      biblioInfo = `Université: ${university}\nType: ${docType}`;
+    } else {
+      biblioInfo = `Éditeur: ${publication}\nPages: ${pages}`;
+    }
+
+    const rightsInfo = accessMode === 'open' 
+      ? "✅ OPEN ACCESS (Lien direct fourni)" 
+      : accessMode === 'paid' 
+        ? `💰 PAYANT / LIVRE (Prix: ${price})` 
+        : "🔒 RESTREINT (Copie privée sur demande)";
+
+    const subject = encodeURIComponent(`Nouvelle Soumission : ${title.substring(0, 40)}...`);
     
-    // Construction du mail (comme vu précédemment)
-    const subject = encodeURIComponent(`Soumission : ${formData.titre}`);
-    const bodyText = `Auteur: ${formData.nom} ${formData.prenoms}\nDomaine: ${formData.domaine}\nTitre: ${formData.titre}\nLien: ${formData.pdfLink}`;
+    const bodyText = `
+--- SOUMISSION KONGO SCIENCE ---
+
+👤 SOUMIS PAR : ${submitterEmail}
+
+📚 TYPE : ${docType}
+🏷️ DOMAINE : ${domain}
+
+📝 TITRE : ${title}
+👥 AUTEURS : ${formattedAuthors}
+📅 DATE/ANNÉE : ${date}
+
+📊 BIBLIOMÉTRIE :
+${biblioInfo}
+
+🔐 DROITS & ACCÈS :
+Statut : ${rightsInfo}
+Lien (PDF ou Achat) : ${link}
+
+📄 RÉSUMÉ :
+${abstract}
+`;
+
     const body = encodeURIComponent(bodyText);
     
+    // Simulation d'attente pour UX
     setTimeout(() => {
         window.location.href = `mailto:nkodiahardy@gmail.com?subject=${subject}&body=${body}`;
-        setStatus("success");
-        setTimeout(onClose, 6000);
-    }, 1500);
+        setStatus('success');
+        setTimeout(onClose, 5000);
+    }, 1000);
   };
 
   return (
-    <div className="fixed inset-0 z-[120] flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm animate-in fade-in" onClick={onClose} />
-      
-      <div className="relative bg-white rounded-[2.5rem] w-full max-w-4xl shadow-2xl overflow-hidden animate-in zoom-in-95 max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
         
-        {/* EN-TÊTE */}
-        <div className="bg-slate-900 p-8 text-white flex-shrink-0">
-            <button onClick={onClose} className="absolute top-6 right-6 text-white/40 hover:text-white">✕</button>
-            <h2 className="text-2xl font-serif font-bold italic mb-6">Soumettre une Publication</h2>
+        {/* Header Zotero Style */}
+        <div className="bg-slate-800 p-4 text-white flex justify-between items-center flex-shrink-0">
+          <div className="flex items-center gap-3">
+             <div className="bg-white/10 p-2 rounded-lg">
+               <svg className="w-6 h-6 text-blue-300" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+             </div>
+             <div>
+                <h2 className="text-lg font-bold font-serif">Ajouter un document</h2>
+                <p className="text-xs text-slate-400">Standard Zotero & Bibliométrique</p>
+             </div>
+          </div>
+          <button onClick={onClose} className="hover:bg-white/20 p-2 rounded-full transition-colors">✕</button>
+        </div>
+
+        {status === 'success' ? (
+           <div className="flex-grow flex flex-col items-center justify-center p-12 text-center">
+             <div className="text-6xl mb-4">✅</div>
+             <h3 className="text-2xl font-bold text-slate-800">Données prêtes !</h3>
+             <p className="text-slate-500 mt-2">Votre client mail va s'ouvrir pour valider l'envoi.</p>
+           </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="p-6 space-y-6 overflow-y-auto custom-scrollbar bg-slate-50">
             
-            <div className="flex gap-6 border-b border-slate-700">
-                <button onClick={() => setActiveTab("guide")} className={`pb-3 text-sm font-bold uppercase tracking-widest transition-colors border-b-2 ${activeTab === "guide" ? "border-blue-500 text-white" : "border-transparent text-slate-500 hover:text-slate-300"}`}>1. Guide & Droits</button>
-                <button onClick={() => setActiveTab("form")} className={`pb-3 text-sm font-bold uppercase tracking-widest transition-colors border-b-2 ${activeTab === "form" ? "border-blue-500 text-white" : "border-transparent text-slate-500 hover:text-slate-300"}`}>2. Formulaire de dépôt</button>
+            {/* 1. INFO GÉNÉRALE (Type & Item Type Zotero) */}
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+               <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">1. Type de Document</h3>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="label-zotero">Item Type (Zotero)</label>
+                    <select className="input-zotero" value={docType} onChange={e => setDocType(e.target.value)}>
+                      <option value="Article de Revue">Journal Article</option>
+                      <option value="Thèse">Thesis (Thèse/Mémoire)</option>
+                      <option value="Livre">Book (Livre)</option>
+                      <option value="Chapitre">Book Section (Chapitre)</option>
+                      <option value="Rapport">Report (Rapport)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="label-zotero">Domaine (Scimago)</label>
+                    <select className="input-zotero" value={domain} onChange={e => setDomain(e.target.value)}>
+                      {SCIMAGO_DOMAINS.map(d => <option key={d.value} value={d.value}>{d.label}</option>)}
+                    </select>
+                  </div>
+               </div>
+               
+               <div>
+                 <label className="label-zotero">Titre (Title)</label>
+                 <input required className="input-zotero font-serif font-medium text-slate-800" placeholder="Titre complet du papier..." value={title} onChange={e => setTitle(e.target.value)} />
+               </div>
             </div>
-        </div>
 
-        {/* CONTENU DÉFILANT */}
-        <div className="overflow-y-auto p-8 md:p-12 bg-slate-50 flex-grow">
-            
-            {/* --- ONGLET 1 : GUIDE (inchangé) --- */}
-            {activeTab === "guide" && (
-                <div className="space-y-8">
-                    <div className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm">
-                        <div className="flex items-center gap-3 mb-3">
-                            <span className="bg-blue-100 text-blue-700 font-black px-2 py-1 rounded text-xs uppercase">Cas 1</span>
-                            <h3 className="font-bold text-slate-900">Thèses, Mémoires & Articles Open Access</h3>
-                        </div>
-                        <p className="text-sm text-slate-600 mb-4">Documents dont vous détenez les droits. À rendre <strong>publics</strong>.</p>
-                        <ul className="text-xs text-slate-500 space-y-2 bg-slate-50 p-4 rounded-xl border border-slate-100">
-                            <li className="flex gap-2">✅ <strong>Hébergeur :</strong> <a href="https://zenodo.org" target="_blank" rel="noreferrer" className="text-blue-600 underline">Zenodo.org</a> (Recommandé).</li>
-                        </ul>
+            {/* 2. AUTEURS (Liste Dynamique) */}
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
+               <div className="flex justify-between items-center border-b border-slate-100 pb-2">
+                 <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest">2. Auteurs (Authors)</h3>
+                 <button type="button" onClick={addAuthor} className="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded hover:bg-blue-100 font-bold flex items-center gap-1">
+                   <span>+</span> Ajouter
+                 </button>
+               </div>
+               
+               {authors.map((author, index) => (
+                 <div key={index} className="flex gap-2 items-end animate-fadeIn">
+                    <div className="flex-grow grid grid-cols-2 gap-2">
+                       <div>
+                         {index === 0 && <label className="label-zotero">Nom (Last Name)</label>}
+                         <input required className="input-zotero" placeholder="ex: Nkodia" value={author.lastName} onChange={e => updateAuthor(index, 'lastName', e.target.value)} />
+                       </div>
+                       <div>
+                         {index === 0 && <label className="label-zotero">Prénom (First Name)</label>}
+                         <input required className="input-zotero" placeholder="ex: Hardy" value={author.firstName} onChange={e => updateAuthor(index, 'firstName', e.target.value)} />
+                       </div>
                     </div>
-                    <div className="text-center pt-4">
-                        <button onClick={() => setActiveTab("form")} className="bg-slate-900 text-white px-8 py-4 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-xl hover:-translate-y-1">Accéder au formulaire →</button>
+                    {authors.length > 1 && (
+                      <button type="button" onClick={() => removeAuthor(index)} className="mb-2 text-slate-400 hover:text-red-500 p-1">
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                      </button>
+                    )}
+                 </div>
+               ))}
+            </div>
+
+            {/* 3. BIBLIOMÉTRIE (Dynamique selon Type) */}
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+               <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">3. Détails Bibliographiques</h3>
+               
+               {/* CAS: ARTICLE DE REVUE */}
+               {docType === 'Article de Revue' && (
+                 <>
+                   <div className="grid grid-cols-3 gap-4">
+                      <div className="col-span-2">
+                        <label className="label-zotero">Publication (Journal)</label>
+                        <input className="input-zotero" placeholder="ex: Arabian Journal of Geosciences" value={publication} onChange={e => setPublication(e.target.value)} />
+                      </div>
+                      <div>
+                        <label className="label-zotero">Date / Année</label>
+                        <input className="input-zotero" placeholder="2025" value={date} onChange={e => setDate(e.target.value)} />
+                      </div>
+                   </div>
+                   <div className="grid grid-cols-3 gap-4">
+                      <div>
+                        <label className="label-zotero">Volume</label>
+                        <input className="input-zotero" placeholder="18" value={volume} onChange={e => setVolume(e.target.value)} />
+                      </div>
+                      <div>
+                        <label className="label-zotero">Issue (Numéro)</label>
+                        <input className="input-zotero" placeholder="144" value={issue} onChange={e => setIssue(e.target.value)} />
+                      </div>
+                      <div>
+                        <label className="label-zotero">Pages</label>
+                        <input className="input-zotero" placeholder="1-15" value={pages} onChange={e => setPages(e.target.value)} />
+                      </div>
+                   </div>
+                   <div>
+                      <label className="label-zotero">DOI</label>
+                      <input className="input-zotero" placeholder="10.1007/..." value={doi} onChange={e => setDoi(e.target.value)} />
+                   </div>
+                 </>
+               )}
+
+               {/* CAS: THÈSE / MÉMOIRE */}
+               {(docType === 'Thèse' || docType.includes('Mémoire')) && (
+                 <>
+                   <div>
+                      <label className="label-zotero">Université / Institution</label>
+                      <input className="input-zotero" placeholder="ex: Université Marien Ngouabi" value={university} onChange={e => setUniversity(e.target.value)} />
+                   </div>
+                   <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="label-zotero">Type</label>
+                        <input className="input-zotero" placeholder="ex: Master, PhD..." value={docType} onChange={e => setDocType(e.target.value)} />
+                      </div>
+                      <div>
+                        <label className="label-zotero">Année</label>
+                        <input className="input-zotero" placeholder="2024" value={date} onChange={e => setDate(e.target.value)} />
+                      </div>
+                   </div>
+                   <div>
+                      <label className="label-zotero">Nombre de pages</label>
+                      <input className="input-zotero" placeholder="ex: 120" value={pages} onChange={e => setPages(e.target.value)} />
+                   </div>
+                 </>
+               )}
+
+               {/* CAS: LIVRE */}
+               {(docType === 'Livre' || docType === 'Chapitre') && (
+                 <>
+                   <div>
+                      <label className="label-zotero">Éditeur (Publisher)</label>
+                      <input className="input-zotero" placeholder="ex: Kongo Science Editions" value={publication} onChange={e => setPublication(e.target.value)} />
+                   </div>
+                   <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="label-zotero">ISBN</label>
+                        <input className="input-zotero" placeholder="" value={doi} onChange={e => setDoi(e.target.value)} />
+                      </div>
+                      <div>
+                        <label className="label-zotero">Année</label>
+                        <input className="input-zotero" placeholder="2025" value={date} onChange={e => setDate(e.target.value)} />
+                      </div>
+                   </div>
+                 </>
+               )}
+            </div>
+
+            {/* 4. DROITS & ACCÈS (Crucial) */}
+            <div className="bg-amber-50 p-5 rounded-xl border border-amber-200 shadow-sm space-y-4">
+               <h3 className="text-xs font-black text-amber-700 uppercase tracking-widest border-b border-amber-200 pb-2">4. Droits & Partage (Rights)</h3>
+               
+               <div className="space-y-3">
+                 {/* Option 1: Open Access */}
+                 <label className="flex items-start gap-3 cursor-pointer p-3 bg-white rounded-lg border border-amber-100 hover:border-blue-400 transition-all">
+                    <input type="radio" name="access" className="mt-1" checked={accessMode === 'open'} onChange={() => setAccessMode('open')} />
+                    <div>
+                      <span className="block font-bold text-slate-800">🔓 Open Access / Libre de droits</span>
+                      <span className="text-xs text-slate-500">L'auteur détient les droits ou l'article est sous licence CC-BY. Tout le monde pourra télécharger le PDF directement.</span>
                     </div>
-                </div>
-            )}
+                 </label>
 
-            {/* --- ONGLET 2 : FORMULAIRE --- */}
-            {activeTab === "form" && (
-                status === "success" ? (
-                    <div className="text-center py-12">
-                        <div className="text-6xl mb-4">✅</div>
-                        <h3 className="text-2xl font-bold text-slate-900">Bien reçu !</h3>
-                        <p className="text-slate-500 mt-2">Votre publication sera examinée par le comité scientifique.</p>
+                 {/* Option 2: Restreint (Copyright) */}
+                 <label className="flex items-start gap-3 cursor-pointer p-3 bg-white rounded-lg border border-amber-100 hover:border-blue-400 transition-all">
+                    <input type="radio" name="access" className="mt-1" checked={accessMode === 'restricted'} onChange={() => setAccessMode('restricted')} />
+                    <div>
+                      <span className="block font-bold text-slate-800">🔒 Accès Restreint (Copyright Éditeur)</span>
+                      <span className="text-xs text-slate-500">Document soumis aux droits d'un éditeur (Elsevier, Springer...). Le PDF ne sera PAS public. Les chercheurs devront cliquer sur <strong>"Demander une copie privée"</strong>.</span>
                     </div>
-                ) : (
-                    <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto">
-                        {/* IDENTITÉ */}
-                        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
-                            <h4 className="font-bold text-slate-400 text-xs uppercase tracking-widest border-b border-slate-100 pb-2">1. L'Auteur</h4>
-                            <div className="grid grid-cols-2 gap-4">
-                                <input required className="input-style" placeholder="Nom" value={formData.nom} onChange={e => setFormData({...formData, nom: e.target.value})} />
-                                <input required className="input-style" placeholder="Prénoms" value={formData.prenoms} onChange={e => setFormData({...formData, prenoms: e.target.value})} />
-                            </div>
-                            <input required type="email" className="input-style" placeholder="Email institutionnel" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
-                            <input className="input-style" placeholder="Institution" value={formData.institution} onChange={e => setFormData({...formData, institution: e.target.value})} />
-                        </div>
+                 </label>
 
-                        {/* PUBLICATION */}
-                        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
-                            <h4 className="font-bold text-slate-400 text-xs uppercase tracking-widest border-b border-slate-100 pb-2">2. La Publication</h4>
-                            <input required className="input-style font-bold" placeholder="Titre complet" value={formData.titre} onChange={e => setFormData({...formData, titre: e.target.value})} />
-                            
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-1">
-                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Type</label>
-                                    <select className="input-style cursor-pointer" value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})}>
-                                        <option value="Mémoire de Master">Mémoire de Master</option>
-                                        <option value="Thèse de Doctorat">Thèse de Doctorat</option>
-                                        <option value="Article de Revue">Article de Revue</option>
-                                        <option value="Livre">Livre / Ouvrage</option>
-                                    </select>
-                                </div>
+                 {/* Option 3: Payant */}
+                 <label className="flex items-start gap-3 cursor-pointer p-3 bg-white rounded-lg border border-amber-100 hover:border-blue-400 transition-all">
+                    <input type="radio" name="access" className="mt-1" checked={accessMode === 'paid'} onChange={() => setAccessMode('paid')} />
+                    <div>
+                      <span className="block font-bold text-slate-800">💰 En Vente (Livre / Ouvrage)</span>
+                      <span className="text-xs text-slate-500">Ouvrage commercial. Un bouton <strong>"Acheter"</strong> redirigera vers la boutique (Amazon, etc.).</span>
+                    </div>
+                 </label>
+               </div>
 
-                                {/* C'EST ICI QUE ÇA CHANGE : DOMAINES SCIMAGO DYNAMIQUES */}
-                                <div className="space-y-1">
-                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Domaine (Scimago)</label>
-                                    <select className="input-style cursor-pointer" value={formData.domaine} onChange={e => setFormData({...formData, domaine: e.target.value})}>
-                                        {SCIMAGO_DOMAINS.map((dom) => (
-                                            <option key={dom.value} value={dom.value}>
-                                                {dom.label}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
+               {/* Champs conditionnels selon le mode */}
+               <div className="pt-2 animate-fadeIn">
+                  <label className="label-zotero">
+                    {accessMode === 'open' ? "Lien vers le PDF (Drive/Zenodo)" : 
+                     accessMode === 'paid' ? "Lien d'achat (Amazon/Site)" : 
+                     "Lien vers le fichier (Pour l'admin seulement)"}
+                  </label>
+                  <input required type="url" className="input-zotero bg-amber-50/50 border-amber-300" placeholder="https://..." value={link} onChange={e => setLink(e.target.value)} />
+                  
+                  {accessMode === 'paid' && (
+                    <div className="mt-2">
+                      <label className="label-zotero">Prix de vente</label>
+                      <input className="input-zotero w-1/3" placeholder="ex: 25.00 €" value={price} onChange={e => setPrice(e.target.value)} />
+                    </div>
+                  )}
+               </div>
+            </div>
 
-                            <input required type="url" className="input-style border-blue-200 bg-blue-50/30" placeholder="Lien (Zenodo, Drive, Editeur...)" value={formData.pdfLink} onChange={e => setFormData({...formData, pdfLink: e.target.value})} />
-                            <textarea required rows={4} className="input-style resize-none" placeholder="Résumé (Abstract)..." value={formData.abstract} onChange={e => setFormData({...formData, abstract: e.target.value})} />
-                        </div>
+            {/* 5. RÉSUMÉ */}
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+               <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 mb-3">5. Résumé (Abstract)</h3>
+               <textarea required rows={5} className="input-zotero resize-none" placeholder="Copiez le résumé ici..." value={abstract} onChange={e => setAbstract(e.target.value)} />
+            </div>
 
-                        <button type="submit" disabled={status === "submitting"} className="w-full bg-blue-700 text-white font-bold py-4 rounded-xl hover:bg-blue-800 transition-all shadow-lg hover:shadow-blue-200">
-                            {status === "submitting" ? "Envoi..." : "Soumettre la publication"}
-                        </button>
-                    </form>
-                )
-            )}
-        </div>
+            {/* EMAIL SOUMISSIONNAIRE */}
+            <div>
+               <label className="label-zotero">Votre Email (Pour confirmation)</label>
+               <input required type="email" className="input-zotero border-blue-300 bg-blue-50/20" value={submitterEmail} onChange={e => setSubmitterEmail(e.target.value)} />
+            </div>
+
+            <button type="submit" className="w-full bg-blue-700 text-white font-bold py-4 rounded-xl hover:bg-blue-800 transition-all shadow-lg">
+              Générer la demande de soumission
+            </button>
+
+          </form>
+        )}
       </div>
-      
+
       <style>{`
-        .input-style {
-            width: 100%;
-            background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 0.75rem;
-            padding: 0.75rem 1rem;
-            font-size: 0.875rem;
-            outline: none;
-            transition: all 0.2s;
+        .label-zotero {
+          display: block;
+          font-size: 0.7rem;
+          font-weight: 700;
+          color: #64748b; /* Slate-500 */
+          text-transform: uppercase;
+          margin-bottom: 0.25rem;
+          letter-spacing: 0.05em;
         }
-        .input-style:focus {
-            background-color: #fff;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+        .input-zotero {
+          width: 100%;
+          background-color: #f8fafc;
+          border: 1px solid #cbd5e1;
+          border-radius: 0.5rem;
+          padding: 0.5rem 0.75rem;
+          font-size: 0.875rem;
+          color: #1e293b;
+          outline: none;
+          transition: all 0.2s;
+        }
+        .input-zotero:focus {
+          background-color: #fff;
+          border-color: #2563eb;
+          box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
         }
       `}</style>
     </div>
