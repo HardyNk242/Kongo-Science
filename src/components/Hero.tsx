@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 interface Props {
@@ -8,6 +7,7 @@ interface Props {
 const Hero: React.FC<Props> = ({ onNavigate }) => {
   return (
     <div className="relative bg-blue-900 text-white overflow-hidden">
+      {/* Background Image avec Overlay */}
       <div className="absolute inset-0 opacity-20">
         <img 
           src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&q=80&w=1920&h=1080" 
@@ -15,14 +15,21 @@ const Hero: React.FC<Props> = ({ onNavigate }) => {
           className="w-full h-full object-cover"
         />
       </div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 relative z-10">
         <div className="max-w-4xl">
+          {/* TITRE MIS À JOUR : Plus institutionnel et fort */}
           <h1 className="text-4xl md:text-7xl font-serif font-bold mb-8 leading-tight">
-            Bâtir un avenir scientifique <span className="text-blue-400 italic">prospère</span> en Afrique
+            L'Excellence Scientifique <br/>
+            <span className="text-blue-400 italic">au service de la Souveraineté.</span>
           </h1>
+
+          {/* PARAGRAPHE MIS À JOUR : Vocabulaire d'impact (Catalyse, Réponses concrètes, Défis stratégiques) */}
           <p className="text-lg md:text-xl text-blue-100 mb-12 leading-relaxed max-w-2xl">
-            La Communauté Kongo SCIENCE promeut l'excellence de la recherche et l'innovation technologique pour résoudre les défis majeurs du Bassin du Congo.
+            Kongo Science catalyse la recherche de pointe et l'innovation technologique pour apporter des réponses concrètes aux défis stratégiques du Bassin du Congo.
           </p>
+
+          {/* Boutons d'action */}
           <div className="flex flex-col sm:flex-row gap-5">
             <button 
               onClick={() => onNavigate('agenda')}
@@ -40,6 +47,8 @@ const Hero: React.FC<Props> = ({ onNavigate }) => {
           </div>
         </div>
       </div>
+      
+      {/* Dégradé bas de page pour fusionner avec la section suivante */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-slate-50 to-transparent"></div>
     </div>
   );
