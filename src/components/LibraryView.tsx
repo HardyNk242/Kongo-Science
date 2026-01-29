@@ -6,25 +6,37 @@ import SubmitPublicationModal from './SubmitPublicationModal';
 const ITEMS_PER_PAGE = 10;
 
 const LibraryView: React.FC = () => {
+  // --- ÉTATS ---
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDomain, setSelectedDomain] = useState('Tous');
+  const [selectedYearFilter, setSelectedYearFilter] = useState('any'); // 'any', '2026', '2025', '2022'
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   
-  // États pour la navigation (Liste vs Détail)
+  // Navigation
   const [selectedThesis, setSelectedThesis] = useState<Thesis | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
-  // --- FILTRAGE ---
+  // --- LOGIQUE DE FILTRAGE ---
   const domains = ['Tous', ...new Set(THESES_LIBRARY.map((t) => t.domain))];
 
   const filteredTheses = THESES_LIBRARY.filter((t) => {
+    // 1. Recherche Textuelle
     const matchesSearch = 
       t.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
       t.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
       t.abstract.toLowerCase().includes(searchTerm.toLowerCase());
+
+    // 2. Filtre Domaine
     const matchesDomain = selectedDomain === 'Tous' || t.domain === selectedDomain;
+
+    // 3. Filtre Année (Logique "Depuis...")
+    let matchesYear = true;
+    const thesisYear = parseInt(t.year); // On suppose que l'année commence par 4 chiffres
+    if (selectedYearFilter !== 'any') {
+       matchesYear = thesisYear >= parseInt(selectedYearFilter);
+    }
     
-    return matchesSearch && matchesDomain;
+    return matchesSearch && matchesDomain && matchesYear;
   });
 
   // --- PAGINATION ---
@@ -34,21 +46,21 @@ const LibraryView: React.FC = () => {
     currentPage * ITEMS_PER_PAGE
   );
 
-  // Reset page quand on cherche
+  // Reset page quand on change un filtre
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, selectedDomain]);
+  }, [searchTerm, selectedDomain, selectedYearFilter]);
 
-  // Retour en haut de page quand on change de page
+  // Scroll top au changement de page
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [currentPage, selectedThesis]);
 
   // --- UTILS ---
   const copyCitation = (thesis: Thesis) => {
-    const citation = `${thesis.author} (${thesis.year}). ${thesis.title}. ${thesis.institution}. Archivé sur Kongo Science.`;
+    const citation = `${thesis.author} (${thesis.year}). ${thesis.title}. ${thesis.institution}.`;
     navigator.clipboard.writeText(citation);
-    alert('Citation copiée dans le presse-papier !');
+    alert('Citation copiée !');
   };
 
   const renderZoteroCoins = (thesis: Thesis) => {
@@ -63,9 +75,10 @@ const LibraryView: React.FC = () => {
     return <span className="Z3988" title={coinsData} style={{ display: 'none' }}></span>;
   };
 
-  // --- VUE DÉTAILLÉE (La "Sous-page") ---
+  // ----------------------------------------------------------------------------------
+  // VUE DÉTAILLÉE (Page unique quand on clique sur un titre)
+  // ----------------------------------------------------------------------------------
   if (selectedThesis) {
-    // Préparation du mail pour la demande de copie privée
     const mailSubject = encodeURIComponent(`Demande d'accès : ${selectedThesis.title}`);
     const mailBody = encodeURIComponent(`Bonjour,\n\nJe suis intéressé par votre publication "${selectedThesis.title}" publiée en ${selectedThesis.year}.\nPourriez-vous s'il vous plaît m'envoyer une copie privée pour mes recherches personnelles ?\n\nCordialement,`);
     const emailLink = `mailto:nkodiahardy@gmail.com?subject=${mailSubject}&body=${mailBody}`;
@@ -73,7 +86,6 @@ const LibraryView: React.FC = () => {
     return (
       <div className="bg-white min-h-screen pt-32 pb-20 px-6">
         <div className="max-w-4xl mx-auto">
-          {/* Fil d'ariane */}
           <button 
             onClick={() => setSelectedThesis(null)}
             className="group flex items-center gap-2 text-sm text-slate-500 hover:text-blue-700 mb-8 transition-colors"
@@ -82,15 +94,12 @@ const LibraryView: React.FC = () => {
             Retour aux résultats
           </button>
 
-          {/* Injection Zotero */}
           {renderZoteroCoins(selectedThesis)}
 
           <div className="bg-white rounded-[2rem] border border-slate-100 shadow-xl p-8 md:p-12">
-             {/* En-tête Document */}
              <div className="flex flex-col md:flex-row gap-6 mb-8 border-b border-slate-100 pb-8">
                 <div className="w-24 h-32 bg-slate-50 border border-slate-200 rounded-xl flex-shrink-0 flex items-center justify-center relative overflow-hidden">
                    <svg className="w-10 h-10 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                   {/* Badge Cadenas si restreint */}
                    {selectedThesis.isRestricted && (
                      <div className="absolute top-0 right-0 bg-amber-400 text-white p-1 rounded-bl-lg shadow-sm" title="Accès Restreint">
                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" /></svg>
@@ -122,7 +131,6 @@ const LibraryView: React.FC = () => {
                 </div>
              </div>
 
-             {/* Résumé */}
              <div className="mb-10">
                <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Résumé (Abstract)</h3>
                <p className="text-slate-700 leading-relaxed text-lg text-justify font-serif">
@@ -130,10 +138,8 @@ const LibraryView: React.FC = () => {
                </p>
              </div>
 
-             {/* Actions : Logique de Court-circuit */}
              <div className="flex flex-col sm:flex-row gap-4 border-t border-slate-50 pt-8">
                 {selectedThesis.isRestricted ? (
-                  // CAS 1: ACCÈS RESTREINT (Email)
                   <div className="flex flex-col sm:flex-row gap-3 items-center">
                     <a 
                       href={emailLink}
@@ -142,18 +148,8 @@ const LibraryView: React.FC = () => {
                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                        Demander une copie privée
                     </a>
-                    <button
-                      onClick={() => {
-                        navigator.clipboard.writeText("nkodiahardy@gmail.com");
-                        alert("Email copié ! Vous pouvez maintenant m'envoyer votre demande.");
-                      }}
-                      className="text-sm text-slate-400 underline hover:text-blue-700 px-4"
-                    >
-                      (Ou copier l'email)
-                    </button>
                   </div>
                 ) : (
-                  // CAS 2: ACCÈS LIBRE (Téléchargement)
                   <a 
                     href={selectedThesis.pdfUrl}
                     target="_blank"
@@ -164,22 +160,18 @@ const LibraryView: React.FC = () => {
                      Télécharger (PDF)
                   </a>
                 )}
-
                 <button 
                   onClick={() => copyCitation(selectedThesis)}
                   className="bg-slate-50 hover:bg-slate-100 text-slate-700 px-6 py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 border border-slate-200 w-full sm:w-auto"
                 >
-                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
                    Citer
                 </button>
              </div>
 
-             {/* Mention légale pour les documents restreints */}
              {selectedThesis.isRestricted && (
-               <div className="mt-6 bg-amber-50 p-4 rounded-xl border border-amber-100 flex gap-3">
-                 <svg className="w-5 h-5 text-amber-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+               <div className="mt-6 bg-amber-50 p-4 rounded-xl border border-amber-100">
                  <p className="text-xs text-amber-900 leading-relaxed">
-                   <strong>Note de l'auteur :</strong> Ce document est protégé par les droits d'auteur de l'éditeur. Conformément aux usages académiques (Scholarly sharing), une copie privée peut être fournie aux chercheurs sur demande directe pour un usage personnel et non-commercial.
+                   <strong>Note de l'auteur :</strong> Ce document est protégé par copyright. Une copie privée peut être fournie sur demande pour un usage de recherche.
                  </p>
                </div>
              )}
@@ -189,171 +181,177 @@ const LibraryView: React.FC = () => {
     );
   }
 
-  // --- VUE PRINCIPALE (LISTE SCHOLAR) ---
+  // ----------------------------------------------------------------------------------
+  // VUE PRINCIPALE (LISTE SCHOLAR AVEC SIDEBAR)
+  // ----------------------------------------------------------------------------------
   return (
     <div className="bg-white min-h-screen">
       {showSubmitModal && <SubmitPublicationModal onClose={() => setShowSubmitModal(false)} />}
 
-      {/* HEADER RECHERCHE */}
-      <section className="bg-slate-900 pt-32 pb-16 text-white relative overflow-hidden">
-        {/* Légère décoration de fond */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600 rounded-full blur-[100px] opacity-20 translate-x-1/2 -translate-y-1/2"></div>
-        
-        <div className="max-w-5xl mx-auto px-6 relative z-10">
-          <div className="flex justify-between items-end mb-6">
-            <h1 className="text-3xl font-serif font-bold italic">Bibliothèque des Publications</h1>
-            <span className="text-slate-400 text-sm hidden sm:block">{filteredTheses.length} résultats</span>
-          </div>
-          
-          <div className="flex flex-col md:flex-row gap-4">
-             <div className="relative flex-grow">
+      {/* HEADER DE RECHERCHE (Fixe ou Sticky) */}
+      <section className="bg-slate-900 pt-32 pb-12 text-white sticky top-0 z-40 shadow-xl">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row gap-6 items-center">
+             <div className="relative flex-grow w-full">
                <input 
                  type="text" 
                  placeholder="Rechercher (titre, auteur, mots-clés)..." 
-                 className="w-full h-14 pl-12 pr-4 rounded-xl text-slate-900 bg-white shadow-lg focus:ring-4 focus:ring-blue-500/50 outline-none transition-all placeholder:text-slate-400"
+                 className="w-full h-12 pl-12 pr-4 rounded-lg text-slate-900 bg-white shadow-inner focus:ring-2 focus:ring-blue-500 outline-none"
                  value={searchTerm}
                  onChange={(e) => setSearchTerm(e.target.value)}
                />
-               <svg className="w-5 h-5 text-slate-400 absolute left-4 top-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+               <svg className="w-5 h-5 text-slate-400 absolute left-4 top-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
              </div>
              <button 
                 onClick={() => setShowSubmitModal(true)}
-                className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-xl font-bold whitespace-nowrap transition-all shadow-lg shadow-blue-900/50 active:scale-95 flex items-center justify-center gap-2"
+                className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-lg font-bold whitespace-nowrap transition-colors flex items-center gap-2"
              >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                Soumettre un travail
+                Soumettre
              </button>
-          </div>
-
-          {/* Filtres rapides */}
-          <div className="flex gap-2 overflow-x-auto py-4 mt-2 no-scrollbar">
-            {domains.map((domain) => (
-              <button
-                key={domain}
-                onClick={() => setSelectedDomain(domain)}
-                className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all border ${
-                  selectedDomain === domain 
-                  ? 'bg-white text-slate-900 border-white shadow-md' 
-                  : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10'
-                }`}
-              >
-                {domain}
-              </button>
-            ))}
-          </div>
         </div>
       </section>
 
-      {/* RÉSULTATS (LISTE COMPACTE) */}
-      <section className="py-12 max-w-5xl mx-auto px-6">
-        <div className="space-y-8">
-          {currentTheses.length > 0 ? (
-            currentTheses.map((thesis) => (
-              <div key={thesis.id} className="group relative pl-4 border-l-2 border-transparent hover:border-blue-500 transition-all duration-300">
-                {/* Métadonnées Zotero */}
-                {renderZoteroCoins(thesis)}
-                
-                {/* 1. Titre */}
-                <h3 
-                  onClick={() => setSelectedThesis(thesis)}
-                  className="text-xl md:text-2xl font-serif text-blue-700 font-medium cursor-pointer hover:underline mb-1 inline-block"
-                >
-                  {thesis.title}
-                </h3>
-
-                {/* 2. Infos Auteur/Date */}
-                <div className="text-sm text-green-700 mb-2 font-medium">
-                  {thesis.author} - <span className="italic">{thesis.institution}</span>, {thesis.year}
-                </div>
-
-                {/* 3. Snippet Résumé */}
-                <p className="text-slate-600 text-sm leading-relaxed line-clamp-2 mb-3 max-w-3xl">
-                  {thesis.abstract}
-                </p>
-
-                {/* 4. Badges / Actions rapides */}
-                <div className="flex flex-wrap items-center gap-4 text-xs">
-                  {/* Badge Type & Statut */}
-                  <span className={`font-bold uppercase tracking-wider flex items-center gap-1.5 ${thesis.isRestricted ? 'text-amber-600' : 'text-slate-500'}`}>
-                    {thesis.isRestricted ? (
-                      <>
-                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" /></svg>
-                        Sur demande
-                      </>
-                    ) : (
-                      <>
-                         <span className="text-blue-600 font-black">[PDF]</span> Accès Libre
-                      </>
-                    )}
-                  </span>
-                  
-                  <span className="text-slate-300">|</span>
-
-                  <button onClick={() => copyCitation(thesis)} className="text-slate-400 hover:text-blue-700 transition-colors font-medium">
-                    Citer
-                  </button>
-                  <button onClick={() => setSelectedThesis(thesis)} className="text-slate-400 hover:text-blue-700 transition-colors font-medium">
-                    Voir détails
-                  </button>
-                  
-                  {thesis.isExclusive && (
-                     <span className="ml-auto text-[10px] font-bold bg-amber-50 text-amber-600 px-2 py-1 rounded border border-amber-100">
-                       Exclusif Kongo Science
-                     </span>
-                  )}
-                </div>
-              </div>
-            ))
-          ) : (
-             <div className="text-center py-32 bg-slate-50 rounded-[3rem] border border-slate-100">
-               <div className="text-5xl mb-6 opacity-30">🔍</div>
-               <h3 className="text-xl font-bold text-slate-700 mb-2">Aucun résultat trouvé</h3>
-               <p className="text-slate-500">Essayez d'autres mots-clés ou changez de filtre.</p>
-               <button 
-                 onClick={() => {setSearchTerm(''); setSelectedDomain('Tous');}}
-                 className="mt-6 text-blue-600 font-bold hover:underline"
-               >
-                 Réinitialiser la recherche
-               </button>
+      {/* LAYOUT 2 COLONNES : SIDEBAR + RÉSULTATS */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 flex flex-col md:flex-row gap-12">
+        
+        {/* --- COLONNE GAUCHE (FILTRES) --- */}
+        <aside className="w-full md:w-64 flex-shrink-0 space-y-8">
+           
+           {/* Filtre Année */}
+           <div>
+             <h4 className="text-sm font-bold text-slate-900 uppercase tracking-widest mb-4 border-b border-slate-200 pb-2">
+               Année
+             </h4>
+             <div className="flex flex-col gap-2">
+               {[
+                 { label: 'N\'importe quand', val: 'any' },
+                 { label: 'Depuis 2026', val: '2026' },
+                 { label: 'Depuis 2025', val: '2025' },
+                 { label: 'Depuis 2022', val: '2022' },
+               ].map((opt) => (
+                 <button
+                   key={opt.val}
+                   onClick={() => setSelectedYearFilter(opt.val)}
+                   className={`text-left text-sm transition-colors ${selectedYearFilter === opt.val ? 'font-bold text-blue-700' : 'text-slate-600 hover:text-blue-600 hover:underline'}`}
+                 >
+                   {opt.label}
+                 </button>
+               ))}
+               <div className="text-slate-400 text-xs italic mt-2 cursor-not-allowed">
+                 Période personnalisée...
+               </div>
              </div>
-          )}
-        </div>
+           </div>
 
-        {/* PAGINATION */}
-        {totalPages > 1 && (
-          <div className="mt-16 pt-8 border-t border-slate-100 flex justify-center items-center gap-2">
-            <button 
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage(p => p - 1)}
-              className="px-4 py-2 text-sm text-slate-500 hover:text-blue-700 disabled:opacity-30 disabled:hover:text-slate-500 transition-colors"
-            >
-              Précédent
-            </button>
+           {/* Filtre Domaines (Déplacé ici) */}
+           <div>
+             <h4 className="text-sm font-bold text-slate-900 uppercase tracking-widest mb-4 border-b border-slate-200 pb-2">
+               Domaines
+             </h4>
+             <div className="flex flex-col gap-2">
+               {domains.map((domain) => (
+                 <button
+                   key={domain}
+                   onClick={() => setSelectedDomain(domain)}
+                   className={`text-left text-sm transition-colors ${selectedDomain === domain ? 'font-bold text-blue-700' : 'text-slate-600 hover:text-blue-600 hover:underline'}`}
+                 >
+                   {domain}
+                 </button>
+               ))}
+             </div>
+           </div>
 
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <button
-                key={page}
-                onClick={() => setCurrentPage(page)}
-                className={`w-10 h-10 rounded-lg font-bold transition-all ${
-                  currentPage === page
-                  ? 'bg-blue-700 text-white shadow-lg shadow-blue-200'
-                  : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
-                }`}
-              >
-                {page}
-              </button>
-            ))}
+        </aside>
 
-            <button 
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage(p => p + 1)}
-              className="px-4 py-2 text-sm text-slate-500 hover:text-blue-700 disabled:opacity-30 disabled:hover:text-slate-500 transition-colors"
-            >
-              Suivant
-            </button>
-          </div>
-        )}
-      </section>
+        {/* --- COLONNE DROITE (RÉSULTATS) --- */}
+        <main className="flex-grow">
+            <div className="mb-6 text-slate-400 text-sm">
+              Environ {filteredTheses.length} résultats
+            </div>
+
+            <div className="space-y-8">
+              {currentTheses.length > 0 ? (
+                currentTheses.map((thesis) => (
+                  <div key={thesis.id} className="group relative">
+                    {renderZoteroCoins(thesis)}
+                    
+                    <h3 
+                      onClick={() => setSelectedThesis(thesis)}
+                      className="text-xl font-serif text-blue-800 font-medium cursor-pointer hover:underline hover:text-blue-600 mb-1 leading-snug"
+                    >
+                      {thesis.title}
+                    </h3>
+
+                    <div className="text-sm text-green-800 mb-2 font-medium">
+                      {thesis.author} - <span className="italic">{thesis.institution}</span>, {thesis.year}
+                    </div>
+
+                    <p className="text-slate-600 text-sm leading-relaxed line-clamp-2 mb-2 max-w-3xl">
+                      {thesis.abstract}
+                    </p>
+
+                    <div className="flex flex-wrap items-center gap-4 text-xs">
+                       <span className={`font-bold uppercase tracking-wider ${thesis.isRestricted ? 'text-amber-600' : 'text-slate-500'}`}>
+                        {thesis.isRestricted ? '[Sur demande]' : '[PDF] Accès Libre'}
+                       </span>
+                       <button onClick={() => copyCitation(thesis)} className="text-slate-400 hover:text-blue-700 hover:underline">
+                         Citer
+                       </button>
+                       <button onClick={() => setSelectedThesis(thesis)} className="text-slate-400 hover:text-blue-700 hover:underline">
+                         Voir détails
+                       </button>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="py-20 text-center bg-slate-50 rounded-xl border border-slate-100">
+                  <p className="text-slate-500">Aucun résultat ne correspond à votre recherche.</p>
+                  <button 
+                    onClick={() => {setSearchTerm(''); setSelectedDomain('Tous'); setSelectedYearFilter('any');}}
+                    className="mt-4 text-blue-600 font-bold hover:underline"
+                  >
+                    Effacer les filtres
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* PAGINATION NUMÉROTÉE */}
+            {totalPages > 1 && (
+              <div className="mt-16 pt-8 border-t border-slate-100 flex justify-center items-center gap-2 select-none">
+                <button 
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage(p => p - 1)}
+                  className="px-3 py-2 text-sm text-blue-700 hover:underline disabled:opacity-30 disabled:no-underline"
+                >
+                  Précédent
+                </button>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`w-8 h-8 rounded text-sm font-bold transition-all ${
+                      currentPage === page
+                      ? 'text-slate-900' // Page active (style Google Scholar : juste du texte noir)
+                      : 'text-blue-700 hover:underline'
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+
+                <button 
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage(p => p + 1)}
+                  className="px-3 py-2 text-sm text-blue-700 hover:underline disabled:opacity-30 disabled:no-underline"
+                >
+                  Suivant
+                </button>
+              </div>
+            )}
+        </main>
+      </div>
     </div>
   );
 };
