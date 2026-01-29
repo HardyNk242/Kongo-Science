@@ -27,10 +27,10 @@ const App: React.FC = () => {
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   }, []);
 
-  // ✅ Parse hash robuste: accepte "#registration/id" ET "#/registration/id"
+  // ✅ Parse hash robuste
   const syncFromHash = () => {
     const raw = window.location.hash || '';
-    const cleaned = raw.replace(/^#\/?/, ''); // enlève "#", et aussi "#/"
+    const cleaned = raw.replace(/^#\/?/, '');
     const [path = 'home', id] = cleaned.split('/');
 
     setCurrentPath(path || 'home');
@@ -43,24 +43,18 @@ const App: React.FC = () => {
         setSelectedConference(null);
       }
     } else {
-      // ✅ si on quitte registration, on reset
       setSelectedConference(null);
     }
   };
 
   useEffect(() => {
-    // ✅ écouter hashchange (principal) + popstate (back/forward)
     window.addEventListener('hashchange', syncFromHash);
     window.addEventListener('popstate', syncFromHash);
-
-    // init
     syncFromHash();
-
     return () => {
       window.removeEventListener('hashchange', syncFromHash);
       window.removeEventListener('popstate', syncFromHash);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const navigateTo = (path: string, conf?: Conference) => {
@@ -108,7 +102,7 @@ const App: React.FC = () => {
           <div className="py-32 text-center">
             <h2 className="text-2xl font-bold">Conférence non trouvée</h2>
             <p className="mt-2 text-slate-500">
-              Vérifie que l’URL contient un id valide (ex: #registration/conf-peatlands).
+              Vérifie que l’URL contient un id valide.
             </p>
             <button
               onClick={() => navigateTo('home')}
@@ -233,24 +227,26 @@ const App: React.FC = () => {
               </div>
             </section>
 
-            <section className="py-20 bg-white">
+            <section className="py-20 bg-white border-t border-slate-100">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 
-                {/* --- DEBUT AJOUT TITRE --- */}
-                <div className="text-center mb-12">
-                   <h3 className="text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">
-                     Ceux qui nous font confiance
+                {/* --- TITRE STYLISÉ AVEC LIGNES --- */}
+                <div className="flex items-center justify-center gap-6 mb-16 opacity-60">
+                   <div className="h-px bg-slate-300 w-12 md:w-32"></div>
+                   <h3 className="text-xs md:text-sm font-black text-slate-400 uppercase tracking-[0.3em] whitespace-nowrap">
+                     Ils nous font confiance
                    </h3>
+                   <div className="h-px bg-slate-300 w-12 md:w-32"></div>
                 </div>
-                {/* --- FIN AJOUT TITRE --- */}
+                {/* ---------------------------------- */}
 
-                <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-40 hover:opacity-100 transition-opacity grayscale hover:grayscale-0">
+                <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-60 hover:opacity-100 transition-opacity grayscale hover:grayscale-0">
                   {PARTNERS.map(partner => (
-                    <div key={partner.name} className="flex flex-col items-center gap-2">
-                      <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center font-bold text-slate-400 border border-slate-200">
+                    <div key={partner.name} className="flex flex-col items-center gap-3">
+                      <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center font-bold text-slate-400 border-2 border-slate-100 shadow-sm">
                         {partner.logo}
                       </div>
-                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-600">
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
                         {partner.name}
                       </span>
                     </div>
