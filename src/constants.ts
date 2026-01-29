@@ -230,7 +230,98 @@ export const THESES_LIBRARY = [
     pages: 49,
     isExclusive: false, // Mis à false car le lien vient de ResearchGate
     pdfUrl: "https://www.researchgate.net/profile/Aime-Christian-Kayath/publication/348153985_IMPLICATION_DES_BACTERIES_DU_GENRE_BACILLUS_DANS_LA_BIOCONVERSION_DU_JUS_DE_GINGEMBRE_Zingiber_officinale_Roscoe/links/5ff0b0e4299bf1408868599b/IMPLICATION-DES-BACTERIES-DU-GENRE-BACILLUS-DANS-LA-BIOCONVERSION-DU-JUS-DE-GINGEMBRE-Zingiber-officinale-Roscoe.pdf"
-  }
+  },
+  {
+    id: 'bk-georisques-2024',
+    title: "L'Afrique centrale face aux géorisques - Origine naturelle",
+    author: "Camille François, J.M. Akame, Nicy Bazebizonza et al.",
+    year: "2024",
+    institution: "UNESCO / MRAC / GeoRiskA",
+    domain: "Géosciences & Risques",
+    type: "Livre / Guide",
+    abstract: "Publié par l'UNESCO et le MRAC, cet ouvrage de référence analyse les risques géologiques majeurs en Afrique centrale (Congo, RDC, Cameroun, etc.). Il détaille quatre aléas critiques : glissements de terrain, séismes, éruptions volcaniques et effondrements karstiques, en proposant des stratégies de prévention pour les populations et les décideurs.",
+    pages: "Multiple", // ou mettez le nombre exact si vous l'avez (ex: 80)
+    isExclusive: false,
+    pdfUrl: "https://www.researchgate.net/profile/Camille-Francois-2/publication/387662450_L'Afrique_centrale_face_aux_georisques_-_Origine_naturelle/links/67768731fb9aff6eaa004093/LAfrique-centrale-face-aux-georisques-Origine-naturelle.pdf"
+  },
+  {
+    id: 'art-nkodia-2022-seismo',
+    title: "Seismogenic Fault Reactivation in Western Central Africa: Insights From Regional Stress Analysis",
+    author: "Hardy M. Nkodia, Nicy Bazebizonza, Damien Delvaux et al.",
+    year: "2022",
+    institution: "AGU Geochemistry, Geophysics, Geosystems",
+    domain: "Tectonique & Risques",
+    type: "Article Scientifique",
+    abstract: "Cette étude majeure analyse le potentiel sismogène des failles en Afrique centrale. Elle démontre comment les régimes de contraintes changent de la marge côtière vers le continent et identifie quelles failles préexistantes sont susceptibles d'être réactivées, posant des risques pour les infrastructures.",
+    pages: 23,
+    isExclusive: false,
+    pdfUrl: "https://agupubs.onlinelibrary.wiley.com/doi/epdf/10.1029/2022GC010377"
+  },
+  {
+    id: 'art-nkodia-2020-flower',
+    title: "Flower structures in sandstones of the Paleozoic Inkisi Group: evidence for two major strike-slip fault systems",
+    author: "Hardy M. Nkodia, T. Miyouna, Damien Delvaux et al.",
+    year: "2020",
+    institution: "South African Journal of Geology",
+    domain: "Géologie Structurale",
+    type: "Article Scientifique",
+    abstract: "Cette étude décrit pour la première fois les structures en fleur ('flower structures') dans les grès du groupe de l'Inkisi à Brazzaville. L'analyse révèle deux systèmes majeurs de failles décrochantes. Les paléocontraintes identifiées relient ces déformations à l'histoire tectonique du Gondwana (Permo-Trias) et à l'ouverture de l'Atlantique (Miocène).",
+    pages: 20,
+    isExclusive: false,
+    pdfUrl: "https://www.researchgate.net/profile/Hardy-Medry-Dieu-Veil-Nkodia/publication/346398097_Flower_structures_in_sandstones_of_the_Paleozoic_Inkisi_Group_Brazzaville_Republic_of_Congo_evidence_for_two_major_strike-slip_fault_systems_and_geodynamic_implications/links/5ff5da7c45851553a0233da7/Flower-structures-in-sandstones-of-the-Paleozoic-Inkisi-Group-Brazzaville-Republic-of-Congo-evidence-for-two-major-strike-slip-fault-systems-and-geodynamic-implications.pdf"
+  },
+  {
+    id: 'art-bazebizonza-2020-neotect',
+    title: "Detection of Neotectonic Signatures by Morphometric Analysis of Inkisi Group on Both Banks of the Congo River",
+    author: "Nicy C. Bazebizonza, Hardy M. Nkodia, T. Miyouna et al.",
+    year: "2020",
+    institution: "Journal of Geosciences and Geomatics",
+    domain: "Géomatique & Néotectonique",
+    type: "Article Scientifique",
+    abstract: "Cette étude utilise l'analyse morphométrique et les SIG pour détecter des signatures néotectoniques dans le groupe de l'Inkisi. Les résultats montrent que le cours du fleuve Congo correspond à une zone tectoniquement active, révélant un risque sismique élevé sur les deux rives. Les auteurs recommandent l'installation de sismographes pour surveiller cette activité.",
+    pages: 11,
+    isExclusive: false,
+    pdfUrl: "https://www.researchgate.net/profile/Nicy-Carmel-Bazebizonza/publication/344635627_Detection_of_Neotectonic_Signatures_by_Morphometric_Analysis_of_Inkisi_Group_on_Both_Banks_of_the_Congo_River/links/5f85f250a6fdccfd7b5fb030/Detection-of-Neotectonic-Signatures-by-Morphometric-Analysis-of-Inkisi-Group-on-Both-Banks-of-the-Congo-River.pdf"
+  },
+  {
+    id: 'art-okouakoua-2024-bacillus',
+    title: "Involvement of the Bacillus SecYEG Pathway in Biosurfactant Production and Biofilm Formation",
+    author: "F. Y. Okouakoua, C. A. Kayath, E. Nguimbi et al.",
+    year: "2024",
+    institution: "Wiley / Université Marien Ngouabi",
+    domain: "Microbiologie & Biotech",
+    type: "Article Scientifique",
+    abstract: "Cette étude explore le rôle du système de transport membranaire SecYEG chez les bactéries Bacillus. Les auteurs démontrent pour la première fois que ce système est crucial pour la sécrétion de biosurfactants (molécules d'intérêt industriel) et la formation de biofilms. Ils présentent également une nouvelle méthode PCR pour identifier les espèces de Bacillus issues d'aliments fermentés locaux.",
+    pages: 12,
+    isExclusive: false,
+    pdfUrl: "https://onlinelibrary.wiley.com/doi/epdf/10.1155/2024/6627190"
+  },
+  {
+    id: 'art-okouakoua-2024-bacillus',
+    title: "Involvement of the Bacillus SecYEG Pathway in Biosurfactant Production and Biofilm Formation",
+    author: "F. Y. Okouakoua, C. A. Kayath, E. Nguimbi et al.",
+    year: "2024",
+    institution: "Wiley / Université Marien Ngouabi",
+    domain: "Microbiologie & Biotech",
+    type: "Article Scientifique",
+    abstract: "Cette étude explore le rôle du système de transport membranaire SecYEG chez les bactéries Bacillus. Les auteurs démontrent pour la première fois que ce système est crucial pour la sécrétion de biosurfactants (molécules d'intérêt industriel) et la formation de biofilms. Ils présentent également une nouvelle méthode PCR pour identifier les espèces de Bacillus issues d'aliments fermentés locaux.",
+    pages: 12,
+    isExclusive: false,
+    pdfUrl: "https://onlinelibrary.wiley.com/doi/epdf/10.1155/2024/6627190"
+  },
+  {
+    id: 'art-nganga-2025-origines-kongo',
+    title: "De la terre de Canaan au fleuve Congo : une histoire des origines du peuple et de la civilisation du Kongo",
+    author: "Arsène Francœur Nganga",
+    year: "2025",
+    institution: "Revue Congolaise d'Histoire (MAZAYU) - UMNG",
+    domain: "Histoire & Anthropologie",
+    type: "Article Scientifique",
+    abstract: "Cet article fondamental reconstruit la migration plurimillénaire du peuple Kongo depuis l'Israël antique (Canaan) jusqu'au bassin du Congo. En croisant linguistique, ethnographie et histoire, l'auteur retrace le parcours des exilés hébreux via l'Égypte, l'Éthiopie (Quara) et le Zimbabwe, liant l'identité Kongo à un héritage culturel et spirituel solaire (Ra/Baal) préservé à travers les siècles.",
+    pages: 20, // Pages 37-57 dans la revue
+    isExclusive: true, // Disponible via votre Drive
+    pdfUrl: "https://drive.google.com/file/d/1dHCIWGSfophBuEcLCK9tT8-QyplARkT2/view?usp=drive_link"
+  },
 ];
 
 // --- ÉQUIPE (TEAM) ---
