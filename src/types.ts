@@ -20,6 +20,7 @@ export interface Objective {
   title: string;
   description: string;
   iconPath: string;
+  linkTo?: string;
 }
 
 export interface Conference {
