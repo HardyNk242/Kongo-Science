@@ -1,27 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { THESES_LIBRARY } from '../constants';
 import { Thesis } from '../types';
-import SubmitPublicationModal from './SubmitPublicationModal'; // Assurez-vous que l'import est là
+import SubmitPublicationModal from './SubmitPublicationModal';
+
+const ITEMS_PER_PAGE = 10; // Nombre de résultats par page (style Google Scholar)
 
 const LibraryView: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDomain, setSelectedDomain] = useState('Tous');
-  const [showSubmitModal, setShowSubmitModal] = useState(false); // État pour la modale
+  const [showSubmitModal, setShowSubmitModal] = useState(false);
+  
+  // États pour la navigation (Liste vs Détail)
+  const [selectedThesis, setSelectedThesis] = useState<Thesis | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
+  // --- FILTRAGE ---
   const domains = ['Tous', ...new Set(THESES_LIBRARY.map((t) => t.domain))];
 
   const filteredTheses = THESES_LIBRARY.filter((t) => {
     const matchesSearch = 
       t.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      t.author.toLowerCase().includes(searchTerm.toLowerCase());
+      t.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      t.abstract.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesDomain = selectedDomain === 'Tous' || t.domain === selectedDomain;
+    
     return matchesSearch && matchesDomain;
   });
 
+  // --- PAGINATION ---
+  const totalPages = Math.ceil(filteredTheses.length / ITEMS_PER_PAGE);
+  const currentTheses = filteredTheses.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  // Reset page quand on cherche
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, selectedDomain]);
+
+  // Retour en haut de page quand on change de page
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentPage, selectedThesis]);
+
+  // --- UTILS ---
   const copyCitation = (thesis: Thesis) => {
     const citation = `${thesis.author} (${thesis.year}). ${thesis.title}. ${thesis.institution}. Archivé sur Kongo Science.`;
     navigator.clipboard.writeText(citation);
-    alert('Citation copiée au format APA !');
+    alert('Citation copiée !');
   };
 
   const renderZoteroCoins = (thesis: Thesis) => {
@@ -36,138 +63,198 @@ const LibraryView: React.FC = () => {
     return <span className="Z3988" title={coinsData} style={{ display: 'none' }}></span>;
   };
 
+  // --- VUE DÉTAILLÉE (La "Sous-page") ---
+  if (selectedThesis) {
+    return (
+      <div className="bg-white min-h-screen pt-32 pb-20 px-6">
+        <div className="max-w-4xl mx-auto">
+          {/* Fil d'ariane */}
+          <button 
+            onClick={() => setSelectedThesis(null)}
+            className="group flex items-center gap-2 text-sm text-slate-500 hover:text-blue-700 mb-8 transition-colors"
+          >
+            <svg className="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+            Retour aux résultats
+          </button>
+
+          {/* Injection Zotero */}
+          {renderZoteroCoins(selectedThesis)}
+
+          <div className="bg-white rounded-[2rem] border border-slate-100 shadow-xl p-8 md:p-12">
+             {/* En-tête Document */}
+             <div className="flex flex-col md:flex-row gap-6 mb-8 border-b border-slate-100 pb-8">
+                <div className="w-24 h-32 bg-slate-50 border border-slate-200 rounded-xl flex-shrink-0 flex items-center justify-center">
+                   <svg className="w-10 h-10 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                </div>
+                <div>
+                   <span className="inline-block bg-blue-50 text-blue-700 text-xs font-bold px-3 py-1 rounded-full mb-3">
+                     {selectedThesis.type}
+                   </span>
+                   <h1 className="text-2xl md:text-4xl font-serif font-bold text-slate-900 mb-4 leading-tight">
+                     {selectedThesis.title}
+                   </h1>
+                   <div className="text-slate-600 text-lg">
+                     <span className="font-bold text-slate-900">{selectedThesis.author}</span>
+                     <span className="mx-2 text-slate-300">•</span>
+                     <span>{selectedThesis.year}</span>
+                     <span className="mx-2 text-slate-300">•</span>
+                     <span className="italic">{selectedThesis.institution}</span>
+                   </div>
+                </div>
+             </div>
+
+             {/* Résumé */}
+             <div className="mb-10">
+               <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-4">Résumé (Abstract)</h3>
+               <p className="text-slate-700 leading-relaxed text-lg text-justify">
+                 {selectedThesis.abstract}
+               </p>
+             </div>
+
+             {/* Actions */}
+             <div className="flex flex-wrap gap-4">
+                <a 
+                  href={selectedThesis.pdfUrl}
+                  target="_blank"
+                  rel="noopener noreferrer" 
+                  className="bg-blue-700 hover:bg-blue-800 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-blue-200 hover:-translate-y-1 transition-all flex items-center gap-2"
+                >
+                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                   Télécharger / Lire (PDF)
+                </a>
+                <button 
+                  onClick={() => copyCitation(selectedThesis)}
+                  className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-6 py-4 rounded-xl font-bold transition-all flex items-center gap-2"
+                >
+                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                   Citer
+                </button>
+             </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // --- VUE PRINCIPALE (LISTE SCHOLAR) ---
   return (
     <div className="bg-white min-h-screen">
-      {/* AFFICHE LA MODALE SI L'ÉTAT EST TRUE */}
-      {showSubmitModal && (
-        <SubmitPublicationModal onClose={() => setShowSubmitModal(false)} />
-      )}
+      {showSubmitModal && <SubmitPublicationModal onClose={() => setShowSubmitModal(false)} />}
 
-      {/* HERO SECTION */}
-      <section className="bg-slate-900 pt-32 pb-24 text-white relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
-          <span className="text-blue-400 font-black text-[10px] uppercase tracking-[0.4em] mb-4 block">
-            Archive Scientifique Souveraine
-          </span>
-          <h1 className="text-4xl md:text-6xl font-serif font-bold italic mb-6">
-            Bibliothèque des Publications
-          </h1>
-          <p className="text-slate-400 text-xl max-w-3xl mx-auto leading-relaxed">
-            Kongo Science est le <span className="text-white font-bold underline decoration-blue-500">SEUL</span> endroit où ces publications fondamentales du Bassin du Congo sont accessibles au monde entier.
-          </p>
-          <div className="mt-12 max-w-2xl mx-auto relative">
-             <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
-                <svg className="w-5 h-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+      {/* HEADER RECHERCHE (Style compact mais pro) */}
+      <section className="bg-slate-900 pt-32 pb-16 text-white">
+        <div className="max-w-5xl mx-auto px-6">
+          <h1 className="text-3xl font-serif font-bold italic mb-6">Bibliothèque des Publications</h1>
+          
+          <div className="flex flex-col md:flex-row gap-4">
+             <div className="relative flex-grow">
+               <input 
+                 type="text" 
+                 placeholder="Rechercher (titre, auteur, mots-clés)..." 
+                 className="w-full h-14 pl-12 pr-4 rounded-xl text-slate-900 focus:ring-4 focus:ring-blue-500/30 outline-none"
+                 value={searchTerm}
+                 onChange={(e) => setSearchTerm(e.target.value)}
+               />
+               <svg className="w-5 h-5 text-slate-400 absolute left-4 top-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
              </div>
-             <input 
-               type="text" 
-               placeholder="Rechercher une publication, un auteur, un domaine..." 
-               className="w-full bg-white text-slate-900 pl-14 pr-6 py-5 rounded-2xl shadow-2xl focus:ring-4 focus:ring-blue-500/20 outline-none transition-all text-lg font-medium"
-               value={searchTerm}
-               onChange={(e) => setSearchTerm(e.target.value)}
-             />
+             <button 
+                onClick={() => setShowSubmitModal(true)}
+                className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-xl font-bold whitespace-nowrap transition-colors flex items-center justify-center gap-2"
+             >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                Soumettre
+             </button>
+          </div>
+
+          {/* Filtres rapides */}
+          <div className="flex gap-2 overflow-x-auto py-4 mt-2 no-scrollbar">
+            {domains.map((domain) => (
+              <button
+                key={domain}
+                onClick={() => setSelectedDomain(domain)}
+                className={`px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap transition-all border ${
+                  selectedDomain === domain 
+                  ? 'bg-white text-slate-900 border-white' 
+                  : 'bg-transparent text-slate-400 border-slate-700 hover:border-slate-500'
+                }`}
+              >
+                {domain}
+              </button>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* FILTRES */}
-      <section className="sticky top-20 z-40 bg-white/80 backdrop-blur-md border-b border-slate-100 py-4 shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 flex items-center gap-4 overflow-x-auto pb-2 md:pb-0 no-scrollbar">
-          <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest whitespace-nowrap">
-            Disciplines :
-          </span>
-          {domains.map((domain) => (
-            <button
-              key={domain}
-              onClick={() => setSelectedDomain(domain)}
-              className={`px-4 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
-                selectedDomain === domain 
-                ? 'bg-blue-700 text-white shadow-lg shadow-blue-200' 
-                : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
-              }`}
-            >
-              {domain}
-            </button>
-          ))}
-        </div>
-      </section>
-
-      {/* LISTE */}
-      <section className="py-20 max-w-7xl mx-auto px-6">
-        <div className="space-y-12">
-          {filteredTheses.length > 0 ? (
-            filteredTheses.map((thesis) => (
-              <div key={thesis.id} className="group bg-white rounded-[2.5rem] border border-slate-100 p-8 md:p-12 hover:shadow-2xl hover:border-blue-100 transition-all duration-500 flex flex-col md:flex-row gap-10 items-start">
+      {/* RÉSULTATS (LISTE COMPACTE) */}
+      <section className="py-12 max-w-5xl mx-auto px-6">
+        <div className="space-y-8">
+          {currentTheses.length > 0 ? (
+            currentTheses.map((thesis) => (
+              <div key={thesis.id} className="group">
+                {/* Métadonnées Zotero (invisibles) */}
                 {renderZoteroCoins(thesis)}
-                <div className="w-full md:w-32 flex flex-col items-center flex-shrink-0">
-                   <div className="w-20 h-24 bg-slate-50 rounded-xl border border-slate-200 flex flex-col items-center justify-center relative group-hover:bg-blue-50 group-hover:border-blue-200 transition-colors shadow-inner">
-                      <svg className="w-10 h-10 text-slate-400 group-hover:text-blue-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
-                      <div className="absolute -bottom-2 bg-blue-700 text-white text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter">PDF</div>
-                   </div>
-                   <span className="mt-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">{thesis.type}</span>
+                
+                {/* 1. Titre (Lien Bleu Scholar) */}
+                <h3 
+                  onClick={() => setSelectedThesis(thesis)}
+                  className="text-xl md:text-2xl font-serif text-blue-700 font-medium cursor-pointer hover:underline mb-1"
+                >
+                  {thesis.title}
+                </h3>
+
+                {/* 2. Infos Auteur/Date (Vert/Gris) */}
+                <div className="text-sm text-green-700 mb-2 font-medium">
+                  {thesis.author} - {thesis.institution}, {thesis.year} - <span className="text-slate-500">{thesis.domain}</span>
                 </div>
-                <div className="flex-grow">
-                   <div className="flex flex-wrap gap-3 mb-4">
-                      <span className="bg-slate-900 text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest">{thesis.domain}</span>
-                      {thesis.isExclusive && (
-                        <span className="bg-blue-100 text-blue-700 text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest flex items-center gap-1">
-                          Exclusivité Kongo Science
-                        </span>
-                      )}
-                      <span className="text-slate-400 text-xs font-medium ml-auto">{thesis.pages} pages • {thesis.year}</span>
-                   </div>
-                   <h3 className="text-2xl md:text-3xl font-serif font-bold text-slate-900 mb-4 italic leading-tight group-hover:text-blue-700 transition-colors">
-                     {thesis.title}
-                   </h3>
-                   <div className="flex items-center gap-3 mb-6">
-                      <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-700 font-bold text-[10px]">
-                         {thesis.author.split(' ').pop()?.charAt(0)}
-                      </div>
-                      <span className="font-bold text-slate-900">{thesis.author}</span>
-                      <span className="text-slate-500 text-sm">| {thesis.institution}</span>
-                   </div>
-                   <p className="text-slate-600 leading-relaxed mb-8 text-sm md:text-base border-l-4 border-slate-50 pl-6 group-hover:border-blue-200 transition-colors">
-                     {thesis.abstract}
-                   </p>
-                   <div className="flex flex-wrap gap-4 pt-6 border-t border-slate-50">
-                      <button onClick={() => copyCitation(thesis)} className="flex items-center gap-2 text-slate-400 hover:text-blue-700 font-bold text-xs uppercase tracking-widest transition-colors">
-                         Citer cette publication
-                      </button>
-                      <a href={thesis.pdfUrl} target="_blank" rel="noopener noreferrer" className="bg-blue-700 text-white px-8 py-3 rounded-xl font-bold text-sm shadow-xl shadow-blue-100 hover:bg-blue-800 hover:-translate-y-1 transition-all ml-auto flex items-center gap-2 cursor-pointer">
-                         Lire la publication
-                      </a>
-                   </div>
+
+                {/* 3. Extrait du résumé (Snippet) */}
+                <p className="text-slate-600 text-sm leading-relaxed line-clamp-2 mb-3">
+                  {thesis.abstract}
+                </p>
+
+                {/* 4. Badges / Actions rapides */}
+                <div className="flex items-center gap-4 text-xs">
+                  <span className="font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                    <span className="text-blue-600">[PDF]</span> {thesis.type}
+                  </span>
+                  <button onClick={() => copyCitation(thesis)} className="text-slate-400 hover:text-blue-700 transition-colors">
+                    Citer
+                  </button>
+                  <button onClick={() => setSelectedThesis(thesis)} className="text-slate-400 hover:text-blue-700 transition-colors">
+                    Voir les détails
+                  </button>
+                  {thesis.isExclusive && (
+                     <span className="text-amber-600 font-bold bg-amber-50 px-2 py-0.5 rounded">Exclusif Kongo Science</span>
+                  )}
                 </div>
               </div>
             ))
           ) : (
-            <div className="text-center py-20 bg-slate-50 rounded-[3rem]">
-               <h3 className="text-xl font-bold text-slate-900">Aucune publication trouvée</h3>
-            </div>
+             <div className="text-center py-20">
+               <div className="text-4xl mb-4">🔍</div>
+               <p className="text-slate-500">Aucun résultat pour cette recherche.</p>
+             </div>
           )}
         </div>
-      </section>
 
-      {/* APPEL À ACTION */}
-      <section className="bg-blue-50 py-24">
-         <div className="max-w-4xl mx-auto px-6 text-center">
-            <h2 className="text-3xl font-serif font-bold text-slate-900 italic mb-6">
-              Votre recherche mérite d'être lue.
-            </h2>
-            <p className="text-slate-600 text-lg mb-10">
-               Ne laissez pas vos découvertes dans l'ombre.
-            </p>
-            <button 
-              onClick={() => setShowSubmitModal(true)}
-              className="inline-block bg-slate-900 text-white px-10 py-5 rounded-2xl font-black text-lg hover:bg-blue-700 transition-all shadow-2xl hover:-translate-y-1"
-            >
-               Soumettre ma publication
-            </button>
-         </div>
+        {/* PAGINATION */}
+        {totalPages > 1 && (
+          <div className="mt-16 pt-8 border-t border-slate-100 flex justify-center gap-2">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                onClick={() => setCurrentPage(page)}
+                className={`w-10 h-10 rounded-lg font-bold transition-all ${
+                  currentPage === page
+                  ? 'bg-blue-700 text-white'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                }`}
+              >
+                {page}
+              </button>
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );
