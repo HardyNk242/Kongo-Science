@@ -8,7 +8,7 @@ type Status = "idle" | "submitting" | "success" | "error";
 type Tab = "form" | "guide";
 
 const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
-  const [activeTab, setActiveTab] = useState<Tab>("guide"); // On commence par le guide par défaut pour éduquer
+  const [activeTab, setActiveTab] = useState<Tab>("guide");
   const [formData, setFormData] = useState({
     nom: "", prenoms: "", email: "", institution: "",
     titre: "", type: "Mémoire Master", domaine: "Géologie",
@@ -20,10 +20,10 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("submitting");
-    // Simulation d'envoi (remplacer par votre fetch vers Google Script)
+    // Simulation d'envoi vers Google Script
     setTimeout(() => {
         setStatus("success");
-        setTimeout(onClose, 5000);
+        setTimeout(onClose, 6000);
     }, 1500);
   };
 
@@ -33,17 +33,17 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
       
       <div className="relative bg-white rounded-[2.5rem] w-full max-w-4xl shadow-2xl overflow-hidden animate-in zoom-in-95 max-h-[90vh] flex flex-col">
         
-        {/* EN-TÊTE AVEC ONGLETS */}
+        {/* EN-TÊTE */}
         <div className="bg-slate-900 p-8 text-white flex-shrink-0">
             <button onClick={onClose} className="absolute top-6 right-6 text-white/40 hover:text-white">✕</button>
             <h2 className="text-2xl font-serif font-bold italic mb-6">Soumettre une Publication</h2>
             
-            <div className="flex gap-4 border-b border-slate-700">
+            <div className="flex gap-6 border-b border-slate-700">
                 <button 
                     onClick={() => setActiveTab("guide")}
                     className={`pb-3 text-sm font-bold uppercase tracking-widest transition-colors border-b-2 ${activeTab === "guide" ? "border-blue-500 text-white" : "border-transparent text-slate-500 hover:text-slate-300"}`}
                 >
-                    1. Guide & Droits (À lire)
+                    1. Guide & Droits (Important)
                 </button>
                 <button 
                     onClick={() => setActiveTab("form")}
@@ -59,53 +59,55 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
             
             {/* --- ONGLET 1 : GUIDE PÉDAGOGIQUE --- */}
             {activeTab === "guide" && (
-                <div className="space-y-10">
-                    {/* SECTION COPYRIGHT */}
-                    <div className="bg-red-50 border border-red-100 p-6 rounded-2xl">
-                        <h3 className="text-red-800 font-bold text-lg mb-2 flex items-center gap-2">
-                            ⛔ Attention : Droit d'auteur & Double Publication
-                        </h3>
-                        <p className="text-red-700/80 text-sm leading-relaxed mb-4">
-                            En science, <strong>vous ne pouvez pas publier le même article deux fois</strong>. Si votre article a déjà été publié dans une revue payante (Elsevier, Springer, Nature...), vous avez cédé vos droits de diffusion.
+                <div className="space-y-8">
+                    
+                    {/* CAS 1 : THÈSES & MÉMOIRES (PUBLIC) */}
+                    <div className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm">
+                        <div className="flex items-center gap-3 mb-3">
+                            <span className="bg-blue-100 text-blue-700 font-black px-2 py-1 rounded text-xs uppercase">Cas 1</span>
+                            <h3 className="font-bold text-slate-900">Thèses, Mémoires & Articles Open Access</h3>
+                        </div>
+                        <p className="text-sm text-slate-600 mb-4">
+                            Ces documents vous appartiennent totalement. Vous devez les rendre <strong>publics</strong> pour une visibilité maximale.
                         </p>
-                        <ul className="list-disc list-inside text-sm text-red-700/80 space-y-1 ml-2">
-                            <li><strong>Interdit :</strong> Déposer le PDF final de l'éditeur (avec le logo de la revue).</li>
-                            <li><strong>Autorisé :</strong> Déposer votre version "Manuscrit Auteur" (Post-print) ou vos Thèses/Mémoires universitaires.</li>
-                            <li><strong>Risque :</strong> Kongo Science rejettera tout document violant le copyright d'un éditeur.</li>
+                        <ul className="text-xs text-slate-500 space-y-2 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                            <li className="flex gap-2">
+                                ✅ <strong>Hébergeur recommandé :</strong> <a href="https://zenodo.org" target="_blank" className="text-blue-600 underline">Zenodo.org</a> (Gratuit, fournit un DOI).
+                            </li>
+                            <li className="flex gap-2">
+                                🔗 <strong>Lien à fournir :</strong> Le lien public de téléchargement direct.
+                            </li>
                         </ul>
                     </div>
 
-                    {/* SECTION ZENODO */}
-                    <div className="bg-white border border-slate-200 p-8 rounded-3xl shadow-sm">
-                        <h3 className="text-slate-900 font-bold text-xl mb-6">Comment héberger votre fichier sur Zenodo ?</h3>
-                        <div className="space-y-6">
-                            <div className="flex gap-4">
-                                <div className="w-8 h-8 bg-blue-100 text-blue-700 font-black rounded-full flex items-center justify-center flex-shrink-0">1</div>
-                                <div>
-                                    <h4 className="font-bold text-slate-900">Créez un compte Zenodo</h4>
-                                    <p className="text-sm text-slate-500 mt-1">Allez sur <a href="https://zenodo.org" target="_blank" className="text-blue-600 underline">zenodo.org</a> (gratuit, géré par le CERN). C'est la référence mondiale pour l'Open Science.</p>
-                                </div>
+                    {/* CAS 2 : ARTICLES COPYRIGHTÉS (PROTECTION) */}
+                    <div className="bg-yellow-50 border border-yellow-100 p-6 rounded-2xl shadow-sm">
+                        <div className="flex items-center gap-3 mb-3">
+                            <span className="bg-yellow-100 text-yellow-700 font-black px-2 py-1 rounded text-xs uppercase">Cas 2</span>
+                            <h3 className="font-bold text-slate-900">Articles payants (Elsevier, Springer, Nature...)</h3>
+                        </div>
+                        <p className="text-sm text-yellow-800 mb-4">
+                            ⚠️ <strong>Attention :</strong> Vous n'avez pas le droit de diffuser publiquement le PDF final de l'éditeur ("Version of Record").
+                        </p>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                            <div className="bg-white p-3 rounded-xl border border-yellow-200">
+                                <strong className="block text-slate-900 mb-1">Option A (Recommandée) : Google Drive Privé</strong>
+                                Mettez le PDF sur votre Drive, mais réglez le partage sur <strong>"Accès limité"</strong> (ou "Demander l'accès").
+                                <br/><br/>
+                                <em>Avantage :</em> Légal. Le lecteur cliquera sur le lien, et devra vous demander l'autorisation (par email automatique) pour télécharger.
                             </div>
-                            <div className="flex gap-4">
-                                <div className="w-8 h-8 bg-blue-100 text-blue-700 font-black rounded-full flex items-center justify-center flex-shrink-0">2</div>
-                                <div>
-                                    <h4 className="font-bold text-slate-900">Déposez votre fichier (Upload)</h4>
-                                    <p className="text-sm text-slate-500 mt-1">Cliquez sur "New Upload". Remplissez les infos (Titre, Auteur). Zenodo va créer un <strong>DOI</strong> (un code unique pour votre travail).</p>
-                                </div>
-                            </div>
-                            <div className="flex gap-4">
-                                <div className="w-8 h-8 bg-blue-100 text-blue-700 font-black rounded-full flex items-center justify-center flex-shrink-0">3</div>
-                                <div>
-                                    <h4 className="font-bold text-slate-900">Copiez le lien final</h4>
-                                    <p className="text-sm text-slate-500 mt-1">Une fois publié, copiez le lien de la page ou le lien de téléchargement direct du fichier PDF.</p>
-                                </div>
+                            <div className="bg-white p-3 rounded-xl border border-yellow-200">
+                                <strong className="block text-slate-900 mb-1">Option B : Version "Auteur"</strong>
+                                Vous avez le droit de publier votre version Word/LaTeX (avant la mise en page de l'éditeur). Celle-ci peut être mise sur Zenodo.
                             </div>
                         </div>
-                        <div className="mt-8 text-center">
-                            <button onClick={() => setActiveTab("form")} className="bg-slate-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition-all">
-                                J'ai compris, passer au formulaire →
-                            </button>
-                        </div>
+                    </div>
+
+                    <div className="text-center pt-4">
+                        <button onClick={() => setActiveTab("form")} className="bg-slate-900 text-white px-8 py-4 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-xl hover:-translate-y-1">
+                            J'ai choisi ma méthode, accéder au formulaire →
+                        </button>
                     </div>
                 </div>
             )}
@@ -116,38 +118,52 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
                     <div className="text-center py-12">
                         <div className="text-6xl mb-4">✅</div>
                         <h3 className="text-2xl font-bold text-slate-900">Bien reçu !</h3>
-                        <p className="text-slate-500 mt-2">Votre publication sera en ligne après validation.</p>
+                        <p className="text-slate-500 mt-2">Votre publication sera examinée par le comité scientifique.</p>
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto">
-                        <div className="grid grid-cols-2 gap-6">
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold text-slate-400 uppercase">Nom</label>
-                                <input required className="w-full p-3 rounded-xl border border-slate-200" value={formData.nom} onChange={e => setFormData({...formData, nom: e.target.value})} />
+                        {/* IDENTITÉ */}
+                        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+                            <h4 className="font-bold text-slate-400 text-xs uppercase tracking-widest border-b border-slate-100 pb-2">1. L'Auteur</h4>
+                            <div className="grid grid-cols-2 gap-4">
+                                <input required className="input-style" placeholder="Nom" value={formData.nom} onChange={e => setFormData({...formData, nom: e.target.value})} />
+                                <input required className="input-style" placeholder="Prénoms" value={formData.prenoms} onChange={e => setFormData({...formData, prenoms: e.target.value})} />
                             </div>
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold text-slate-400 uppercase">Prénoms</label>
-                                <input required className="w-full p-3 rounded-xl border border-slate-200" value={formData.prenoms} onChange={e => setFormData({...formData, prenoms: e.target.value})} />
+                            <input required type="email" className="input-style" placeholder="Email institutionnel" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
+                            <input className="input-style" placeholder="Institution (Université, Labo...)" value={formData.institution} onChange={e => setFormData({...formData, institution: e.target.value})} />
+                        </div>
+
+                        {/* PUBLICATION */}
+                        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+                            <h4 className="font-bold text-slate-400 text-xs uppercase tracking-widest border-b border-slate-100 pb-2">2. La Publication</h4>
+                            <input required className="input-style font-bold" placeholder="Titre complet de la publication" value={formData.titre} onChange={e => setFormData({...formData, titre: e.target.value})} />
+                            
+                            <div className="grid grid-cols-2 gap-4">
+                                <select className="input-style cursor-pointer" value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})}>
+                                    <option value="Mémoire Master">Mémoire Master</option>
+                                    <option value="Thèse Doctorat">Thèse Doctorat</option>
+                                    <option value="Article Scientifique">Article Scientifique</option>
+                                </select>
+                                <select className="input-style cursor-pointer" value={formData.domaine} onChange={e => setFormData({...formData, domaine: e.target.value})}>
+                                    <option value="Géologie">Géologie</option>
+                                    <option value="Santé">Santé</option>
+                                    <option value="Environnement">Environnement</option>
+                                    <option value="Droit/Éco">Droit/Éco</option>
+                                </select>
                             </div>
-                        </div>
-                        
-                        <div className="space-y-1">
-                            <label className="text-xs font-bold text-slate-400 uppercase">Titre de la publication</label>
-                            <input required className="w-full p-3 rounded-xl border border-slate-200" placeholder="Titre exact" value={formData.titre} onChange={e => setFormData({...formData, titre: e.target.value})} />
+
+                            <div className="space-y-1">
+                                <label className="text-xs font-bold text-blue-600 uppercase ml-1">Lien du Fichier (Zenodo ou Drive)</label>
+                                <input required type="url" className="input-style border-blue-200 bg-blue-50/30" placeholder="https://..." value={formData.pdfLink} onChange={e => setFormData({...formData, pdfLink: e.target.value})} />
+                                <p className="text-[10px] text-slate-400 mt-1">
+                                    Pour Elsevier/Springer : Mettez un lien Google Drive en mode "Restreint" ou "Sur demande".
+                                </p>
+                            </div>
+
+                            <textarea required rows={4} className="input-style resize-none" placeholder="Résumé (Abstract)..." value={formData.abstract} onChange={e => setFormData({...formData, abstract: e.target.value})} />
                         </div>
 
-                        <div className="space-y-1">
-                            <label className="text-xs font-bold text-blue-600 uppercase">Lien Zenodo / Drive (PDF)</label>
-                            <input required type="url" className="w-full p-3 rounded-xl border-2 border-blue-100 bg-white" placeholder="https://zenodo.org/record/..." value={formData.pdfLink} onChange={e => setFormData({...formData, pdfLink: e.target.value})} />
-                            <p className="text-[10px] text-slate-400">Le fichier doit être accessible publiquement.</p>
-                        </div>
-
-                        <div className="space-y-1">
-                            <label className="text-xs font-bold text-slate-400 uppercase">Résumé (Abstract)</label>
-                            <textarea required rows={5} className="w-full p-3 rounded-xl border border-slate-200" value={formData.abstract} onChange={e => setFormData({...formData, abstract: e.target.value})} />
-                        </div>
-
-                        <button type="submit" disabled={status === "submitting"} className="w-full bg-blue-700 text-white font-bold py-4 rounded-xl hover:bg-blue-800 transition-all">
+                        <button type="submit" disabled={status === "submitting"} className="w-full bg-blue-700 text-white font-bold py-4 rounded-xl hover:bg-blue-800 transition-all shadow-lg hover:shadow-blue-200">
                             {status === "submitting" ? "Envoi..." : "Soumettre la publication"}
                         </button>
                     </form>
@@ -155,6 +171,24 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
             )}
         </div>
       </div>
+      
+      <style>{`
+        .input-style {
+            width: 100%;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .input-style:focus {
+            background-color: #fff;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+        }
+      `}</style>
     </div>
   );
 };
