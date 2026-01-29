@@ -11,7 +11,9 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
   const [activeTab, setActiveTab] = useState<Tab>("guide");
   const [formData, setFormData] = useState({
     nom: "", prenoms: "", email: "", institution: "",
-    titre: "", type: "Mémoire Master", domaine: "Géologie",
+    titre: "", 
+    type: "Mémoire de Master", // Valeur par défaut prioritaire
+    domaine: "Earth and Planetary Sciences", // Valeur par défaut Scimago
     pdfLink: "", abstract: "",
   });
   const [status, setStatus] = useState<Status>("idle");
@@ -20,7 +22,7 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("submitting");
-    // Simulation d'envoi vers Google Script
+    // Simulation d'envoi (remplacez par votre fetch réel vers Google Script)
     setTimeout(() => {
         setStatus("success");
         setTimeout(onClose, 6000);
@@ -43,7 +45,7 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
                     onClick={() => setActiveTab("guide")}
                     className={`pb-3 text-sm font-bold uppercase tracking-widest transition-colors border-b-2 ${activeTab === "guide" ? "border-blue-500 text-white" : "border-transparent text-slate-500 hover:text-slate-300"}`}
                 >
-                    1. Guide & Droits (Important)
+                    1. Guide & Droits
                 </button>
                 <button 
                     onClick={() => setActiveTab("form")}
@@ -57,10 +59,9 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
         {/* CONTENU DÉFILANT */}
         <div className="overflow-y-auto p-8 md:p-12 bg-slate-50 flex-grow">
             
-            {/* --- ONGLET 1 : GUIDE PÉDAGOGIQUE --- */}
+            {/* --- ONGLET 1 : GUIDE --- */}
             {activeTab === "guide" && (
                 <div className="space-y-8">
-                    
                     {/* CAS 1 : THÈSES & MÉMOIRES (PUBLIC) */}
                     <div className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm">
                         <div className="flex items-center gap-3 mb-3">
@@ -68,45 +69,32 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
                             <h3 className="font-bold text-slate-900">Thèses, Mémoires & Articles Open Access</h3>
                         </div>
                         <p className="text-sm text-slate-600 mb-4">
-                            Ces documents vous appartiennent totalement. Vous devez les rendre <strong>publics</strong> pour une visibilité maximale.
+                            Documents dont vous détenez les droits. À rendre <strong>publics</strong>.
                         </p>
                         <ul className="text-xs text-slate-500 space-y-2 bg-slate-50 p-4 rounded-xl border border-slate-100">
-                            <li className="flex gap-2">
-                                ✅ <strong>Hébergeur recommandé :</strong> <a href="https://zenodo.org" target="_blank" className="text-blue-600 underline">Zenodo.org</a> (Gratuit, fournit un DOI).
-                            </li>
-                            <li className="flex gap-2">
-                                🔗 <strong>Lien à fournir :</strong> Le lien public de téléchargement direct.
-                            </li>
+                            <li className="flex gap-2">✅ <strong>Hébergeur :</strong> <a href="https://zenodo.org" target="_blank" className="text-blue-600 underline">Zenodo.org</a> (Recommandé).</li>
+                            <li className="flex gap-2">🔗 <strong>Lien :</strong> Lien de téléchargement public.</li>
                         </ul>
                     </div>
 
-                    {/* CAS 2 : ARTICLES COPYRIGHTÉS (PROTECTION) */}
+                    {/* CAS 2 : ARTICLES COPYRIGHTÉS */}
                     <div className="bg-yellow-50 border border-yellow-100 p-6 rounded-2xl shadow-sm">
                         <div className="flex items-center gap-3 mb-3">
                             <span className="bg-yellow-100 text-yellow-700 font-black px-2 py-1 rounded text-xs uppercase">Cas 2</span>
-                            <h3 className="font-bold text-slate-900">Articles payants (Elsevier, Springer, Nature...)</h3>
+                            <h3 className="font-bold text-slate-900">Articles payants (Elsevier, Springer...)</h3>
                         </div>
                         <p className="text-sm text-yellow-800 mb-4">
-                            ⚠️ <strong>Attention :</strong> Vous n'avez pas le droit de diffuser publiquement le PDF final de l'éditeur ("Version of Record").
+                            ⚠️ Interdit de publier le PDF final de l'éditeur.
                         </p>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                            <div className="bg-white p-3 rounded-xl border border-yellow-200">
-                                <strong className="block text-slate-900 mb-1">Option A (Recommandée) : Google Drive Privé</strong>
-                                Mettez le PDF sur votre Drive, mais réglez le partage sur <strong>"Accès limité"</strong> (ou "Demander l'accès").
-                                <br/><br/>
-                                <em>Avantage :</em> Légal. Le lecteur cliquera sur le lien, et devra vous demander l'autorisation (par email automatique) pour télécharger.
-                            </div>
-                            <div className="bg-white p-3 rounded-xl border border-yellow-200">
-                                <strong className="block text-slate-900 mb-1">Option B : Version "Auteur"</strong>
-                                Vous avez le droit de publier votre version Word/LaTeX (avant la mise en page de l'éditeur). Celle-ci peut être mise sur Zenodo.
-                            </div>
+                        <div className="bg-white p-3 rounded-xl border border-yellow-200 text-xs">
+                            <strong className="block text-slate-900 mb-1">Solution : Google Drive "Sur demande"</strong>
+                            Mettez le PDF sur votre Drive, partagez le lien, mais réglez l'accès sur <strong>"Restreint"</strong> ou <strong>"Demander l'accès"</strong>. Le lecteur devra vous envoyer une requête pour lire.
                         </div>
                     </div>
 
                     <div className="text-center pt-4">
                         <button onClick={() => setActiveTab("form")} className="bg-slate-900 text-white px-8 py-4 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-xl hover:-translate-y-1">
-                            J'ai choisi ma méthode, accéder au formulaire →
+                            Accéder au formulaire →
                         </button>
                     </div>
                 </div>
@@ -136,28 +124,59 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
                         {/* PUBLICATION */}
                         <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
                             <h4 className="font-bold text-slate-400 text-xs uppercase tracking-widest border-b border-slate-100 pb-2">2. La Publication</h4>
-                            <input required className="input-style font-bold" placeholder="Titre complet de la publication" value={formData.titre} onChange={e => setFormData({...formData, titre: e.target.value})} />
+                            <input required className="input-style font-bold" placeholder="Titre complet" value={formData.titre} onChange={e => setFormData({...formData, titre: e.target.value})} />
                             
-                            <div className="grid grid-cols-2 gap-4">
-                                <select className="input-style cursor-pointer" value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})}>
-                                    <option value="Mémoire Master">Mémoire Master</option>
-                                    <option value="Thèse Doctorat">Thèse Doctorat</option>
-                                    <option value="Article Scientifique">Article Scientifique</option>
-                                </select>
-                                <select className="input-style cursor-pointer" value={formData.domaine} onChange={e => setFormData({...formData, domaine: e.target.value})}>
-                                    <option value="Géologie">Géologie</option>
-                                    <option value="Santé">Santé</option>
-                                    <option value="Environnement">Environnement</option>
-                                    <option value="Droit/Éco">Droit/Éco</option>
-                                </select>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {/* TYPE DE DOCUMENT (ZOTERO + PRIORITÉ ACADÉMIQUE) */}
+                                <div className="space-y-1">
+                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Type de Document</label>
+                                    <select className="input-style cursor-pointer" value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})}>
+                                        <optgroup label="Travaux Académiques (Prioritaire)">
+                                            <option value="Mémoire de Master">Mémoire de Master</option>
+                                            <option value="Thèse de Doctorat">Thèse de Doctorat</option>
+                                        </optgroup>
+                                        <optgroup label="Publications Scientifiques">
+                                            <option value="Article de Revue">Article de Revue (Journal Article)</option>
+                                            <option value="Livre">Livre / Ouvrage</option>
+                                            <option value="Chapitre de livre">Chapitre de livre</option>
+                                            <option value="Acte de conférence">Acte de conférence</option>
+                                        </optgroup>
+                                        <optgroup label="Autres">
+                                            <option value="Rapport">Rapport Technique</option>
+                                            <option value="Article de presse">Article de presse</option>
+                                            <option value="Autre">Autre</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+
+                                {/* DOMAINES (SCIMAGO CLASSIFICATION) */}
+                                <div className="space-y-1">
+                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Domaine (Scimago)</label>
+                                    <select className="input-style cursor-pointer" value={formData.domaine} onChange={e => setFormData({...formData, domaine: e.target.value})}>
+                                        <option value="Earth and Planetary Sciences">Sciences de la Terre & Planétaires</option>
+                                        <option value="Environmental Science">Sciences de l'Environnement</option>
+                                        <option value="Agricultural and Biological Sciences">Agriculture & Biologie</option>
+                                        <option value="Energy">Énergie</option>
+                                        <option value="Engineering">Ingénierie</option>
+                                        <option value="Social Sciences">Sciences Sociales</option>
+                                        <option value="Economics, Econometrics and Finance">Économie & Finance</option>
+                                        <option value="Business, Management and Accounting">Business & Management</option>
+                                        <option value="Medicine">Médecine & Santé</option>
+                                        <option value="Immunology and Microbiology">Immunologie & Microbiologie</option>
+                                        <option value="Biochemistry, Genetics and Molecular Biology">Biochimie & Génétique</option>
+                                        <option value="Computer Science">Informatique</option>
+                                        <option value="Mathematics">Mathématiques</option>
+                                        <option value="Physics and Astronomy">Physique & Astronomie</option>
+                                        <option value="Chemistry">Chimie</option>
+                                        <option value="Arts and Humanities">Arts & Humanités</option>
+                                        <option value="Multidisciplinary">Multidisciplinaire</option>
+                                    </select>
+                                </div>
                             </div>
 
                             <div className="space-y-1">
-                                <label className="text-xs font-bold text-blue-600 uppercase ml-1">Lien du Fichier (Zenodo ou Drive)</label>
-                                <input required type="url" className="input-style border-blue-200 bg-blue-50/30" placeholder="https://..." value={formData.pdfLink} onChange={e => setFormData({...formData, pdfLink: e.target.value})} />
-                                <p className="text-[10px] text-slate-400 mt-1">
-                                    Pour Elsevier/Springer : Mettez un lien Google Drive en mode "Restreint" ou "Sur demande".
-                                </p>
+                                <label className="text-xs font-bold text-blue-600 uppercase ml-1">Lien du Fichier</label>
+                                <input required type="url" className="input-style border-blue-200 bg-blue-50/30" placeholder="https://zenodo.org/... ou Drive" value={formData.pdfLink} onChange={e => setFormData({...formData, pdfLink: e.target.value})} />
                             </div>
 
                             <textarea required rows={4} className="input-style resize-none" placeholder="Résumé (Abstract)..." value={formData.abstract} onChange={e => setFormData({...formData, abstract: e.target.value})} />
