@@ -1,7 +1,6 @@
 import { Article, NavItem, Conference } from './types';
 
 // --- IMPORTS DES IMAGES (ASSETS) ---
-// Conférences
 import peatlandsCard from "./assets/conf-peatlands-conferencecard.png";
 import petroleumCard from "./assets/conf-ingenierie-petroliere.png";
 import geotechCard from "./assets/conf-risques-geotech.png";
@@ -10,10 +9,8 @@ import solKoutikaCard from "./assets/conf-sol-koutika.png";
 
 // Équipe
 import hardyImg from './assets/hardy.png';
-// import princeImg from './assets/prince.jpg'; 
 
 // --- DOMAINES OFFICIELS (Classification SCIMAGO) ---
-// Utilisés pour les filtres et le formulaire de soumission
 export const SCIMAGO_DOMAINS = [
   { value: "Earth and Planetary Sciences", label: "Sciences de la Terre & Planétaires" },
   { value: "Environmental Science", label: "Sciences de l'Environnement" },
@@ -32,7 +29,7 @@ export const SCIMAGO_DOMAINS = [
   { value: "Chemistry", label: "Chimie" },
   { value: "Arts and Humanities", label: "Arts & Humanités" },
   { value: "Multidisciplinary", label: "Multidisciplinaire" }
-].sort((a, b) => a.label.localeCompare(b.label)); // Trié par ordre alphabétique Français
+].sort((a, b) => a.label.localeCompare(b.label));
 
 // --- NAVIGATION ---
 export const NAV_ITEMS: NavItem[] = [
@@ -45,7 +42,7 @@ export const NAV_ITEMS: NavItem[] = [
   { label: 'À Propos', path: 'about' }
 ];
 
-// --- OBJECTIFS / VISION ---
+// --- OBJECTIFS ---
 export const OBJECTIFS = [
   {
     id: 1,
@@ -184,7 +181,7 @@ export const PARTNERS = [
   { name: 'Luzabu Group', logo: 'LG' }
 ];
 
-// --- PAYS (Formulaires) ---
+// --- PAYS ---
 export const COUNTRIES = [
   {name: 'Congo, Republic of', code: 'CG'},
   {name: 'Congo, Democratic Republic of', code: 'CD'},
@@ -197,7 +194,7 @@ export const COUNTRIES = [
   {name: 'United States', code: 'US'}
 ];
 
-// --- LOGIQUE DE PROPOSITION ---
+// --- LOGIQUE PROPOSITION ---
 export const PROPOSAL_PSYCHOLOGY = {
   main_promise: "Kongo Science transforme un événement en référence scientifique.",
   strategic_question: "À la fin de cette conférence, qu’est-ce que vous voulez que les participants disent de vous ?",
@@ -233,7 +230,7 @@ export const THESES_LIBRARY = [
     author: "Hardy M. D.-V. Nkodia",
     year: "2017",
     institution: "Université Marien Ngouabi (FST)",
-    domain: "Earth and Planetary Sciences", // Migré vers Scimago
+    domain: "Earth and Planetary Sciences",
     type: "Mémoire Master",
     abstract: "Cette étude démontre que la Formation de l’Inkisi en République du Congo a été affectée par deux phases de tectonique décrochante associées chacune à une transpression. Lesquelles ont engendré deux systèmes de fracturation qui ont permis de déterminer les paléocontraintes...",
     pages: 68,
@@ -246,12 +243,12 @@ export const THESES_LIBRARY = [
     author: "Rodd Jurah Mouellet Maboulou",
     year: "2019",
     institution: "Université Marien Ngouabi (FST)",
-    domain: "Agricultural and Biological Sciences", // Migré vers Scimago
+    domain: "Agricultural and Biological Sciences",
     type: "Mémoire de Master",
     abstract: "Ce travail de recherche examine le potentiel des souches bactériennes du genre Bacillus pour la fermentation et la bioconversion du jus de gingembre...",
     pages: 49,
     isExclusive: false, 
-    pdfUrl: "https://www.researchgate.net/profile/Aime-Christian-Kayath/publication/348153985..."
+    pdfUrl: "https://www.researchgate.net/profile/Aime-Christian-Kayath/publication/348153985_IMPLICATION_DES_BACTERIES_DU_GENRE_BACILLUS_DANS_LA_BIOCONVERSION_DU_JUS_DE_GINGEMBRE_Zingiber_officinale_Roscoe/links/5ff0b0e4299bf1408868599b/IMPLICATION-DES-BACTERIES-DU-GENRE-BACILLUS-DANS-LA-BIOCONVERSION-DU-JUS-DE-GINGEMBRE-Zingiber-officinale-Roscoe.pdf"
   },
   {
     id: 'bk-georisques-2024',
@@ -259,12 +256,12 @@ export const THESES_LIBRARY = [
     author: "Camille François, J.M. Akame, Nicy Bazebizonza et al.",
     year: "2024",
     institution: "UNESCO / MRAC / GeoRiskA",
-    domain: "Earth and Planetary Sciences", // Migré vers Scimago
+    domain: "Earth and Planetary Sciences",
     type: "Livre / Guide",
     abstract: "Publié par l'UNESCO et le MRAC, cet ouvrage de référence analyse les risques géologiques majeurs en Afrique centrale...",
     pages: "Multiple",
     isExclusive: false,
-    pdfUrl: "https://www.researchgate.net/profile/Camille-Francois-2/publication/387662450..."
+    pdfUrl: "https://www.researchgate.net/profile/Camille-Francois-2/publication/387662450_L'Afrique_centrale_face_aux_georisques_-_Origine_naturelle/links/67768731fb9aff6eaa004093/LAfrique-centrale-face-aux-georisques-Origine-naturelle.pdf"
   },
   {
     id: 'art-nkodia-2022-seismo',
@@ -272,7 +269,7 @@ export const THESES_LIBRARY = [
     author: "Hardy M. Nkodia, Nicy Bazebizonza, Damien Delvaux et al.",
     year: "2022",
     institution: "AGU Geochemistry, Geophysics, Geosystems",
-    domain: "Earth and Planetary Sciences", // Migré vers Scimago
+    domain: "Earth and Planetary Sciences",
     type: "Article Scientifique",
     abstract: "Cette étude majeure analyse le potentiel sismogène des failles en Afrique centrale...",
     pages: 23,
@@ -285,12 +282,12 @@ export const THESES_LIBRARY = [
     author: "Hardy M. Nkodia, T. Miyouna, Damien Delvaux et al.",
     year: "2020",
     institution: "South African Journal of Geology",
-    domain: "Earth and Planetary Sciences", // Migré vers Scimago
+    domain: "Earth and Planetary Sciences",
     type: "Article Scientifique",
     abstract: "Cette étude décrit pour la première fois les structures en fleur ('flower structures') dans les grès du groupe de l'Inkisi...",
     pages: 20,
     isExclusive: false,
-    pdfUrl: "https://www.researchgate.net/profile/Hardy-Medry-Dieu-Veil-Nkodia/publication/346398097..."
+    pdfUrl: "https://www.researchgate.net/profile/Hardy-Medry-Dieu-Veil-Nkodia/publication/346398097_Flower_structures_in_sandstones_of_the_Paleozoic_Inkisi_Group_Brazzaville_Republic_of_Congo_evidence_for_two_major_strike-slip_fault_systems_and_geodynamic_implications/links/5ff5da7c45851553a0233da7/Flower-structures-in-sandstones-of-the-Paleozoic-Inkisi-Group-Brazzaville-Republic-of-Congo-evidence-for-two-major-strike-slip-fault-systems-and-geodynamic-implications.pdf"
   },
   {
     id: 'art-bazebizonza-2020-neotect',
@@ -298,12 +295,12 @@ export const THESES_LIBRARY = [
     author: "Nicy C. Bazebizonza, Hardy M. Nkodia, T. Miyouna et al.",
     year: "2020",
     institution: "Journal of Geosciences and Geomatics",
-    domain: "Earth and Planetary Sciences", // Migré vers Scimago
+    domain: "Earth and Planetary Sciences",
     type: "Article Scientifique",
     abstract: "Cette étude utilise l'analyse morphométrique et les SIG pour détecter des signatures néotectoniques...",
     pages: 11,
     isExclusive: false,
-    pdfUrl: "https://www.researchgate.net/profile/Nicy-Carmel-Bazebizonza/publication/344635627..."
+    pdfUrl: "https://www.researchgate.net/profile/Nicy-Carmel-Bazebizonza/publication/344635627_Detection_of_Neotectonic_Signatures_by_Morphometric_Analysis_of_Inkisi_Group_on_Both_Banks_of_the_Congo_River/links/5f85f250a6fdccfd7b5fb030/Detection-of-Neotectonic-Signatures-by-Morphometric-Analysis-of-Inkisi-Group-on-Both-Banks-of-the-Congo-River.pdf"
   },
   {
     id: 'art-okouakoua-2024-bacillus',
@@ -311,7 +308,7 @@ export const THESES_LIBRARY = [
     author: "F. Y. Okouakoua, C. A. Kayath, E. Nguimbi et al.",
     year: "2024",
     institution: "Wiley / Université Marien Ngouabi",
-    domain: "Biochemistry, Genetics and Molecular Biology", // Migré vers Scimago
+    domain: "Biochemistry, Genetics and Molecular Biology",
     type: "Article Scientifique",
     abstract: "Cette étude explore le rôle du système de transport membranaire SecYEG chez les bactéries Bacillus...",
     pages: 12,
@@ -324,7 +321,7 @@ export const THESES_LIBRARY = [
     author: "Arsène Francœur Nganga",
     year: "2025",
     institution: "Revue Congolaise d'Histoire (MAZAYU) - UMNG",
-    domain: "Arts and Humanities", // Migré vers Scimago
+    domain: "Arts and Humanities",
     type: "Article Scientifique",
     abstract: "Cet article fondamental reconstruit la migration plurimillénaire du peuple Kongo depuis l'Israël antique...",
     pages: 20,
@@ -337,7 +334,7 @@ export const THESES_LIBRARY = [
     author: "Yarsé B. Mavoungou, Hardy M. Nkodia, N. Watha-Ndoudy et al.",
     year: "2025",
     institution: "Arabian Journal of Geosciences",
-    domain: "Earth and Planetary Sciences", // Migré vers Scimago
+    domain: "Earth and Planetary Sciences",
     type: "Article Scientifique",
     abstract: "Cette étude présente les données pétrographiques et géochimiques des roches métamorphiques...",
     pages: "Vol 18, Art. 144",
@@ -351,7 +348,7 @@ export const THESES_LIBRARY = [
     author: "Hardy Nkodia",
     year: "2023",
     institution: "Kongo Science (Éditions)",
-    domain: "Multidisciplinary", // Migré vers Scimago
+    domain: "Multidisciplinary",
     type: "Livre / Guide Pratique",
     abstract: "Avez-vous du mal à organiser vos documents et à extraire les données pour réaliser une revue pertinente...",
     pages: "89 pages",
@@ -366,7 +363,7 @@ export const THESES_LIBRARY = [
     author: "Duchel Kinouani",
     year: "2025",
     institution: "Upway Books",
-    domain: "Medicine", // Migré vers Scimago
+    domain: "Medicine",
     type: "Livre / Essai",
     abstract: "Notre compréhension du vivant a atteint des sommets, pourtant la médecine contemporaine peine...",
     pages: "300 pages",
@@ -374,6 +371,24 @@ export const THESES_LIBRARY = [
     price: "48.98 €",
     purchaseUrl: "https://www.amazon.fr/Repenser-th%C3%A9rapeutique-heuristique-th%C3%A9rapeutiques-dynamiques/dp/1917916647",
     pdfUrl: ""
+  },
+ {
+    id: 'art-lungela-2025-peat',
+    title: "Paleoenvironmental implications of peat formation and development in the central Congo Basin and the Batéké Plateaux",
+    author: "Henrique G. Lungela Tchimpa, S. A. Ifo, H. Elenga et al.",
+    year: "2025",
+    institution: "Palaeogeography (Elsevier)",
+    domain: "Earth and Planetary Sciences",
+    type: "Article Scientifique",
+    abstract: "Cette étude analyse la formation et le développement des tourbières dans la Cuvette Centrale et les Plateaux Batéké. Elle fournit des implications majeures sur les conditions paléoenvironnementales passées, contribuant à la compréhension du stockage du carbone et de l'hydrologie historique de la région.",
+    pages: "Vol 661",
+    
+    // --- MODE RESTREINT (Bouton Jaune) ---
+    isRestricted: true,  // ✅ Active le bouton "Demander une copie privée"
+    isExclusive: false,
+    // Le lien Drive (ne sera donné que par vous, par email)
+    pdfUrl: "https://drive.google.com/file/d/1fRiJffJFv0ef6Zuq8PBneXO2ZpOKWyYi/view?usp=sharing"
+  },
   },
 ];
 
