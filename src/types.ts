@@ -65,4 +65,8 @@ export interface Thesis {
   pdfUrl: string; // Lien vers le fichier ou la référence
   isExclusive?: boolean; // Badge "Exclusif Kongo Science"
   isRestricted?: boolean; // Déclenche le bouton "Demande de copie privée"
+  // --- NOUVEAUX CHAMPS POUR LA VENTE ---
+  isForSale?: boolean;    // Si vrai, affiche le bouton "Acheter"
+  purchaseUrl?: string;   // Lien Amazon/Editeur
+  price?: string;         // Ex: "3.66 €"
 }
