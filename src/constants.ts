@@ -372,7 +372,7 @@ export const THESES_LIBRARY = [
     purchaseUrl: "https://www.amazon.fr/Repenser-th%C3%A9rapeutique-heuristique-th%C3%A9rapeutiques-dynamiques/dp/1917916647",
     pdfUrl: ""
   },
- {
+  {
     id: 'art-lungela-2025-peat',
     title: "Paleoenvironmental implications of peat formation and development in the central Congo Basin and the Batéké Plateaux",
     author: "Henrique G. Lungela Tchimpa, S. A. Ifo, H. Elenga et al.",
@@ -382,13 +382,9 @@ export const THESES_LIBRARY = [
     type: "Article Scientifique",
     abstract: "Cette étude analyse la formation et le développement des tourbières dans la Cuvette Centrale et les Plateaux Batéké. Elle fournit des implications majeures sur les conditions paléoenvironnementales passées, contribuant à la compréhension du stockage du carbone et de l'hydrologie historique de la région.",
     pages: "Vol 661",
-    
-    // --- MODE RESTREINT (Bouton Jaune) ---
-    isRestricted: true,  // ✅ Active le bouton "Demander une copie privée"
+    isRestricted: true,
     isExclusive: false,
-    // Le lien Drive (ne sera donné que par vous, par email)
     pdfUrl: "https://drive.google.com/file/d/1fRiJffJFv0ef6Zuq8PBneXO2ZpOKWyYi/view?usp=sharing"
-  },
   },
 ];
 
