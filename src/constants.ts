@@ -7,6 +7,7 @@ import solKoutikaCard from "./assets/conf-sol-koutika.png";
 
 export const NAV_ITEMS: NavItem[] = [
   { label: 'Accueil', path: 'home' },
+  { label: 'Bibliothèque', path: 'library' },
   { label: 'Agenda', path: 'agenda' },
   { label: 'Programmes', path: 'programmes' },
   { label: 'Historique', path: 'history' },
@@ -186,3 +187,41 @@ export const PROPOSAL_PSYCHOLOGY = {
     }
   }
 };
+export const THESES_LIBRARY = [
+  {
+    id: 'th-1',
+    title: 'Caractérisation géotechnique des sols de Brazzaville : Impact sur la stabilité des infrastructures routières',
+    author: 'Dr. Hardy Nkodia',
+    year: '2024',
+    institution: 'Université Marien Ngouabi',
+    domain: 'Géologie & BTP',
+    type: 'Thèse Doctorat',
+    abstract: 'Une analyse approfondie des propriétés physico-mécaniques des sols urbains soumis à une forte érosion, proposant de nouvelles normes de construction pour la zone nord de Brazzaville.',
+    pages: 245,
+    isExclusive: true
+  },
+  {
+    id: 'th-2',
+    title: 'Épidémiologie moléculaire du paludisme dans les zones forestières du Pool',
+    author: 'Sarah Mvouama',
+    year: '2023',
+    institution: 'FCRM / Univ. Marien Ngouabi',
+    domain: 'Santé Publique',
+    type: 'Mémoire Master',
+    abstract: 'Étude de la résistance aux antipaludiques chez les populations autochtones. Données collectées sur 3 ans avec le soutien de la Fondation Ntoumi.',
+    pages: 112,
+    isExclusive: false
+  },
+  {
+    id: 'th-3',
+    title: 'Stockage de carbone dans les tourbières de la Cuvette Centrale : Nouvelles estimations',
+    author: 'Jean-Pierre Mokoko',
+    year: '2025',
+    institution: 'CRGM (Centre de Recherches Géologiques et Minières)',
+    domain: 'Environnement',
+    type: 'Article',
+    abstract: 'Revue des données satellites couplées aux relevés de terrain effectués lors de la mission "Congo Peatlands 2024".',
+    pages: 18,
+    isExclusive: true
+  }
+];
