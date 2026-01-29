@@ -141,9 +141,9 @@ const App: React.FC = () => {
                 {OBJECTIFS.map((objectif) => (
                   <div
                     key={objectif.id}
+                    // --- AJOUT DE LA LOGIQUE DE CLIC ---
                     onClick={() => objectif.linkTo && navigateTo(objectif.linkTo)}
                     className={`bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-100 group hover:shadow-xl hover:border-blue-100 transition-all duration-500 flex flex-col items-center text-center ${objectif.linkTo ? 'cursor-pointer hover:scale-105' : ''}`}
-                    className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-100 group hover:shadow-xl hover:border-blue-100 transition-all duration-500 flex flex-col items-center text-center"
                   >
                     <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-700 mb-8 mx-auto group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all duration-500">
                       <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -154,6 +154,13 @@ const App: React.FC = () => {
                       {objectif.title}
                     </h3>
                     <p className="text-slate-600 leading-relaxed text-sm">{objectif.description}</p>
+                    
+                    {/* --- INDICATEUR VISUEL POUR LE LIEN --- */}
+                    {objectif.linkTo && (
+                      <span className="mt-6 text-blue-600 text-xs font-bold uppercase tracking-widest flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        Accéder à la bibliothèque →
+                      </span>
+                    )}
                   </div>
                 ))}
               </div>
@@ -244,7 +251,6 @@ const App: React.FC = () => {
                    </h3>
                    <div className="h-px bg-slate-300 w-12 md:w-32"></div>
                 </div>
-                {/* ---------------------------------- */}
 
                 <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-60 hover:opacity-100 transition-opacity grayscale hover:grayscale-0">
                   {PARTNERS.map(partner => (
