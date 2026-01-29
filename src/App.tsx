@@ -235,6 +235,15 @@ const App: React.FC = () => {
 
             <section className="py-20 bg-white">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                {/* --- DEBUT AJOUT TITRE --- */}
+                <div className="text-center mb-12">
+                   <h3 className="text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">
+                     Ceux qui nous font confiance
+                   </h3>
+                </div>
+                {/* --- FIN AJOUT TITRE --- */}
+
                 <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-40 hover:opacity-100 transition-opacity grayscale hover:grayscale-0">
                   {PARTNERS.map(partner => (
                     <div key={partner.name} className="flex flex-col items-center gap-2">
