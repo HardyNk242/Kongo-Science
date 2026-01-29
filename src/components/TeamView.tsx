@@ -7,28 +7,28 @@ const TeamView: React.FC = () => {
       name: "Dr. Hardy Nkodia",
       role: "Président du bureau exécutif",
       bio: "Géologue et Assistant à l'Université Marien Ngouabi, spécialisé dans l'étude tectonique du Congo. Son travail de recherche combine expertise en géologie structurale, gestion de projets et enseignement. Passionné par la promotion de la science en Afrique, il a publié des articles de renom et dirigé des conférences internationales.",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400&h=500",
+      image: "https://media.licdn.com/dms/image/v2/D4E03AQHVL0NAf_mDiA/profile-displayphoto-scale_200_200/B4EZq9z1M_IwAY-/0/1764121076711?e=1771459200&v=beta&t=lflYAyYGAgClv1prYtRxPPLAYrIWq4Q92beL9Q5A2oY",
       tags: ["Tectonique", "Géologie Structurale", "Univ. Marien Ngouabi"]
     },
     {
       name: "Richy Mobongui",
       role: "Vice-Président",
       bio: "Expert en Field Network Services chez MTN Congo depuis 2018. Responsable du suivi de la disponibilité du réseau et de l'énergie, de l'exécution des projets Field Services et de la maintenance des centres de données. Licence en Technologies de l'information (ISTP Brazzaville).",
-      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400&h=500",
+      image: "https://media.licdn.com/dms/image/v2/D5603AQHro7zxMEhr5A/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1682344408178?e=2147483647&v=beta&t=HPYX0Fab5hX4v3Lgo_hHw4yocQHbdYczKS-xvI0rCB4",
       tags: ["Network Services", "MTN Congo", "IT Systems"]
     },
     {
       name: "Jemima Bounkouta",
       role: "Secrétaire Générale",
       bio: "Spécialiste en hydrogéologie environnementale et coordination de projets. Entrepreneure indépendante en QHSE et analyse de données (Sphinx, Excel). Master 2 en Sciences de la Terre (Univ. Marien Ngouabi), experte en analyse chimique des eaux.",
-      image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400&h=500",
+      image: "https://media.licdn.com/dms/image/v2/D4D03AQFFm71naVJTfg/profile-displayphoto-scale_200_200/B4DZp.nOErJUAY-/0/1763060803743?e=1771459200&v=beta&t=4qRVKg1-j7Vx9k2yRfOf1AZ1M8w84KpBawyGvt6K9pI",
       tags: ["Hydrogéologie", "QHSE", "Data Analysis"]
     },
     {
       name: "Dr. Nicy Bazebizonza",
       role: "V.P. Commission Contrôle & Évaluation",
       bio: "Géologue-Cartographe à l'Institut Géographique National (IGN) du Congo. Ambassadeur de la Géomatique. Doctorant sur les cavités karstiques du Congo en collaboration avec le MRAC de Tervuren (Belgique). Auteur de sept articles scientifiques.",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=400&h=500",
+      image: "https://media.licdn.com/dms/image/v2/C4E03AQHfkdOUCiq4ow/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1602615122649?e=2147483647&v=beta&t=KsWld7LEDpc6ykQu4nz8gQJXiYDIVjgdXx-pWq4dn0w",
       tags: ["Géomatique", "Cartographie", "IGN Congo"]
     },
     {
