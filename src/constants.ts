@@ -55,6 +55,7 @@ export const CONFERENCES: (Conference & { imageUrl: string })[] = [
     title: 'Les métiers de l\'ingénierie pétrolière face aux défis de la transition énergétique',
     description: 'Conférence animée par Japhet MAVOUNGOU, de 20h00 à 21h00 (heure de Brazzaville).',
     date: '2026-01-28',
+    replayUrl:'https://www.youtube.com/watch?v=9N9SuiV9Cf8'
     time: '20:00',
     day: '28',
     month: 'JAN',
