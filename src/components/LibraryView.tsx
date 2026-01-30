@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { SCIMAGO_DOMAINS } from '../constants';
 import { THESES_LIBRARY } from '../data/library';
 import { Thesis } from '../types';
@@ -146,11 +145,6 @@ const LibraryView: React.FC = () => {
   if (selectedThesis) {
     return (
       <div className="bg-white min-h-screen pt-32 pb-20 px-6">
-        <Helmet>
-          <title>{selectedThesis.title} - Kongo Science</title>
-          <meta name="description" content={`Découvrez l'article de ${selectedThesis.author} : ${selectedThesis.title}. Publié en ${selectedThesis.year}.`} />
-        </Helmet>
-
         {showMailPopup && <MailRequestPopup />}
         <div className="max-w-4xl mx-auto">
           <button 
@@ -192,11 +186,6 @@ const LibraryView: React.FC = () => {
   // ----------------------------------------------------------------------------------
   return (
     <div className="bg-white min-h-screen">
-      <Helmet>
-        <title>Bibliothèque Scientifique - Kongo Science</title>
-        <meta name="description" content="Accédez à une base de données de plus de 1000 thèses, articles et mémoires sur la géologie, la santé et l'environnement en République du Congo." />
-      </Helmet>
-
       {showSubmitModal && <SubmitPublicationModal onClose={() => setShowSubmitModal(false)} />}
       
       {/* HEADER RECHERCHE */}
