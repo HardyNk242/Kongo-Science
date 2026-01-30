@@ -1,5 +1,10 @@
-// --- BIBLIOTHÈQUE (THÈSES) ---
-export const THESES_LIBRARY = [
+import { Thesis } from '../types';
+
+// --- BASE DE DONNÉES BIBLIOTHÈQUE ---
+// Contient les thèses manuelles (prioritaires) + l'import massif Lens.org
+
+export const THESES_LIBRARY: Thesis[] = [
+  // --- 1. VOS ENTRÉES MANUELLES (Prioritaires) ---
   {
     id: 'th-hardy-2017',
     title: "Style structural et tectonique de la Formation de l'Inkisi",
