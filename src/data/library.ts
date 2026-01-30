@@ -13569,7 +13569,7 @@ export const THESES_LIBRARY = [
     pages: 'Vol 7',
     isRestricted: true,
     isExclusive: false,
-    pdfUrl: 'https://www.lens.org/',
+    pdfUrl: 'https://www.fortunejournals.com/articles/molecular-study-of-rotavirus-a-infection-in-children-with-diarrhea-before-and-after-vaccine-introduction-in-brazzaville-and-pointe.html',
   },
   {
     id: 'art-noemie-2022-effect',
@@ -13685,7 +13685,7 @@ export const THESES_LIBRARY = [
   },
   {
     id: 'art-mount-2015-the',
-    title: 'The F orgott en Genocide: The D emocratic Republic of the Congo',
+    title: 'The Forgott en Genocide: The Democratic Republic of the Congo',
     author: 'Z. Mount, J. LeBeau',
     year: '2015',
     institution: 'Scientific Publication',
@@ -14101,7 +14101,7 @@ export const THESES_LIBRARY = [
     pages: 'Vol 404, pp. 1011-1012',
     isRestricted: true,
     isExclusive: false,
-    pdfUrl: 'https://www.lens.org/',
+    pdfUrl: 'https://www.sciencedirect.com/science/article/pii/S0140673624018075?via%3Dihub',
   },
   {
     id: 'art-banga-mouss-2024-urological',
@@ -14145,5 +14145,4 @@ export const THESES_LIBRARY = [
     isExclusive: false,
     pdfUrl: 'https://www.lens.org/',
   },
-];;
-  
+];
