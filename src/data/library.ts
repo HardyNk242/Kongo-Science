@@ -1,7 +1,11 @@
-import { Thesis } from '../types';
+import React, { useState, useEffect } from 'react';
 
-// --- BASE DE DONNÉES BIBLIOTHÈQUE ---
-// Contient les thèses manuelles (prioritaires) + l'import massif Lens.org
+// --- CORRECTION ICI : ON SÉPARE LES IMPORTS ---
+import { SCIMAGO_DOMAINS } from '../constants';      // Vient du fichier de config
+import { THESES_LIBRARY } from '../data/library';    // Vient du fichier de données
+
+import { Thesis } from '../types';
+import SubmitPublicationModal from './SubmitPublicationModal';
 
 export const THESES_LIBRARY: Thesis[] = [
   // --- 1. VOS ENTRÉES MANUELLES (Prioritaires) ---
