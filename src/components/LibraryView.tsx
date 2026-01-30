@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { THESES_LIBRARY, SCIMAGO_DOMAINS } from '../constants';
+import { THESES_LIBRARY, SCIMAGO_DOMAINS } from ../data/library';
 import { Thesis } from '../types';
 import SubmitPublicationModal from './SubmitPublicationModal';
 
