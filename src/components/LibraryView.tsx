@@ -126,7 +126,7 @@ const LibraryView: React.FC = () => {
           </button>
           <div className="text-center mb-6">
             <h3 className="text-xl font-bold text-slate-900">Demander une copie privée</h3>
-            <p className="text-sm text-slate-500 mt-2">Ce document est protégé. Veuillez envoyer une demande à l'auteur.</p>
+            <p className="text-sm text-slate-500 mt-2">Ce document est protégé. L'auteur recevra votre demande par email.</p>
           </div>
           <div className="space-y-3">
             <a href={gmailLink} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-3 w-full bg-red-50 text-red-700 hover:bg-red-100 p-3 rounded-xl font-bold transition-colors">
@@ -166,13 +166,49 @@ const LibraryView: React.FC = () => {
                <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Résumé</h3>
                <p className="text-slate-700 leading-relaxed text-lg text-justify font-serif">{selectedThesis.abstract}</p>
              </div>
-             <div className="flex flex-col sm:flex-row gap-4 border-t border-slate-50 pt-8">
-                {selectedThesis.isForSale ? (
-                  <a href={selectedThesis.purchaseUrl} target="_blank" rel="noopener noreferrer" className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-2 w-full sm:w-auto">Acheter sur Amazon</a>
-                ) : selectedThesis.isRestricted ? (
-                  <button onClick={() => setShowMailPopup(true)} className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-2 w-full sm:w-auto">Demander une copie</button>
-                ) : (
-                  <a href={selectedThesis.pdfUrl} target="_blank" rel="noopener noreferrer" className="bg-blue-700 hover:bg-blue-800 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-2 w-full sm:w-auto">Télécharger (PDF)</a>
+             
+             {/* --- ZONE DES BOUTONS (MODIFIÉE) --- */}
+             <div className="flex flex-col gap-6 border-t border-slate-50 pt-8">
+                
+                <div className="flex flex-col sm:flex-row gap-4 flex-wrap">
+                    {/* 1. CAS VENTE */}
+                    {selectedThesis.isForSale && selectedThesis.purchaseUrl ? (
+                      <a href={selectedThesis.purchaseUrl} target="_blank" rel="noopener noreferrer" className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg transition-all hover:-translate-y-1">
+                        Acheter
+                      </a>
+                    ) : null}
+
+                    {/* 2. CAS RESTREINT : Bouton Demande */}
+                    {selectedThesis.isRestricted && (
+                        <button onClick={() => setShowMailPopup(true)} className="bg-amber-500 hover:bg-amber-600 text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg transition-all hover:-translate-y-1">
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                            Demander une copie
+                        </button>
+                    )}
+
+                    {/* 3. CAS LIEN WEB : S'affiche TOUJOURS si pdfUrl existe (Même si restreint) */}
+                    {selectedThesis.pdfUrl && (
+                        <a href={selectedThesis.pdfUrl} target="_blank" rel="noopener noreferrer" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg transition-all hover:-translate-y-1">
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                            {selectedThesis.isRestricted ? "Voir sur le site source" : "Télécharger / Consulter"}
+                        </a>
+                    )}
+
+                    {/* 4. BOUTON CITER */}
+                    <button onClick={() => copyCitation(selectedThesis)} className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all">
+                        Citer
+                    </button>
+                </div>
+
+                {/* NOTE EXPLICATIVE SUR LES DROITS D'AUTEUR */}
+                {selectedThesis.isRestricted && (
+                    <div className="flex items-start gap-3 bg-slate-50 p-4 rounded-lg border border-slate-100 text-sm text-slate-500">
+                        <svg className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <p>
+                            Ce document n'est pas en libre accès (Open Access) en raison des droits d'auteur. 
+                            Vous pouvez essayer de le consulter via le bouton "Voir sur le site source" (si vous avez un accès universitaire) ou "Demander une copie" directement à l'auteur.
+                        </p>
+                    </div>
                 )}
              </div>
           </div>
