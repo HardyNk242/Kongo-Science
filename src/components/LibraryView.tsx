@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { THESES_LIBRARY, SCIMAGO_DOMAINS } from ../data/library';
+import { SCIMAGO_DOMAINS } from '../constants'; // Garder cet import
+import { THESES_LIBRARY } from '../data/library'; // <--- NOUVEL IMPORT ICI
 import { Thesis } from '../types';
 import SubmitPublicationModal from './SubmitPublicationModal';
 
