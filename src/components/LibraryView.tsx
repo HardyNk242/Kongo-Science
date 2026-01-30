@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Helmet } from 'react-helmet-async'; // Pour le SEO (Titres Google)
 import { SCIMAGO_DOMAINS } from '../constants';
 import { THESES_LIBRARY } from '../data/library';
 import { Thesis } from '../types';
