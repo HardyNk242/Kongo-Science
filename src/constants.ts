@@ -222,7 +222,6 @@ export const PROPOSAL_PSYCHOLOGY = {
   }
 };
 
-
 // --- ÉQUIPE (TEAM) ---
 export const TEAM = [
   {
