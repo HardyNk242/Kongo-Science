@@ -15139,5 +15139,5 @@ export const THESES_LIBRARY: Thesis[] = [
     isExclusive: false,
     pdfUrl: ""
   },
-
+];
   
