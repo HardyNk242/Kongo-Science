@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { SCIMAGO_DOMAINS } from '../constants';
 import { THESES_LIBRARY } from '../data/library';
 import { Thesis } from '../types';
@@ -222,6 +223,7 @@ const LibraryView: React.FC = () => {
         
         {/* SIDEBAR FILTRES */}
         <aside className="w-full md:w-64 flex-shrink-0 space-y-8">
+           {/* Filtre Domaines AVEC COMPTEURS */}
            <div>
              <h4 className="text-sm font-bold text-slate-900 uppercase tracking-widest mb-4 border-b border-slate-200 pb-2">
                Domaines
