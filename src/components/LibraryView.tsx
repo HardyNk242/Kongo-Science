@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { THESES_LIBRARY, SCIMAGO_DOMAINS } from '../data/library';
+
+// --- CORRECTION CRITIQUE ---
+// 1. SCIMAGO_DOMAINS vient de 'constants'
+import { SCIMAGO_DOMAINS } from '../constants';
+
+// 2. THESES_LIBRARY vient de 'data/library'
+import { THESES_LIBRARY } from '../data/library';
+
 import { Thesis } from '../types';
 import SubmitPublicationModal from './SubmitPublicationModal';
+
+// ... le reste du code (const ITEMS_PER_PAGE...) ne change pas
 
 const ITEMS_PER_PAGE = 10;
 
