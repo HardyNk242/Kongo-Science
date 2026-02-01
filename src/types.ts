@@ -14,15 +14,16 @@ export interface Article {
 export interface NavItem {
   label: string;
   path: string;
+  submenu?: NavItem[]; // NOUVEAU : Permet d'avoir des sous-menus
 }
 
 // --- OBJECTIFS (Vision) ---
 export interface Objective {
-  id: number; // Corrigé en number pour correspondre à constants.ts
+  id: number;
   title: string;
   description: string;
   iconPath: string;
-  linkTo?: string; // Permet le clic vers la bibliothèque
+  linkTo?: string;
 }
 
 // --- CONFÉRENCES (Agenda) ---
@@ -38,6 +39,17 @@ export interface Conference {
   location: string;
   type: 'Webinaire' | 'Présentiel' | 'Hybride';
   organizer: string;
+}
+
+// --- BOURSES (NOUVEAU) ---
+export interface Scholarship {
+  id: string;
+  title: string;
+  provider: string;   // Ex: "Ambassade de France", "DAAD"
+  deadline: string;   // Format YYYY-MM-DD pour le tri et le calcul d'urgence
+  level: string;      // Ex: "Master", "Doctorat", "Post-Doc"
+  description: string;
+  link: string;       // Lien vers le formulaire de candidature
 }
 
 // --- CHATBOT ---
@@ -58,15 +70,15 @@ export interface Thesis {
   author: string;
   year: string;
   institution: string;
-  domain: string; // ex: 'Géologie', 'Santé Publique', 'Histoire'
-  type: string;   // ex: 'Thèse Doctorat', 'Article Scientifique', 'Livre / Guide'
+  domain: string;
+  type: string;
   abstract: string;
-  pages?: number | string; // Accepte "49" (number) ou "Vol 18, Art. 144" (string)
-  pdfUrl: string; // Lien vers le fichier ou la référence
-  isExclusive?: boolean; // Badge "Exclusif Kongo Science"
-  isRestricted?: boolean; // Déclenche le bouton "Demande de copie privée"
-  // --- NOUVEAUX CHAMPS POUR LA VENTE ---
-  isForSale?: boolean;    // Si vrai, affiche le bouton "Acheter"
-  purchaseUrl?: string;   // Lien Amazon/Editeur
-  price?: string;         // Ex: "3.66 €"
+  pages?: number | string;
+  pdfUrl: string;
+  isExclusive?: boolean;
+  isRestricted?: boolean;
+  // Champs E-commerce / Vente
+  isForSale?: boolean;
+  purchaseUrl?: string;
+  price?: string;
 }
