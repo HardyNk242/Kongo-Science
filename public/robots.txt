@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kongoscience.com/sitemap.xml
