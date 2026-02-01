@@ -1,4 +1,4 @@
-import { Article, NavItem, Conference } from './types';
+import { Article, NavItem, Conference, Scholarship } from './types';
 
 // --- IMPORTS DES IMAGES (ASSETS) ---
 import peatlandsCard from "./assets/conf-peatlands-conferencecard.png";
@@ -31,15 +31,52 @@ export const SCIMAGO_DOMAINS = [
   { value: "Multidisciplinary", label: "Multidisciplinaire" }
 ].sort((a, b) => a.label.localeCompare(b.label));
 
-// --- NAVIGATION ---
+// --- NAVIGATION (REFONDUE) ---
 export const NAV_ITEMS: NavItem[] = [
   { label: 'Accueil', path: 'home' },
   { label: 'Bibliothèque', path: 'library' },
-  { label: 'Agenda', path: 'agenda' },
+  { label: 'Actualité', path: 'publications' }, // Nouvelle page
   { label: 'Programmes', path: 'programmes' },
-  { label: 'Historique', path: 'history' },
-  { label: 'Équipe', path: 'team' },
-  { label: 'À Propos', path: 'about' }
+  { 
+    label: 'À Propos', 
+    path: 'about',
+    submenu: [ // Nouveau sous-menu
+      { label: 'Notre Histoire', path: 'history' },
+      { label: 'Notre Équipe', path: 'team' },
+      { label: 'Agenda', path: 'agenda' }
+    ]
+  }
+];
+
+// --- BOURSES (NOUVEAU) ---
+export const SCHOLARSHIPS: Scholarship[] = [
+  {
+    id: 'bourse-france-2026',
+    title: "Bourses du Gouvernement Français (BGF) 2026-2027",
+    provider: "Ambassade de France au Congo",
+    deadline: "2026-03-15",
+    level: "Master / Doctorat",
+    description: "Financement complet pour les étudiants congolais souhaitant poursuivre leurs études en France. Priorité aux filières STEM.",
+    link: "#"
+  },
+  {
+    id: 'bourse-daad-2026',
+    title: "Bourses de recherche DAAD - Allemagne",
+    provider: "DAAD",
+    deadline: "2026-04-30",
+    level: "Doctorat / Post-Doc",
+    description: "Soutien aux jeunes chercheurs pour des séjours de recherche de courte durée en Allemagne.",
+    link: "#"
+  },
+  {
+    id: 'bourse-kongo-science',
+    title: "Micro-Grant Kongo Science : Soutien à la publication",
+    provider: "Fondation Kongo Science",
+    deadline: "2026-06-01",
+    level: "Tous niveaux",
+    description: "Aide financière pour couvrir les frais de publication (APC) dans des revues internationales à fort impact.",
+    link: "#"
+  }
 ];
 
 // --- OBJECTIFS ---
