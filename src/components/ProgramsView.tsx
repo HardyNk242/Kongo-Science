@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 
 type ProgramType = 'hub' | 'pacc' | 'sig';
@@ -15,6 +14,7 @@ const ProgramsView: React.FC = () => {
   const [activeView, setActiveView] = useState<ProgramType>('hub');
   const [selectedDetail, setSelectedDetail] = useState<DetailContent | null>(null);
 
+  // ... (Vos données paccModules et sigFormations restent identiques) ...
   const paccModules = [
     { 
       s: "S1", 
@@ -204,8 +204,8 @@ const ProgramsView: React.FC = () => {
                  <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {selectedDetail.points.map((p, i) => (
                       <li key={i} className="flex gap-3 text-sm text-slate-700 items-start">
-                         <svg className="w-5 h-5 text-blue-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
-                         {p}
+                          <svg className="w-5 h-5 text-blue-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
+                          {p}
                       </li>
                     ))}
                  </ul>
@@ -255,7 +255,7 @@ const ProgramsView: React.FC = () => {
             </div>
           </div>
           <div className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity">
-             <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&q=80&w=800" className="w-full h-full object-cover" />
+              <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&q=80&w=800" className="w-full h-full object-cover" />
           </div>
         </button>
 
@@ -279,7 +279,7 @@ const ProgramsView: React.FC = () => {
             </div>
           </div>
           <div className="absolute inset-0 opacity-5 group-hover:opacity-10 transition-opacity">
-             <img src="https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?auto=format&fit=crop&q=80&w=800" className="w-full h-full object-cover" />
+              <img src="https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?auto=format&fit=crop&q=80&w=800" className="w-full h-full object-cover" />
           </div>
         </button>
       </div>
@@ -400,7 +400,7 @@ const ProgramsView: React.FC = () => {
   );
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white min-h-screen pt-20"> {/* Ajout de pt-20 pour compenser le Header */}
       {activeView === 'hub' && HubView()}
       {activeView === 'pacc' && PaccDetailView()}
       {activeView === 'sig' && SigDetailView()}
