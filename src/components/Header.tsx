@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { NAV_ITEMS } from '../constants';
 
@@ -9,17 +8,26 @@ interface Props {
 
 const Header: React.FC<Props> = ({ onNavigate, currentPath }) => {
   const [isOpen, setIsOpen] = useState(false);
+  // État pour gérer l'ouverture des sous-menus sur mobile
+  const [mobileSubmenu, setMobileSubmenu] = useState<string | null>(null);
 
   const handleNavClick = (path: string) => {
     onNavigate(path);
     setIsOpen(false);
+    setMobileSubmenu(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const toggleMobileSubmenu = (label: string) => {
+    setMobileSubmenu(mobileSubmenu === label ? null : label);
+  };
+
   return (
-    <nav className="bg-white border-b border-slate-200 sticky top-0 z-50">
+    <nav className="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50 transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20">
+          
+          {/* --- LOGO --- */}
           <div className="flex items-center">
             <button 
               onClick={() => handleNavClick('home')}
@@ -33,23 +41,54 @@ const Header: React.FC<Props> = ({ onNavigate, currentPath }) => {
             </button>
           </div>
           
+          {/* --- DESKTOP MENU --- */}
           <div className="hidden md:flex items-center space-x-8">
-            {NAV_ITEMS.map((item) => (
-              <button
-                key={item.label}
-                onClick={() => handleNavClick(item.path)}
-                className={`text-sm font-medium transition-colors ${
-                  currentPath === item.path ? 'text-blue-700' : 'text-slate-600 hover:text-blue-700'
-                }`}
-              >
-                {item.label}
-              </button>
-            ))}
+            {NAV_ITEMS.map((item) => {
+              // Vérifie si le lien est actif (lui-même ou un de ses enfants)
+              const isActive = currentPath === item.path || item.submenu?.some(sub => sub.path === currentPath);
+
+              return (
+                <div key={item.label} className="relative group">
+                  <button
+                    onClick={() => !item.submenu && handleNavClick(item.path)}
+                    className={`text-sm font-medium transition-colors flex items-center gap-1 py-2 ${
+                      isActive ? 'text-blue-700 font-bold' : 'text-slate-600 hover:text-blue-700'
+                    }`}
+                  >
+                    {item.label}
+                    {item.submenu && (
+                      <svg className="w-3 h-3 mt-0.5 group-hover:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                    )}
+                  </button>
+
+                  {/* Dropdown Desktop */}
+                  {item.submenu && (
+                    <div className="absolute top-full left-0 mt-0 w-48 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0">
+                      <div className="bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden">
+                        {item.submenu.map((subItem) => (
+                          <button
+                            key={subItem.path}
+                            onClick={() => handleNavClick(subItem.path)}
+                            className={`block w-full text-left px-4 py-3 text-sm hover:bg-slate-50 hover:text-blue-700 border-b border-slate-50 last:border-none ${
+                              currentPath === subItem.path ? 'text-blue-700 font-bold bg-blue-50' : 'text-slate-600'
+                            }`}
+                          >
+                            {subItem.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+            
             <button className="bg-blue-700 text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-blue-800 transition-all shadow-xl shadow-blue-100 active:scale-95">
               Rejoindre
             </button>
           </div>
 
+          {/* --- MOBILE HAMBURGER --- */}
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -67,23 +106,60 @@ const Header: React.FC<Props> = ({ onNavigate, currentPath }) => {
         </div>
       </div>
 
+      {/* --- MOBILE MENU --- */}
       {isOpen && (
-        <div className="md:hidden bg-white border-t border-slate-100 pb-4 shadow-lg animate-in slide-in-from-top-4 duration-300">
-          <div className="px-4 pt-4 space-y-2">
+        <div className="md:hidden bg-white border-t border-slate-100 pb-4 shadow-lg animate-in slide-in-from-top-4 duration-300 h-screen overflow-y-auto">
+          <div className="px-4 pt-4 space-y-2 pb-20">
             {NAV_ITEMS.map((item) => (
-              <button
-                key={item.label}
-                onClick={() => handleNavClick(item.path)}
-                className={`block w-full text-left px-3 py-3 text-base font-medium rounded-xl transition-all ${
-                  currentPath === item.path 
-                    ? 'text-blue-700 bg-blue-50' 
-                    : 'text-slate-600 hover:text-blue-700 hover:bg-slate-50'
-                }`}
-              >
-                {item.label}
-              </button>
+              <div key={item.label}>
+                {item.submenu ? (
+                  // Cas avec Sous-menu (Accordéon)
+                  <div>
+                    <button
+                      onClick={() => toggleMobileSubmenu(item.label)}
+                      className={`w-full flex justify-between items-center text-left px-3 py-3 text-base font-medium rounded-xl transition-all ${
+                        currentPath === item.path || item.submenu.some(s => s.path === currentPath)
+                          ? 'text-blue-700 bg-blue-50' 
+                          : 'text-slate-600 hover:bg-slate-50'
+                      }`}
+                    >
+                      {item.label}
+                      <svg className={`w-4 h-4 transition-transform ${mobileSubmenu === item.label ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                    </button>
+                    
+                    {/* Liste des sous-liens */}
+                    {mobileSubmenu === item.label && (
+                      <div className="pl-4 mt-1 space-y-1 border-l-2 border-slate-100 ml-4">
+                        {item.submenu.map((sub) => (
+                          <button
+                            key={sub.path}
+                            onClick={() => handleNavClick(sub.path)}
+                            className={`block w-full text-left px-3 py-2 text-sm rounded-lg ${
+                              currentPath === sub.path ? 'text-blue-700 font-bold' : 'text-slate-500'
+                            }`}
+                          >
+                            {sub.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  // Cas lien simple
+                  <button
+                    onClick={() => handleNavClick(item.path)}
+                    className={`block w-full text-left px-3 py-3 text-base font-medium rounded-xl transition-all ${
+                      currentPath === item.path 
+                        ? 'text-blue-700 bg-blue-50' 
+                        : 'text-slate-600 hover:text-blue-700 hover:bg-slate-50'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                )}
+              </div>
             ))}
-            <div className="pt-4">
+            <div className="pt-6">
               <button className="w-full bg-blue-700 text-white py-3 rounded-xl font-bold shadow-lg">
                 Rejoindre la communauté
               </button>
