@@ -1,8 +1,16 @@
-
 import React from 'react';
 
+// Interface locale pour typer les activités
+interface Activity {
+  year: string;
+  title: string;
+  expert: string;
+  audience: string;
+  description: string;
+}
+
 const HistoryView: React.FC = () => {
-  const activities = [
+  const activities: Activity[] = [
     {
       year: "2019",
       title: "Fondation & Premier Séminaire",
@@ -34,7 +42,7 @@ const HistoryView: React.FC = () => {
   ];
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white min-h-screen pt-20"> {/* Ajout pt-20 pour compenser le Header fixe */}
       {/* Hero Section */}
       <section className="bg-slate-900 py-24 text-white relative">
         <div className="max-w-5xl mx-auto px-6 relative z-10">
