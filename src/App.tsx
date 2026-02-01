@@ -1,34 +1,39 @@
 import React, { useState, useEffect, useMemo } from 'react';
+
+// --- COMPOSANTS ---
 import Header from './components/Header';
 import Hero from './components/Hero';
 import ConferenceCard from './components/ConferenceCard';
 import LibraryView from './components/LibraryView';
 import ConferencesView from './components/ConferencesView';
-import ArticleCard from './components/ArticleCard';
 import RegistrationView from './components/RegistrationView';
 import ProposalView from './components/ProposalView';
 import ChatAssistant from './components/ChatAssistant';
 import Footer from './components/Footer';
+
+// --- VOS NOUVELLES PAGES (IMPORTÉES DEPUIS VOS FICHIERS) ---
 import HistoryView from './components/HistoryView';
 import TeamView from './components/TeamView';
 import ProgramsView from './components/ProgramsView';
-import { OBJECTIFS, CONFERENCES, ARTICLES, PARTNERS } from './constants';
+import PublicationsView from './components/PublicationsView';
+
+import { OBJECTIFS, CONFERENCES, PARTNERS } from './constants';
 import { Conference } from './types';
 
 const App: React.FC = () => {
   const [selectedConference, setSelectedConference] = useState<Conference | null>(null);
   const [currentPath, setCurrentPath] = useState('home');
 
+  // --- FILTRE DES CONFÉRENCES À VENIR (Pour la Home) ---
   const upcomingConferences = useMemo(() => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-
     return CONFERENCES
       .filter((conf) => new Date(conf.date) >= today)
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   }, []);
 
-  // ✅ Parse hash robuste
+  // --- GESTION DU HASH (URL) ---
   const syncFromHash = () => {
     const raw = window.location.hash || '';
     const cleaned = raw.replace(/^#\/?/, '');
@@ -71,8 +76,14 @@ const App: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // --- ROUTEUR PRINCIPAL ---
   const renderContent = () => {
     switch (currentPath) {
+      
+      // --- NOUVELLES ROUTES ---
+      case 'publications':
+        return <PublicationsView />;
+
       case 'history':
         return <HistoryView />;
 
@@ -85,6 +96,7 @@ const App: React.FC = () => {
       case 'library':
         return <LibraryView />;
 
+      // --- AGENDA & INSCRIPTIONS ---
       case 'agenda':
         return (
           <ConferencesView
@@ -105,24 +117,23 @@ const App: React.FC = () => {
         ) : (
           <div className="py-32 text-center">
             <h2 className="text-2xl font-bold">Conférence non trouvée</h2>
-            <p className="mt-2 text-slate-500">
-              Vérifie que l’URL contient un id valide.
-            </p>
             <button
               onClick={() => navigateTo('home')}
-              className="mt-4 text-blue-700 font-bold"
+              className="mt-4 text-blue-700 font-bold hover:underline"
             >
               Retour à l'accueil
             </button>
           </div>
         );
 
+      // --- PAGE D'ACCUEIL ---
       case 'home':
       default:
         return (
           <>
             <Hero onNavigate={navigateTo} />
 
+            {/* SECTION VISION */}
             <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-16">
                 <span className="text-blue-700 font-black text-[10px] uppercase tracking-[0.4em] mb-4 block">
@@ -141,7 +152,6 @@ const App: React.FC = () => {
                 {OBJECTIFS.map((objectif) => (
                   <div
                     key={objectif.id}
-                    // --- AJOUT DE LA LOGIQUE DE CLIC ---
                     onClick={() => objectif.linkTo && navigateTo(objectif.linkTo)}
                     className={`bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-100 group hover:shadow-xl hover:border-blue-100 transition-all duration-500 flex flex-col items-center text-center ${objectif.linkTo ? 'cursor-pointer hover:scale-105' : ''}`}
                   >
@@ -155,10 +165,9 @@ const App: React.FC = () => {
                     </h3>
                     <p className="text-slate-600 leading-relaxed text-sm">{objectif.description}</p>
                     
-                    {/* --- INDICATEUR VISUEL POUR LE LIEN --- */}
                     {objectif.linkTo && (
                       <span className="mt-6 text-blue-600 text-xs font-bold uppercase tracking-widest flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        Accéder à la bibliothèque →
+                        Accéder →
                       </span>
                     )}
                   </div>
@@ -166,6 +175,7 @@ const App: React.FC = () => {
               </div>
             </section>
 
+            {/* SECTION CONFÉRENCES (HOME PREVIEW) */}
             <section className="py-24 bg-white relative">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-16">
@@ -173,7 +183,7 @@ const App: React.FC = () => {
                     <div className="flex items-center gap-3 mb-4">
                       <div className="w-8 h-8 bg-blue-700 text-white rounded-lg flex items-center justify-center shadow-lg shadow-blue-200">
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" />
                         </svg>
                       </div>
                       <span className="text-blue-700 font-black text-[10px] uppercase tracking-[0.2em]">
@@ -181,11 +191,8 @@ const App: React.FC = () => {
                       </span>
                     </div>
                     <h2 className="text-4xl md:text-5xl font-serif font-bold text-slate-900 leading-tight">
-                      Conférences en cours
+                      Prochains Rendez-vous
                     </h2>
-                    <p className="mt-4 text-slate-600 text-lg leading-relaxed">
-                      Les sessions ouvertes à l'inscription et les prochains rendez-vous majeurs.
-                    </p>
                   </div>
 
                   <div className="flex items-center gap-4">
@@ -193,24 +200,18 @@ const App: React.FC = () => {
                       onClick={() => navigateTo('agenda')}
                       className="bg-slate-900 text-white px-6 py-3 rounded-2xl font-bold text-sm hover:bg-slate-800 transition-all shadow-lg"
                     >
-                      Voir tout l'agenda
-                    </button>
-                    <button
-                      onClick={() => navigateTo('proposal')}
-                      className="bg-blue-700 text-white px-6 py-3 rounded-2xl font-bold text-sm hover:bg-blue-800 transition-all shadow-lg shadow-blue-200"
-                    >
-                      Proposer une conférence
+                      Tout l'agenda
                     </button>
                   </div>
                 </div>
 
                 {upcomingConferences.length === 0 ? (
-                  <div className="text-center text-slate-500 py-12">
-                    Aucune conférence en cours pour le moment.
+                  <div className="text-center text-slate-500 py-12 bg-slate-50 rounded-3xl border border-dashed border-slate-200">
+                    Aucune conférence programmée prochainement.
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                    {upcomingConferences.map(conference => (
+                    {upcomingConferences.slice(0, 3).map(conference => (
                       <ConferenceCard
                         key={conference.id}
                         conference={conference}
@@ -222,28 +223,9 @@ const App: React.FC = () => {
               </div>
             </section>
 
-            <section className="py-24 bg-slate-50">
+            {/* SECTION PARTENAIRES */}
+            <section className="py-20 bg-slate-50 border-t border-slate-100">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-center mb-16">
-                  <span className="text-blue-700 font-black text-[10px] uppercase tracking-[0.4em] mb-4 block">
-                    Savoir & Publication
-                  </span>
-                  <h2 className="text-4xl font-serif font-bold text-slate-900 italic">
-                    Actualités Scientifiques
-                  </h2>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {ARTICLES.map(article => (
-                    <ArticleCard key={article.id} article={article} />
-                  ))}
-                </div>
-              </div>
-            </section>
-
-            <section className="py-20 bg-white border-t border-slate-100">
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                
-                {/* --- TITRE STYLISÉ AVEC LIGNES --- */}
                 <div className="flex items-center justify-center gap-6 mb-16 opacity-60">
                    <div className="h-px bg-slate-300 w-12 md:w-32"></div>
                    <h3 className="text-xs md:text-sm font-black text-slate-400 uppercase tracking-[0.3em] whitespace-nowrap">
