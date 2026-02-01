@@ -7,48 +7,44 @@ import arseneImg from '../assets/arsenenganaloango.png';
 export const ARTICLES: Article[] = [
   {
     id: 'art-1',
-    title: 'Impact des \u00e9rosions \u00e0 Brazzaville : Cas des quartiers Mfilou et Jacques Opangault',
-    excerpt: 'Une \u00e9tude g\u00e9ologique approfondie sur les m\u00e9canismes de d\u00e9gradation des sols urbains et les solutions de stabilisation durable.',
-    category: 'G\u00e9osciences',
+    title: 'Impact des érosions à Brazzaville : Cas des quartiers Mfilou et Jacques Opangault',
+    excerpt: 'Une étude géologique approfondie sur les mécanismes de dégradation des sols urbains et les solutions de stabilisation durable.',
+    category: 'Géosciences',
     author: 'Dr. Hardy Nkodia',
     date: 'Oct 2024',
     imageUrl: 'https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?auto=format&fit=crop&q=80&w=800'
   },
   {
     id: 'art-2',
-    title: 'G\u00e9omatique et Sant\u00e9 : Cartographie pr\u00e9dictive des zones \u00e0 risque COVID-19',
-    excerpt: "Collaboration avec la Fondation Ntoumi pour l'utilisation du SIG dans la gestion des crises sanitaires en R\u00e9publique du Congo.",
-    category: 'Sant\u00e9 Publique',
+    title: 'Géomatique et Santé : Cartographie prédictive des zones à risque COVID-19',
+    excerpt: "Collaboration avec la Fondation Ntoumi pour l'utilisation du SIG dans la gestion des crises sanitaires en République du Congo.",
+    category: 'Santé Publique',
     author: 'Dr. Nicy Bazebizonza',
     date: 'Jan 2025',
     imageUrl: 'https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=800'
   },
   {
     id: 'news-loango-suriname-2026',
-    title: 'Une lumi\u00e8re nouvelle sur un chapitre m\u00e9connu : Ars\u00e8ne Francoeur Nganga publie son enqu\u00eate majeure',
-    excerpt: "Parution de la 2e \u00e9dition de l'ouvrage de r\u00e9f\u00e9rence : 'The Slave Trade in Loango Coast for the Colony of Surinam'. Une plong\u00e9e in\u00e9dite dans les liens unissant l'Afrique Centrale \u00e0 l'Am\u00e9rique du Sud.",
-    category: 'Litt\u00e9rature & Histoire',
-    author: 'La R\u00e9daction',
-    date: '31 Jan 2026',
+    title: 'The Slave Trade in Loango Coast for the Colony of Surinam',
+    excerpt: "Une enquête historique majeure révèle les connexions oubliées entre l'Afrique Centrale et l'Amérique du Sud.",
+    category: 'History & Books',
+    author: 'Par La Rédaction',
+    date: 'Jan. 31, 2026',
     imageUrl: arseneImg,
     content: `
-      <p><strong>Brazzaville/New York \u2013 31 Janvier 2026.</strong> C\u2019est aujourd\u2019hui que para\u00eet la seconde \u00e9dition revue et augment\u00e9e de l\u2019ouvrage historique de r\u00e9f\u00e9rence : <em>"The Slave Trade in Loango Coast for the Colony of Surinam"</em>. Publi\u00e9 par Black Seeds Publishing, ce livre sign\u00e9 par l'historien et consultant congolais Ars\u00e8ne Francoeur Nganga, offre une plong\u00e9e in\u00e9dite dans les liens profonds et douloureux unissant l\u2019Afrique Centrale \u00e0 l\u2019Am\u00e9rique du Sud.</p>
+      <p><strong>BRAZZAVILLE</strong> — C’est une histoire longtemps restée dans l’ombre des archives coloniales, un fil invisible reliant les rives du fleuve Congo aux plantations humides du Suriname. Avec la publication de la seconde édition de son ouvrage magistral, <em>The Slave Trade in Loango Coast for the Colony of Surinam</em>, l'historien Arsène Francoeur Nganga ne se contente pas de relater des faits ; il cartographie la mémoire d'un exil forcé.</p>
 
-      <h3>Le Cha\u00eenon Manquant : Du Loango au Suriname</h3>
-      <p>Si l'histoire de la traite transatlantique est vaste, certains de ses chapitres restent encore dans l'ombre. C'est le cas de la connexion sp\u00e9cifique entre la C\u00f4te de Loango \u2014 s'\u00e9tendant du Cap Lopez au Gabon jusqu'\u00e0 l'embouchure du fleuve Congo \u2014 et la colonie n\u00e9erlandaise du Suriname.</p>
-      <p>S'appuyant sur des recherches archivistiques approfondies, l'auteur d\u00e9montre comment cette r\u00e9gion est devenue le plus grand site d'embarquement pour les Africains r\u00e9duits en esclavage \u00e0 destination des colonies n\u00e9erlandaises des Am\u00e9riques d\u00e8s les ann\u00e9es 1630.</p>
+      <p>L'ouvrage, publié ce samedi par Black Seeds Publishing, arrive à un moment charnière où la demande pour une réappropriation de l'histoire africaine par des chercheurs africains n'a jamais été aussi forte. Nganga, fort de son expérience de consultant en tourisme de mémoire, propose ici une "géographie de la douleur" qui s'étend du Cap Lopez jusqu'à l'embouchure du Congo.</p>
 
-      <h3>Une 2e \u00c9dition Enrichie</h3>
-      <p>Cette nouvelle \u00e9dition s'enrichit de l'exp\u00e9rience unique de l'auteur en tant que Consultant en Tourisme de M\u00e9moire pour la R\u00e9publique du Congo. Elle met en lumi\u00e8re la r\u00e9silience culturelle et la survie linguistique des peuples Bantous au Suriname et en Guyane fran\u00e7aise aujourd'hui.</p>
+      <h3>Le Chaînon Manquant de l'Atlantique</h3>
 
-      <p><strong>Informations Pratiques :</strong></p>
-      <ul>
-        <li><strong>Titre :</strong> The Slave Trade In Loango Coast for The Colony of Surinam (2nd Edition)</li>
-        <li><strong>Date :</strong> 31 Janvier 2026</li>
-        <li><strong>\u00c9diteur :</strong> Black Seeds Publishing</li>
-        <li><strong>Prix :</strong> 32,95 $ USD</li>
-        <li><strong>Disponibilit\u00e9 :</strong> En stock \u2013 <a href="https://www.amazon.com/Slave-Trade-Loango-Colony-Surinam/dp/B0GGCMMP8W/ref=sr_1_2?crid=3IVFZ45NB2CL8&dib=eyJ2IjoiMSJ9.BbeGY9dBgqSU-NriJuT_LzEsxOKbaHEU6o9-UYrm6PyjHzOB84Qtaa3utKAvOndxg1766ZtX76RbKhWWIzaCmKLb1xPVjjyqhgQ0nm06gzIalJKF2dU2VeDN9GFv_Ce6.JJjE_Ff73MSBCfw9pnhBlnFHfg-_0yF5pP35Plm3eEk&dib_tag=se&keywords=Ars%C3%A8ne+Francoeur+Nganga&qid=1769920287&s=digital-text&sprefix=ars%C3%A8ne+francoeur+nganga%2Cdigital-text%2C254&sr=1-2-catcorr">Acheter sur Amazon</a></li>
-      </ul>
+      <p>Contrairement aux études classiques qui se concentrent souvent sur l'Afrique de l'Ouest, Nganga déplace le regard vers le sud. Il démontre, archives néerlandaises à l'appui, comment la côte de Loango a servi de plaque tournante logistique pour la Compagnie néerlandaise des Indes occidentales (WIC).</p>
+      
+      <p>"Ce n'est pas seulement une histoire de commerce," écrit Nganga dans son introduction. "C'est l'histoire de la survie culturelle." En effet, l'une des contributions majeures du livre est l'analyse linguistique. L'auteur trace les survivances des langues bantoues dans le Sranan Tongo parlé aujourd'hui au Suriname, prouvant que si les corps ont été enchaînés, les esprits et les cultures ont traversé l'océan.</p>
+
+      <p>Cette seconde édition s'enrichit de nouvelles cartes et de correspondances inédites découvertes lors d'une mission interministérielle en 2017. Elle bénéficie également de l'apport critique du Professeur Willem Frijhoff, offrant une validation académique internationale à ces travaux.</p>
+
+      <p>Pour les historiens comme pour le grand public, ce livre agit comme un miroir tendu entre deux continents, rappelant que l'histoire du Suriname est, indissociablement, une histoire congolaise.</p>
     `
   }
 ];
