@@ -41150,4 +41150,19 @@ export const THESES_LIBRARY = [
     isRestricted: false,
     pdfUrl: 'https://doi.org/10.32347/2077-3455.2024.69.307-317',
   },
+  {
+    id: 'bk-nganga-2026-loango-surinam',
+    title: 'The Slave Trade In Loango Coast for The Colony of Surinam (2nd Edition)',
+    author: 'Arsène Francoeur Nganga',
+    year: '2026',
+    institution: 'Amazon',
+    domain: 'Social Sciences (History)',
+    type: 'Livre / Ouvrage',
+    abstract: `A groundbreaking historical investigation into the Loango Coast's role as the largest embarkation site for enslaved Africans destined for the Dutch colony of Suriname. Includes new insights on the Kingdom of Loango's trading networks.`,
+    isForSale: true,
+    price: '$32.95',
+    purchaseUrl: 'https://www.amazon.com/Slave-Trade-Loango-Colony-Surinam/dp/B0GGCMMP8W/ref=sr_1_2?crid=3IVFZ45NB2CL8&dib=eyJ2IjoiMSJ9.BbeGY9dBgqSU-NriJuT_LzEsxOKbaHEU6o9-UYrm6PyjHzOB84Qtaa3utKAvOndxg1766ZtX76RbKhWWIzaCmKLb1xPVjjyqhgQ0nm06gzIalJKF2dU2VeDN9GFv_Ce6.JJjE_Ff73MSBCfw9pnhBlnFHfg-_0yF5pP35Plm3eEk&dib_tag=se&keywords=Ars%C3%A8ne+Francoeur+Nganga&qid=1769920287&s=digital-text&sprefix=ars%C3%A8ne+francoeur+nganga%2Cdigital-text%2C254&sr=1-2-catcorr',
+    pdfUrl: 'https://www.amazon.com/Slave-Trade-Loango-Colony-Surinam/dp/B0GGCMMP8W/ref=sr_1_2?crid=3IVFZ45NB2CL8&dib=eyJ2IjoiMSJ9.BbeGY9dBgqSU-NriJuT_LzEsxOKbaHEU6o9-UYrm6PyjHzOB84Qtaa3utKAvOndxg1766ZtX76RbKhWWIzaCmKLb1xPVjjyqhgQ0nm06gzIalJKF2dU2VeDN9GFv_Ce6.JJjE_Ff73MSBCfw9pnhBlnFHfg-_0yF5pP35Plm3eEk&dib_tag=se&keywords=Ars%C3%A8ne+Francoeur+Nganga&qid=1769920287&s=digital-text&sprefix=ars%C3%A8ne+francoeur+nganga%2Cdigital-text%2C254&sr=1-2-catcorr',
+  },
+
 ];

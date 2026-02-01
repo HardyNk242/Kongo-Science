@@ -1,4 +1,4 @@
-import { Article, NavItem, Conference, Scholarship } from './types';
+import { NavItem, Conference } from './types';
 
 // --- IMPORTS DES IMAGES (ASSETS) ---
 import peatlandsCard from "./assets/conf-peatlands-conferencecard.png";
@@ -45,37 +45,6 @@ export const NAV_ITEMS: NavItem[] = [
       { label: 'Notre Équipe', path: 'team' },
       { label: 'Agenda', path: 'agenda' }
     ]
-  }
-];
-
-// --- BOURSES (NOUVEAU) ---
-export const SCHOLARSHIPS: Scholarship[] = [
-  {
-    id: 'bourse-france-2026',
-    title: "Bourses du Gouvernement Français (BGF) 2026-2027",
-    provider: "Ambassade de France au Congo",
-    deadline: "2026-03-15",
-    level: "Master / Doctorat",
-    description: "Financement complet pour les étudiants congolais souhaitant poursuivre leurs études en France. Priorité aux filières STEM.",
-    link: "#"
-  },
-  {
-    id: 'bourse-daad-2026',
-    title: "Bourses de recherche DAAD - Allemagne",
-    provider: "DAAD",
-    deadline: "2026-04-30",
-    level: "Doctorat / Post-Doc",
-    description: "Soutien aux jeunes chercheurs pour des séjours de recherche de courte durée en Allemagne.",
-    link: "#"
-  },
-  {
-    id: 'bourse-kongo-science',
-    title: "Micro-Grant Kongo Science : Soutien à la publication",
-    provider: "Fondation Kongo Science",
-    deadline: "2026-06-01",
-    level: "Tous niveaux",
-    description: "Aide financière pour couvrir les frais de publication (APC) dans des revues internationales à fort impact.",
-    link: "#"
   }
 ];
 
@@ -184,28 +153,6 @@ export const CONFERENCES: (Conference & { imageUrl: string })[] = [
     type: 'Webinaire',
     organizer: 'Kongo Science',
     imageUrl: solKoutikaCard
-  }
-];
-
-// --- ARTICLES ---
-export const ARTICLES: Article[] = [
-  {
-    id: 'art-1',
-    title: 'Impact des érosions à Brazzaville : Cas des quartiers Mfilou et Jacques Opangault',
-    excerpt: 'Une étude géologique approfondie sur les mécanismes de dégradation des sols urbains et les solutions de stabilisation durable.',
-    category: 'Géosciences',
-    author: 'Dr. Hardy Nkodia',
-    date: 'Oct 2024',
-    imageUrl: 'https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?auto=format&fit=crop&q=80&w=800'
-  },
-  {
-    id: 'art-2',
-    title: 'Géomatique et Santé : Cartographie prédictive des zones à risque COVID-19',
-    excerpt: 'Collaboration avec la Fondation Ntoumi pour l\'utilisation du SIG dans la gestion des crises sanitaires en République du Congo.',
-    category: 'Santé Publique',
-    author: 'Dr. Nicy Bazebizonza',
-    date: 'Jan 2025',
-    imageUrl: 'https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=800'
   }
 ];
 

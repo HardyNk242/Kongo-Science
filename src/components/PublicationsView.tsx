@@ -1,5 +1,6 @@
 import React from 'react';
-import { ARTICLES, SCHOLARSHIPS } from '../constants';
+import { ARTICLES } from '../data/articles';
+import { SCHOLARSHIPS } from '../data/scholarships';
 import ArticleCard from './ArticleCard';
 
 const PublicationsView: React.FC = () => {
@@ -53,8 +54,14 @@ const PublicationsView: React.FC = () => {
                {/* Liste des bourses */}
                <div className="space-y-6 max-h-[80vh] overflow-y-auto pr-2 custom-scrollbar">
                  {SCHOLARSHIPS.map(scholarship => {
+                   const deadlineDate = new Date(scholarship.deadline);
+                   const deadlineTime = deadlineDate.getTime();
+                   const hasValidDeadline = !Number.isNaN(deadlineTime);
                    // Calcul simple pour voir si la deadline est proche (< 30 jours)
-                   const isUrgent = new Date(scholarship.deadline).getTime() - new Date().getTime() < 1000 * 60 * 60 * 24 * 30;
+                   const isUrgent = hasValidDeadline && deadlineTime - Date.now() < 1000 * 60 * 60 * 24 * 30;
+                   const deadlineLabel = hasValidDeadline
+                     ? deadlineDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+                     : scholarship.deadline;
                    
                    return (
                      <div key={scholarship.id} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl transition-all group">
@@ -74,7 +81,7 @@ const PublicationsView: React.FC = () => {
                         <div className="bg-slate-50 p-4 rounded-2xl mb-4">
                            <div className="flex items-center gap-2 mb-2 text-[10px] font-bold text-slate-500">
                               <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" /></svg>
-                              DEADLINE : {new Date(scholarship.deadline).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                              DEADLINE : {deadlineLabel}
                            </div>
                            <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">
                               {scholarship.description}
