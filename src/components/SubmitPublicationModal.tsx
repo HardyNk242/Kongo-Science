@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import emailjs from '@emailjs/browser';
 import { SCIMAGO_DOMAINS } from '../constants';
 
-// --- CONFIGURATION EMAILJS ---
+// --- VOS CLÉS EMAILJS (Tout est rempli ici) ---
 const SERVICE_ID = "service_ar9mjz8"; 
 const TEMPLATE_ID = "template_7f6izez"; 
-const PUBLIC_KEY = "V0gJsBrug9PzVvKnzm"; // ⚠️ REMPLACEZ PAR VOTRE CLÉ PUBLIQUE (Celle copiée tout à l'heure)
+const PUBLIC_KEY = "0gJsBrug9PzVvKnzm"; // Votre clé publique récupérée de l'image
 
 interface Props {
   onClose: () => void;
@@ -33,7 +33,7 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
   const [authors, setAuthors] = useState<Author[]>([{ lastName: '', firstName: '' }]); 
   
   // 3. Champs Bibliométriques Contextuels
-  const [publication, setPublication] = useState(''); // Journal, Éditeur ou Nom de la Conférence
+  const [publication, setPublication] = useState(''); // Journal, Éditeur ou Nom Conférence
   const [volume, setVolume] = useState('');
   const [issue, setIssue] = useState('');
   const [pages, setPages] = useState('');
@@ -76,16 +76,13 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
 
     // 2. Construction des détails bibliographiques
     let biblioInfo = "";
-    
     if (docType === 'Article de Revue') {
       biblioInfo = `Journal: ${publication}\nVol: ${volume} | No: ${issue} | pp: ${pages}\nDOI: ${doi}`;
     } else if (docType === 'Actes de Conférence') {
-      // Nouvelle logique pour les Actes
       biblioInfo = `Conférence: ${publication}\nLieu: ${place}\nDate: ${date}\nPages: ${pages}`;
     } else if (docType.includes('Thèse') || docType.includes('Mémoire')) {
       biblioInfo = `Université: ${university}\nLieu: ${place}\nType: ${docType}\nPages: ${pages}`;
     } else {
-      // Livres et Chapitres
       biblioInfo = `Éditeur: ${publication}\nLieu: ${place}\nISBN: ${doi}\nPages: ${pages}`;
     }
 
@@ -117,10 +114,10 @@ ${abstract}
 
     // 4. Préparation des paramètres pour EmailJS
     const templateParams = {
-        name: submitterName,
-        email: submitterEmail,
-        user_name: submitterName,
-        user_email: submitterEmail,
+        name: submitterName,        // Pour le champ "From Name"
+        email: submitterEmail,      // Pour le champ "Reply To"
+        user_name: submitterName,   // Variable du corps
+        user_email: submitterEmail, // Variable du corps
         title: title,
         link: link,
         message: detailedBody
