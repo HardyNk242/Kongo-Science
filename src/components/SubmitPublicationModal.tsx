@@ -3,9 +3,9 @@ import emailjs from '@emailjs/browser';
 import { SCIMAGO_DOMAINS } from '../constants';
 
 // --- CONFIGURATION EMAILJS ---
-const SERVICE_ID = "service_ar9mjz8";
-const TEMPLATE_ID = "template_7f6izez";
-const PUBLIC_KEY = "VOTRE_PUBLIC_KEY"; // ⚠️ REMPLACEZ CECI PAR VOTRE CLÉ PUBLIQUE
+const SERVICE_ID = "service_ar9mjz8"; 
+const TEMPLATE_ID = "template_7f6izez"; 
+const PUBLIC_KEY = "V0gJsBrug9PzVvKnzm"; // ⚠️ REMPLACEZ PAR VOTRE CLÉ PUBLIQUE (Celle copiée tout à l'heure)
 
 interface Props {
   onClose: () => void;
@@ -23,7 +23,7 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
   
   // 1. Info de base du soumetteur
   const [submitterEmail, setSubmitterEmail] = useState('');
-  const [submitterName, setSubmitterName] = useState(''); // Ajouté pour EmailJS
+  const [submitterName, setSubmitterName] = useState(''); 
   const [docType, setDocType] = useState('Article de Revue');
   const [domain, setDomain] = useState(SCIMAGO_DOMAINS[0].value);
   
@@ -33,7 +33,7 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
   const [authors, setAuthors] = useState<Author[]>([{ lastName: '', firstName: '' }]); 
   
   // 3. Champs Bibliométriques Contextuels
-  const [publication, setPublication] = useState(''); // Journal ou Éditeur
+  const [publication, setPublication] = useState(''); // Journal, Éditeur ou Nom de la Conférence
   const [volume, setVolume] = useState('');
   const [issue, setIssue] = useState('');
   const [pages, setPages] = useState('');
@@ -76,11 +76,16 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
 
     // 2. Construction des détails bibliographiques
     let biblioInfo = "";
+    
     if (docType === 'Article de Revue') {
       biblioInfo = `Journal: ${publication}\nVol: ${volume} | No: ${issue} | pp: ${pages}\nDOI: ${doi}`;
+    } else if (docType === 'Actes de Conférence') {
+      // Nouvelle logique pour les Actes
+      biblioInfo = `Conférence: ${publication}\nLieu: ${place}\nDate: ${date}\nPages: ${pages}`;
     } else if (docType.includes('Thèse') || docType.includes('Mémoire')) {
       biblioInfo = `Université: ${university}\nLieu: ${place}\nType: ${docType}\nPages: ${pages}`;
     } else {
+      // Livres et Chapitres
       biblioInfo = `Éditeur: ${publication}\nLieu: ${place}\nISBN: ${doi}\nPages: ${pages}`;
     }
 
@@ -91,12 +96,11 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
         : "🔒 RESTREINT (Sur demande)";
 
     // 3. Construction du corps du message détaillé
-    // Ce texte sera injecté dans la variable {{message}} de votre template EmailJS
     const detailedBody = `
---- DÉTAILS ZOTERO ---
+--- DÉTAILS DOCUMENT ---
 Type : ${docType}
 Domaine : ${domain}
-Date : ${date}
+Année/Date : ${date}
 
 --- AUTEURS ---
 ${formattedAuthors}
@@ -113,11 +117,13 @@ ${abstract}
 
     // 4. Préparation des paramètres pour EmailJS
     const templateParams = {
-        user_name: submitterName,   // Variable {{user_name}}
-        user_email: submitterEmail, // Variable {{user_email}}
-        title: title,               // Variable {{title}}
-        link: link,                 // Variable {{link}}
-        message: detailedBody       // Variable {{message}}
+        name: submitterName,
+        email: submitterEmail,
+        user_name: submitterName,
+        user_email: submitterEmail,
+        title: title,
+        link: link,
+        message: detailedBody
     };
 
     // 5. Envoi
@@ -125,7 +131,7 @@ ${abstract}
       .then((result) => {
           console.log('Succès:', result.text);
           setStatus('success');
-          setTimeout(onClose, 4000); // Fermeture auto
+          setTimeout(onClose, 4000);
       }, (error) => {
           console.error('Erreur:', error.text);
           setStatus('error');
@@ -170,7 +176,8 @@ ${abstract}
                  <div>
                    <label className="label-zotero">Item Type (Zotero)</label>
                    <select className="input-zotero" value={docType} onChange={e => setDocType(e.target.value)}>
-                     <option value="Article de Revue">Journal Article</option>
+                     <option value="Article de Revue">Journal Article (Revue)</option>
+                     <option value="Actes de Conférence">Actes de Conférence (Proceedings)</option>
                      <option value="Thèse">Thesis (Thèse/Mémoire)</option>
                      <option value="Livre">Book (Livre)</option>
                      <option value="Chapitre">Book Section</option>
@@ -220,7 +227,7 @@ ${abstract}
                ))}
             </div>
 
-            {/* 3. DÉTAILS (Dynamique) */}
+            {/* 3. DÉTAILS (Dynamique selon le type) */}
             <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
                <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">3. Détails Bibliographiques</h3>
                
@@ -230,7 +237,7 @@ ${abstract}
                    <div className="grid grid-cols-3 gap-4">
                       <div className="col-span-2">
                         <label className="label-zotero">Publication (Journal)</label>
-                        <input className="input-zotero" placeholder="ex: Arabian Journal of Geosciences" value={publication} onChange={e => setPublication(e.target.value)} />
+                        <input className="input-zotero" placeholder="ex: LAKISA Revue" value={publication} onChange={e => setPublication(e.target.value)} />
                       </div>
                       <div>
                         <label className="label-zotero">Date / Année</label>
@@ -240,11 +247,11 @@ ${abstract}
                    <div className="grid grid-cols-3 gap-4">
                       <div>
                         <label className="label-zotero">Volume</label>
-                        <input className="input-zotero" placeholder="18" value={volume} onChange={e => setVolume(e.target.value)} />
+                        <input className="input-zotero" placeholder="Vol." value={volume} onChange={e => setVolume(e.target.value)} />
                       </div>
                       <div>
                         <label className="label-zotero">Numéro (Issue)</label>
-                        <input className="input-zotero" placeholder="144" value={issue} onChange={e => setIssue(e.target.value)} />
+                        <input className="input-zotero" placeholder="No." value={issue} onChange={e => setIssue(e.target.value)} />
                       </div>
                       <div>
                         <label className="label-zotero">Pages</label>
@@ -254,6 +261,30 @@ ${abstract}
                    <div>
                       <label className="label-zotero">DOI</label>
                       <input className="input-zotero" placeholder="10.1007/..." value={doi} onChange={e => setDoi(e.target.value)} />
+                   </div>
+                 </>
+               )}
+
+               {/* --- ACTES DE CONFÉRENCE (Nouveau) --- */}
+               {docType === 'Actes de Conférence' && (
+                 <>
+                   <div>
+                      <label className="label-zotero">Nom de la Conférence / Colloque</label>
+                      <input className="input-zotero" placeholder="ex: Actes du Colloque International sur..." value={publication} onChange={e => setPublication(e.target.value)} />
+                   </div>
+                   <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="label-zotero">Lieu (Place)</label>
+                        <input className="input-zotero" placeholder="Brazzaville, Congo" value={place} onChange={e => setPlace(e.target.value)} />
+                      </div>
+                      <div>
+                        <label className="label-zotero">Date</label>
+                        <input className="input-zotero" placeholder="Octobre 2024" value={date} onChange={e => setDate(e.target.value)} />
+                      </div>
+                   </div>
+                   <div>
+                      <label className="label-zotero">Pages</label>
+                      <input className="input-zotero" placeholder="pp. 20-35" value={pages} onChange={e => setPages(e.target.value)} />
                    </div>
                  </>
                )}
@@ -288,7 +319,7 @@ ${abstract}
                  </>
                )}
 
-               {/* --- LIVRE --- */}
+               {/* --- LIVRE / CHAPITRE --- */}
                {(docType === 'Livre' || docType === 'Chapitre') && (
                  <>
                    <div>
@@ -401,7 +432,7 @@ ${abstract}
 
             {status === 'error' && (
               <p className="text-red-500 text-sm text-center bg-red-50 p-3 rounded-lg border border-red-100">
-                Une erreur est survenue lors de l'envoi. Veuillez vérifier votre connexion.
+                Une erreur est survenue lors de l'envoi. Veuillez vérifier votre connexion et votre Clé Publique.
               </p>
             )}
 
