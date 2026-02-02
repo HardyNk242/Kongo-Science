@@ -22,7 +22,7 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
   // 1. Info de base
   const [submitterEmail, setSubmitterEmail] = useState('');
   const [submitterName, setSubmitterName] = useState(''); 
-  const [docType, setDocType] = useState('Article de Revue');
+  const [docType, setDocType] = useState('Article Scientifique'); // Mis à jour pour matcher vos exemples
   const [domain, setDomain] = useState(SCIMAGO_DOMAINS[0].value);
   
   // 2. Données
@@ -61,43 +61,49 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
     e.preventDefault();
     setStatus('sending');
 
-    const formattedAuthors = authors.map(a => `${a.lastName.toUpperCase()} ${a.firstName}`).join(', ');
+    // Génération de la chaîne d'auteurs (ex: "A. Zámbó, P. Baňař")
+    const authorString = authors.map(a => `${a.firstName.charAt(0)}. ${a.lastName}`).join(', ');
 
-    // --- CONSTRUCTION DU SNIPPET DE CODE POUR VOUS ---
-    // C'est ici que la magie opère. L'email contiendra ce bloc prêt à l'emploi.
+    // Génération intelligente de l'ID (ex: art-zambo-2022-drymini)
+    const cleanName = authors[0]?.lastName.toLowerCase().replace(/[^a-z0-9]/g, '') || 'author';
+    const cleanYear = date.substring(0, 4) || new Date().getFullYear().toString();
+    const cleanTitle = title.split(' ')[0].toLowerCase().replace(/[^a-z0-9]/g, '') || 'doc';
+    const generatedId = `art-${cleanName}-${cleanYear}-${cleanTitle}`;
+
+    // Formatage des pages
+    const pageString = volume ? `Vol ${volume}, pp. ${pages}` : `, pp. ${pages}`;
+
+    // --- CONSTRUCTION DU SNIPPET JSON STRICTEMENT IDENTIQUE À VOTRE BIBLIOTHÈQUE ---
     const codeSnippet = `
-    {
-      id: "${Date.now()}",
-      title: "${title}",
-      type: "${docType}",
-      authors: [${authors.map(a => `"${a.lastName} ${a.firstName}"`).join(', ')}],
-      publication: "${publication || university || 'Non spécifié'}",
-      year: "${date}",
-      link: "${link}",
-      category: "${domain}",
-      abstract: "${abstract.replace(/"/g, '\\"').substring(0, 150)}..."
-    },
-    `;
+  {
+    id: '${generatedId}',
+    title: '${title.replace(/'/g, "\\'")}',
+    author: '${authorString.replace(/'/g, "\\'")}',
+    year: '${date}',
+    institution: '${(publication || university || 'Institution Inconnue').replace(/'/g, "\\'")}',
+    domain: '${domain}',
+    type: '${docType}',
+    abstract: \`${abstract.replace(/`/g, "\\`")}\`,
+    pages: '${pageString}',
+    isRestricted: ${accessMode !== 'open'},
+    isExclusive: false,
+    pdfUrl: '${link}',
+  },`;
 
-    // Infos lisibles pour lecture rapide
+    // Infos lisibles pour l'email (pour lecture humaine)
     let biblioInfo = "";
-    if (docType === 'Article de Revue') biblioInfo = `Journal: ${publication} | Vol: ${volume}`;
-    else if (docType === 'Actes de Conférence') biblioInfo = `Conférence: ${publication} | Lieu: ${place}`;
-    else biblioInfo = `Éditeur/Univ: ${publication || university}`;
+    if (docType === 'Article Scientifique') biblioInfo = `Journal: ${publication} | Vol: ${volume}`;
+    else biblioInfo = `Source: ${publication || university}`;
 
     const detailedBody = `
---- 🚀 CODE À COPIER DANS VS CODE ---
-Copiez le bloc ci-dessous et collez-le dans votre fichier de données :
-
+--- ✂️ CODE À COPIER-COLLER (FORMAT VALIDÉ) ✂️ ---
 ${codeSnippet}
 
 ----------------------------------------
-DÉTAILS HUMAINS :
+RÉSUMÉ HUMAIN :
+Soumis par : ${submitterName}
 Type : ${docType}
-Domaine : ${domain}
-Auteurs : ${formattedAuthors}
-Biblio : ${biblioInfo}
-Lien : ${link}
+Lien PDF : ${link}
     `;
 
     const templateParams = {
@@ -129,7 +135,7 @@ Lien : ${link}
              <div className="bg-white/10 p-2 rounded-lg">
                <svg className="w-6 h-6 text-blue-300" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
              </div>
-             <div><h2 className="text-lg font-bold font-serif">Ajouter un document</h2><p className="text-xs text-slate-400">Générateur de Code • Via EmailJS</p></div>
+             <div><h2 className="text-lg font-bold font-serif">Ajouter un document</h2><p className="text-xs text-slate-400">Générateur JSON • Via EmailJS</p></div>
           </div>
           <button onClick={onClose} className="hover:bg-white/20 p-2 rounded-full transition-colors">✕</button>
         </div>
@@ -138,7 +144,7 @@ Lien : ${link}
            <div className="flex-grow flex flex-col items-center justify-center p-12 text-center bg-green-50">
              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6 shadow-sm"><svg className="w-10 h-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg></div>
              <h3 className="text-2xl font-bold text-green-800 font-serif">Envoyé !</h3>
-             <p className="text-green-600 mt-2 max-w-sm">Vérifiez votre boite mail : le code à copier vous attend.</p>
+             <p className="text-green-600 mt-2 max-w-sm">Le code JSON formaté a été envoyé sur votre email.</p>
            </div>
         ) : (
           <form onSubmit={handleSubmit} className="p-6 space-y-6 overflow-y-auto custom-scrollbar bg-slate-50">
@@ -147,13 +153,12 @@ Lien : ${link}
                <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">1. Type de Document</h3>
                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                  <div>
-                   <label className="label-zotero">Item Type (Zotero)</label>
+                   <label className="label-zotero">Type</label>
                    <select className="input-zotero" value={docType} onChange={e => setDocType(e.target.value)}>
-                     <option value="Article de Revue">Journal Article</option>
+                     <option value="Article Scientifique">Article Scientifique</option>
                      <option value="Actes de Conférence">Actes de Conférence</option>
                      <option value="Thèse">Thèse/Mémoire</option>
                      <option value="Livre">Livre</option>
-                     <option value="Chapitre">Chapitre</option>
                      <option value="Rapport">Rapport</option>
                    </select>
                  </div>
@@ -174,7 +179,7 @@ Lien : ${link}
                  <button type="button" onClick={addAuthor} className="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded hover:bg-blue-100 font-bold">+ Ajouter</button>
                </div>
                {authors.map((author, index) => (
-                 <div key={index} className="flex gap-2 items-end"><div className="flex-grow grid grid-cols-2 gap-2"><div><input required className="input-zotero" placeholder="Nom" value={author.lastName} onChange={e => updateAuthor(index, 'lastName', e.target.value)} /></div><div><input required className="input-zotero" placeholder="Prénom" value={author.firstName} onChange={e => updateAuthor(index, 'firstName', e.target.value)} /></div></div>{authors.length > 1 && (<button type="button" onClick={() => removeAuthor(index)} className="mb-2 text-slate-400 hover:text-red-500">✕</button>)}</div>
+                 <div key={index} className="flex gap-2 items-end"><div className="flex-grow grid grid-cols-2 gap-2"><div><input required className="input-zotero" placeholder="Nom (ex: Zámbó)" value={author.lastName} onChange={e => updateAuthor(index, 'lastName', e.target.value)} /></div><div><input required className="input-zotero" placeholder="Prénom (ex: A.)" value={author.firstName} onChange={e => updateAuthor(index, 'firstName', e.target.value)} /></div></div>{authors.length > 1 && (<button type="button" onClick={() => removeAuthor(index)} className="mb-2 text-slate-400 hover:text-red-500">✕</button>)}</div>
                ))}
             </div>
 
@@ -182,13 +187,13 @@ Lien : ${link}
             <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
                <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">3. Détails</h3>
                
-               {docType === 'Article de Revue' && (<><div className="grid grid-cols-3 gap-4"><div className="col-span-2"><label className="label-zotero">Journal</label><input className="input-zotero" value={publication} onChange={e => setPublication(e.target.value)} /></div><div><label className="label-zotero">Année</label><input className="input-zotero" value={date} onChange={e => setDate(e.target.value)} /></div></div><div className="grid grid-cols-3 gap-4"><div><label className="label-zotero">Vol</label><input className="input-zotero" value={volume} onChange={e => setVolume(e.target.value)} /></div><div><label className="label-zotero">No</label><input className="input-zotero" value={issue} onChange={e => setIssue(e.target.value)} /></div><div><label className="label-zotero">Pages</label><input className="input-zotero" value={pages} onChange={e => setPages(e.target.value)} /></div></div><div><label className="label-zotero">DOI</label><input className="input-zotero" value={doi} onChange={e => setDoi(e.target.value)} /></div></>)}
+               {docType === 'Article Scientifique' && (<><div className="grid grid-cols-3 gap-4"><div className="col-span-2"><label className="label-zotero">Journal / Institution</label><input className="input-zotero" value={publication} onChange={e => setPublication(e.target.value)} /></div><div><label className="label-zotero">Année</label><input className="input-zotero" value={date} onChange={e => setDate(e.target.value)} /></div></div><div className="grid grid-cols-3 gap-4"><div><label className="label-zotero">Vol</label><input className="input-zotero" value={volume} onChange={e => setVolume(e.target.value)} /></div><div><label className="label-zotero">No</label><input className="input-zotero" value={issue} onChange={e => setIssue(e.target.value)} /></div><div><label className="label-zotero">Pages</label><input className="input-zotero" value={pages} onChange={e => setPages(e.target.value)} /></div></div><div><label className="label-zotero">DOI</label><input className="input-zotero" value={doi} onChange={e => setDoi(e.target.value)} /></div></>)}
                
                {docType === 'Actes de Conférence' && (<><div><label className="label-zotero">Conférence</label><input className="input-zotero" placeholder="ex: Actes du Colloque..." value={publication} onChange={e => setPublication(e.target.value)} /></div><div className="grid grid-cols-2 gap-4"><div><label className="label-zotero">Lieu</label><input className="input-zotero" value={place} onChange={e => setPlace(e.target.value)} /></div><div><label className="label-zotero">Date</label><input className="input-zotero" value={date} onChange={e => setDate(e.target.value)} /></div></div><div><label className="label-zotero">Pages</label><input className="input-zotero" value={pages} onChange={e => setPages(e.target.value)} /></div></>)}
                
                {(docType.includes('Thèse') || docType.includes('Mémoire')) && (<><div><label className="label-zotero">Université</label><input className="input-zotero" value={university} onChange={e => setUniversity(e.target.value)} /></div><div className="grid grid-cols-2 gap-4"><div><label className="label-zotero">Type</label><input className="input-zotero" value={docType} onChange={e => setDocType(e.target.value)} /></div><div><label className="label-zotero">Lieu</label><input className="input-zotero" value={place} onChange={e => setPlace(e.target.value)} /></div></div><div className="grid grid-cols-2 gap-4"><div><label className="label-zotero">Année</label><input className="input-zotero" value={date} onChange={e => setDate(e.target.value)} /></div><div><label className="label-zotero">Pages</label><input className="input-zotero" value={pages} onChange={e => setPages(e.target.value)} /></div></div></>)}
 
-               {(docType === 'Livre' || docType === 'Chapitre') && (<><div><label className="label-zotero">Éditeur</label><input className="input-zotero" value={publication} onChange={e => setPublication(e.target.value)} /></div><div className="grid grid-cols-2 gap-4"><div><label className="label-zotero">Lieu</label><input className="input-zotero" value={place} onChange={e => setPlace(e.target.value)} /></div><div><label className="label-zotero">Année</label><input className="input-zotero" value={date} onChange={e => setDate(e.target.value)} /></div></div><div><label className="label-zotero">ISBN</label><input className="input-zotero" value={doi} onChange={e => setDoi(e.target.value)} /></div></>)}
+               {(docType === 'Livre' || docType === 'Rapport') && (<><div><label className="label-zotero">Éditeur</label><input className="input-zotero" value={publication} onChange={e => setPublication(e.target.value)} /></div><div className="grid grid-cols-2 gap-4"><div><label className="label-zotero">Lieu</label><input className="input-zotero" value={place} onChange={e => setPlace(e.target.value)} /></div><div><label className="label-zotero">Année</label><input className="input-zotero" value={date} onChange={e => setDate(e.target.value)} /></div></div><div><label className="label-zotero">Pages/ISBN</label><input className="input-zotero" value={pages} onChange={e => setPages(e.target.value)} /></div></>)}
             </div>
 
             {/* 4. DROITS */}
@@ -199,7 +204,7 @@ Lien : ${link}
                  <label className="flex items-start gap-3 cursor-pointer p-3 bg-white rounded-lg border border-amber-100"><input type="radio" name="access" className="mt-1" checked={accessMode === 'restricted'} onChange={() => setAccessMode('restricted')} /><div><span className="block font-bold text-slate-800">🔒 Restreint</span></div></label>
                  <label className="flex items-start gap-3 cursor-pointer p-3 bg-white rounded-lg border border-amber-100"><input type="radio" name="access" className="mt-1" checked={accessMode === 'paid'} onChange={() => setAccessMode('paid')} /><div><span className="block font-bold text-slate-800">💰 Payant</span></div></label>
                </div>
-               <div className="pt-2"><label className="label-zotero">Lien</label><input required type="url" className="input-zotero bg-amber-50/50 border-amber-300" placeholder="https://..." value={link} onChange={e => setLink(e.target.value)} />{accessMode === 'paid' && (<div className="mt-2"><label className="label-zotero">Prix</label><input className="input-zotero w-1/3" value={price} onChange={e => setPrice(e.target.value)} /></div>)}</div>
+               <div className="pt-2"><label className="label-zotero">Lien PDF (URL)</label><input required type="url" className="input-zotero bg-amber-50/50 border-amber-300" placeholder="https://..." value={link} onChange={e => setLink(e.target.value)} /></div>
             </div>
 
             {/* 5. RÉSUMÉ */}
