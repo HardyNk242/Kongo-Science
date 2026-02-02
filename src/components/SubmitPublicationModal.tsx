@@ -2,16 +2,15 @@ import React, { useState } from 'react';
 import emailjs from '@emailjs/browser';
 import { SCIMAGO_DOMAINS } from '../constants';
 
-// --- VOS IDENTIFIANTS (Déjà configurés) ---
+// --- VOS IDENTIFIANTS ---
 const SERVICE_ID = "service_fl4m7b9"; 
 const TEMPLATE_ID = "template_7f6izez"; 
-const PUBLIC_KEY = "0gJsBrug9PzVvKnzm"; // Votre clé publique correcte
+const PUBLIC_KEY = "0gJsBrug9PzVvKnzm"; 
 
 interface Props {
   onClose: () => void;
 }
 
-// Type pour un auteur (Structure Zotero : Nom, Prénom)
 interface Author {
   firstName: string;
   lastName: string;
@@ -26,13 +25,11 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
   const [docType, setDocType] = useState('Article de Revue');
   const [domain, setDomain] = useState(SCIMAGO_DOMAINS[0].value);
   
-  // 2. Données Zotero
+  // 2. Données
   const [title, setTitle] = useState('');
   const [abstract, setAbstract] = useState('');
   const [authors, setAuthors] = useState<Author[]>([{ lastName: '', firstName: '' }]); 
-  
-  // 3. Champs Bibliométriques
-  const [publication, setPublication] = useState(''); // Journal, Éditeur ou Conférence
+  const [publication, setPublication] = useState(''); 
   const [volume, setVolume] = useState('');
   const [issue, setIssue] = useState('');
   const [pages, setPages] = useState('');
@@ -41,7 +38,7 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
   const [university, setUniversity] = useState(''); 
   const [place, setPlace] = useState(''); 
   
-  // 4. Droits
+  // 3. Droits
   const [accessMode, setAccessMode] = useState<'open' | 'restricted' | 'paid'>('open');
   const [link, setLink] = useState(''); 
   const [price, setPrice] = useState('');
@@ -66,38 +63,41 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
 
     const formattedAuthors = authors.map(a => `${a.lastName.toUpperCase()} ${a.firstName}`).join(', ');
 
-    // --- C'EST ICI QUE SE TROUVE LA DIFFÉRENCE ---
-    let biblioInfo = "";
-    if (docType === 'Article de Revue') {
-      biblioInfo = `Journal: ${publication}\nVol: ${volume} | No: ${issue} | pp: ${pages}\nDOI: ${doi}`;
-    } else if (docType === 'Actes de Conférence') {
-      // Nouveau format pour LAKISA et autres conférences
-      biblioInfo = `Conférence: ${publication}\nLieu: ${place}\nDate: ${date}\nPages: ${pages}`;
-    } else if (docType.includes('Thèse') || docType.includes('Mémoire')) {
-      biblioInfo = `Université: ${university}\nLieu: ${place}\nType: ${docType}\nPages: ${pages}`;
-    } else {
-      biblioInfo = `Éditeur: ${publication}\nLieu: ${place}\nISBN: ${doi}\nPages: ${pages}`;
-    }
+    // --- CONSTRUCTION DU SNIPPET DE CODE POUR VOUS ---
+    // C'est ici que la magie opère. L'email contiendra ce bloc prêt à l'emploi.
+    const codeSnippet = `
+    {
+      id: "${Date.now()}",
+      title: "${title}",
+      type: "${docType}",
+      authors: [${authors.map(a => `"${a.lastName} ${a.firstName}"`).join(', ')}],
+      publication: "${publication || university || 'Non spécifié'}",
+      year: "${date}",
+      link: "${link}",
+      category: "${domain}",
+      abstract: "${abstract.replace(/"/g, '\\"').substring(0, 150)}..."
+    },
+    `;
 
-    const rightsInfo = accessMode === 'open' ? "✅ OPEN ACCESS" : accessMode === 'paid' ? `💰 PAYANT (${price})` : "🔒 RESTREINT";
+    // Infos lisibles pour lecture rapide
+    let biblioInfo = "";
+    if (docType === 'Article de Revue') biblioInfo = `Journal: ${publication} | Vol: ${volume}`;
+    else if (docType === 'Actes de Conférence') biblioInfo = `Conférence: ${publication} | Lieu: ${place}`;
+    else biblioInfo = `Éditeur/Univ: ${publication || university}`;
 
     const detailedBody = `
---- DÉTAILS DOCUMENT ---
+--- 🚀 CODE À COPIER DANS VS CODE ---
+Copiez le bloc ci-dessous et collez-le dans votre fichier de données :
+
+${codeSnippet}
+
+----------------------------------------
+DÉTAILS HUMAINS :
 Type : ${docType}
 Domaine : ${domain}
-Année/Date : ${date}
-
---- AUTEURS ---
-${formattedAuthors}
-
---- BIBLIOGRAPHIE ---
-${biblioInfo}
-
---- ACCÈS ---
-Statut : ${rightsInfo}
-
---- RÉSUMÉ ---
-${abstract}
+Auteurs : ${formattedAuthors}
+Biblio : ${biblioInfo}
+Lien : ${link}
     `;
 
     const templateParams = {
@@ -129,7 +129,7 @@ ${abstract}
              <div className="bg-white/10 p-2 rounded-lg">
                <svg className="w-6 h-6 text-blue-300" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
              </div>
-             <div><h2 className="text-lg font-bold font-serif">Ajouter un document</h2><p className="text-xs text-slate-400">Standard Zotero • Via EmailJS</p></div>
+             <div><h2 className="text-lg font-bold font-serif">Ajouter un document</h2><p className="text-xs text-slate-400">Générateur de Code • Via EmailJS</p></div>
           </div>
           <button onClick={onClose} className="hover:bg-white/20 p-2 rounded-full transition-colors">✕</button>
         </div>
@@ -137,8 +137,8 @@ ${abstract}
         {status === 'success' ? (
            <div className="flex-grow flex flex-col items-center justify-center p-12 text-center bg-green-50">
              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6 shadow-sm"><svg className="w-10 h-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg></div>
-             <h3 className="text-2xl font-bold text-green-800 font-serif">Soumission envoyée !</h3>
-             <p className="text-green-600 mt-2 max-w-sm">Merci. Un accusé de réception a été envoyé.</p>
+             <h3 className="text-2xl font-bold text-green-800 font-serif">Envoyé !</h3>
+             <p className="text-green-600 mt-2 max-w-sm">Vérifiez votre boite mail : le code à copier vous attend.</p>
            </div>
         ) : (
           <form onSubmit={handleSubmit} className="p-6 space-y-6 overflow-y-auto custom-scrollbar bg-slate-50">
@@ -149,16 +149,16 @@ ${abstract}
                  <div>
                    <label className="label-zotero">Item Type (Zotero)</label>
                    <select className="input-zotero" value={docType} onChange={e => setDocType(e.target.value)}>
-                     <option value="Article de Revue">Journal Article (Revue)</option>
-                     <option value="Actes de Conférence">Actes de Conférence (Proceedings)</option>
-                     <option value="Thèse">Thesis (Thèse/Mémoire)</option>
-                     <option value="Livre">Book (Livre)</option>
-                     <option value="Chapitre">Book Section</option>
-                     <option value="Rapport">Report</option>
+                     <option value="Article de Revue">Journal Article</option>
+                     <option value="Actes de Conférence">Actes de Conférence</option>
+                     <option value="Thèse">Thèse/Mémoire</option>
+                     <option value="Livre">Livre</option>
+                     <option value="Chapitre">Chapitre</option>
+                     <option value="Rapport">Rapport</option>
                    </select>
                  </div>
                  <div>
-                   <label className="label-zotero">Domaine (Scimago)</label>
+                   <label className="label-zotero">Domaine</label>
                    <select className="input-zotero" value={domain} onChange={e => setDomain(e.target.value)}>
                      {SCIMAGO_DOMAINS.map(d => <option key={d.value} value={d.value}>{d.label}</option>)}
                    </select>
@@ -178,41 +178,17 @@ ${abstract}
                ))}
             </div>
 
-            {/* 3. DÉTAILS DYNAMIQUES */}
+            {/* 3. DÉTAILS */}
             <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
-               <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">3. Détails Bibliographiques</h3>
+               <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">3. Détails</h3>
                
-               {docType === 'Article de Revue' && (
-                 <>
-                   <div className="grid grid-cols-3 gap-4"><div className="col-span-2"><label className="label-zotero">Journal</label><input className="input-zotero" value={publication} onChange={e => setPublication(e.target.value)} /></div><div><label className="label-zotero">Année</label><input className="input-zotero" value={date} onChange={e => setDate(e.target.value)} /></div></div>
-                   <div className="grid grid-cols-3 gap-4"><div><label className="label-zotero">Vol</label><input className="input-zotero" value={volume} onChange={e => setVolume(e.target.value)} /></div><div><label className="label-zotero">No</label><input className="input-zotero" value={issue} onChange={e => setIssue(e.target.value)} /></div><div><label className="label-zotero">Pages</label><input className="input-zotero" value={pages} onChange={e => setPages(e.target.value)} /></div></div>
-                   <div><label className="label-zotero">DOI</label><input className="input-zotero" value={doi} onChange={e => setDoi(e.target.value)} /></div>
-                 </>
-               )}
+               {docType === 'Article de Revue' && (<><div className="grid grid-cols-3 gap-4"><div className="col-span-2"><label className="label-zotero">Journal</label><input className="input-zotero" value={publication} onChange={e => setPublication(e.target.value)} /></div><div><label className="label-zotero">Année</label><input className="input-zotero" value={date} onChange={e => setDate(e.target.value)} /></div></div><div className="grid grid-cols-3 gap-4"><div><label className="label-zotero">Vol</label><input className="input-zotero" value={volume} onChange={e => setVolume(e.target.value)} /></div><div><label className="label-zotero">No</label><input className="input-zotero" value={issue} onChange={e => setIssue(e.target.value)} /></div><div><label className="label-zotero">Pages</label><input className="input-zotero" value={pages} onChange={e => setPages(e.target.value)} /></div></div><div><label className="label-zotero">DOI</label><input className="input-zotero" value={doi} onChange={e => setDoi(e.target.value)} /></div></>)}
+               
+               {docType === 'Actes de Conférence' && (<><div><label className="label-zotero">Conférence</label><input className="input-zotero" placeholder="ex: Actes du Colloque..." value={publication} onChange={e => setPublication(e.target.value)} /></div><div className="grid grid-cols-2 gap-4"><div><label className="label-zotero">Lieu</label><input className="input-zotero" value={place} onChange={e => setPlace(e.target.value)} /></div><div><label className="label-zotero">Date</label><input className="input-zotero" value={date} onChange={e => setDate(e.target.value)} /></div></div><div><label className="label-zotero">Pages</label><input className="input-zotero" value={pages} onChange={e => setPages(e.target.value)} /></div></>)}
+               
+               {(docType.includes('Thèse') || docType.includes('Mémoire')) && (<><div><label className="label-zotero">Université</label><input className="input-zotero" value={university} onChange={e => setUniversity(e.target.value)} /></div><div className="grid grid-cols-2 gap-4"><div><label className="label-zotero">Type</label><input className="input-zotero" value={docType} onChange={e => setDocType(e.target.value)} /></div><div><label className="label-zotero">Lieu</label><input className="input-zotero" value={place} onChange={e => setPlace(e.target.value)} /></div></div><div className="grid grid-cols-2 gap-4"><div><label className="label-zotero">Année</label><input className="input-zotero" value={date} onChange={e => setDate(e.target.value)} /></div><div><label className="label-zotero">Pages</label><input className="input-zotero" value={pages} onChange={e => setPages(e.target.value)} /></div></div></>)}
 
-               {docType === 'Actes de Conférence' && (
-                 <>
-                   <div><label className="label-zotero">Nom de la Conférence</label><input className="input-zotero" placeholder="ex: Actes du Colloque..." value={publication} onChange={e => setPublication(e.target.value)} /></div>
-                   <div className="grid grid-cols-2 gap-4"><div><label className="label-zotero">Lieu</label><input className="input-zotero" value={place} onChange={e => setPlace(e.target.value)} /></div><div><label className="label-zotero">Date</label><input className="input-zotero" value={date} onChange={e => setDate(e.target.value)} /></div></div>
-                   <div><label className="label-zotero">Pages</label><input className="input-zotero" value={pages} onChange={e => setPages(e.target.value)} /></div>
-                 </>
-               )}
-
-               {(docType.includes('Thèse') || docType.includes('Mémoire')) && (
-                 <>
-                   <div><label className="label-zotero">Université</label><input className="input-zotero" value={university} onChange={e => setUniversity(e.target.value)} /></div>
-                   <div className="grid grid-cols-2 gap-4"><div><label className="label-zotero">Type</label><input className="input-zotero" value={docType} onChange={e => setDocType(e.target.value)} /></div><div><label className="label-zotero">Lieu</label><input className="input-zotero" value={place} onChange={e => setPlace(e.target.value)} /></div></div>
-                   <div className="grid grid-cols-2 gap-4"><div><label className="label-zotero">Année</label><input className="input-zotero" value={date} onChange={e => setDate(e.target.value)} /></div><div><label className="label-zotero">Pages</label><input className="input-zotero" value={pages} onChange={e => setPages(e.target.value)} /></div></div>
-                 </>
-               )}
-
-               {(docType === 'Livre' || docType === 'Chapitre') && (
-                 <>
-                   <div><label className="label-zotero">Éditeur</label><input className="input-zotero" value={publication} onChange={e => setPublication(e.target.value)} /></div>
-                   <div className="grid grid-cols-2 gap-4"><div><label className="label-zotero">Lieu</label><input className="input-zotero" value={place} onChange={e => setPlace(e.target.value)} /></div><div><label className="label-zotero">Année</label><input className="input-zotero" value={date} onChange={e => setDate(e.target.value)} /></div></div>
-                   <div><label className="label-zotero">ISBN</label><input className="input-zotero" value={doi} onChange={e => setDoi(e.target.value)} /></div>
-                 </>
-               )}
+               {(docType === 'Livre' || docType === 'Chapitre') && (<><div><label className="label-zotero">Éditeur</label><input className="input-zotero" value={publication} onChange={e => setPublication(e.target.value)} /></div><div className="grid grid-cols-2 gap-4"><div><label className="label-zotero">Lieu</label><input className="input-zotero" value={place} onChange={e => setPlace(e.target.value)} /></div><div><label className="label-zotero">Année</label><input className="input-zotero" value={date} onChange={e => setDate(e.target.value)} /></div></div><div><label className="label-zotero">ISBN</label><input className="input-zotero" value={doi} onChange={e => setDoi(e.target.value)} /></div></>)}
             </div>
 
             {/* 4. DROITS */}
