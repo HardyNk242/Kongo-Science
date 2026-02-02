@@ -22,7 +22,7 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
   // 1. Info de base
   const [submitterEmail, setSubmitterEmail] = useState('');
   const [submitterName, setSubmitterName] = useState(''); 
-  const [docType, setDocType] = useState('Article Scientifique'); // Mis à jour pour matcher vos exemples
+  const [docType, setDocType] = useState('Article Scientifique'); // Valeur par défaut alignée sur ta DB
   const [domain, setDomain] = useState(SCIMAGO_DOMAINS[0].value);
   
   // 2. Données
@@ -61,26 +61,38 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
     e.preventDefault();
     setStatus('sending');
 
-    // Génération de la chaîne d'auteurs (ex: "A. Zámbó, P. Baňař")
-    const authorString = authors.map(a => `${a.firstName.charAt(0)}. ${a.lastName}`).join(', ');
+    // FORMATAGE AUTEURS : Transforme le tableau en String "Nom P., Nom2 P."
+    // Ex: "A. Zámbó, P. Baňař" pour coller à ton format 'author'
+    const authorString = authors.map(a => {
+        const initial = a.firstName ? `${a.firstName.charAt(0)}.` : '';
+        return `${initial} ${a.lastName}`;
+    }).join(', ');
 
-    // Génération intelligente de l'ID (ex: art-zambo-2022-drymini)
-    const cleanName = authors[0]?.lastName.toLowerCase().replace(/[^a-z0-9]/g, '') || 'author';
+    // GÉNÉRATION ID INTELLIGENTE : art-nom-annee-motcle
+    // Ex: art-zambo-2022-drymini
+    const cleanName = authors[0]?.lastName.toLowerCase().replace(/[^a-z0-9]/g, '') || 'aut';
     const cleanYear = date.substring(0, 4) || new Date().getFullYear().toString();
     const cleanTitle = title.split(' ')[0].toLowerCase().replace(/[^a-z0-9]/g, '') || 'doc';
     const generatedId = `art-${cleanName}-${cleanYear}-${cleanTitle}`;
 
-    // Formatage des pages
-    const pageString = volume ? `Vol ${volume}, pp. ${pages}` : `, pp. ${pages}`;
+    // FORMATAGE PAGES : Gestion du "Vol" ou juste "pp."
+    let pageString = pages;
+    if (pages) {
+        pageString = volume ? `Vol ${volume}, pp. ${pages}` : `pp. ${pages}`;
+    }
 
-    // --- CONSTRUCTION DU SNIPPET JSON STRICTEMENT IDENTIQUE À VOTRE BIBLIOTHÈQUE ---
+    // INSTITUTION CAMÉLÉON
+    const institutionValue = publication || university || 'Institution Inconnue';
+
+    // --- CONSTRUCTION DU SNIPPET JSON PARFAIT ---
+    // Utilise pdfUrl, institution, author (singulier), etc.
     const codeSnippet = `
   {
     id: '${generatedId}',
-    title: '${title.replace(/'/g, "\\'")}',
-    author: '${authorString.replace(/'/g, "\\'")}',
+    title: "${title.replace(/"/g, '\\"')}",
+    author: "${authorString.replace(/"/g, '\\"')}",
     year: '${date}',
-    institution: '${(publication || university || 'Institution Inconnue').replace(/'/g, "\\'")}',
+    institution: "${institutionValue.replace(/"/g, '\\"')}",
     domain: '${domain}',
     type: '${docType}',
     abstract: \`${abstract.replace(/`/g, "\\`")}\`,
@@ -90,20 +102,21 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
     pdfUrl: '${link}',
   },`;
 
-    // Infos lisibles pour l'email (pour lecture humaine)
+    // Infos lisibles pour l'humain dans le mail
     let biblioInfo = "";
     if (docType === 'Article Scientifique') biblioInfo = `Journal: ${publication} | Vol: ${volume}`;
-    else biblioInfo = `Source: ${publication || university}`;
+    else if (docType === 'Actes de Conférence') biblioInfo = `Conférence: ${publication} | Lieu: ${place}`;
+    else biblioInfo = `Source: ${institutionValue}`;
 
     const detailedBody = `
---- ✂️ CODE À COPIER-COLLER (FORMAT VALIDÉ) ✂️ ---
+--- ✂️ CODE À COPIER DANS LIBRARYDATA.TS ✂️ ---
 ${codeSnippet}
 
 ----------------------------------------
-RÉSUMÉ HUMAIN :
-Soumis par : ${submitterName}
+RÉSUMÉ POUR VALIDATION :
+Soumis par : ${submitterName} (${submitterEmail})
 Type : ${docType}
-Lien PDF : ${link}
+Lien : ${link}
     `;
 
     const templateParams = {
@@ -155,6 +168,7 @@ Lien PDF : ${link}
                  <div>
                    <label className="label-zotero">Type</label>
                    <select className="input-zotero" value={docType} onChange={e => setDocType(e.target.value)}>
+                     {/* J'ai mis les valeurs exactes que tu utilises dans ta DB */}
                      <option value="Article Scientifique">Article Scientifique</option>
                      <option value="Actes de Conférence">Actes de Conférence</option>
                      <option value="Thèse">Thèse/Mémoire</option>
@@ -179,21 +193,64 @@ Lien PDF : ${link}
                  <button type="button" onClick={addAuthor} className="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded hover:bg-blue-100 font-bold">+ Ajouter</button>
                </div>
                {authors.map((author, index) => (
-                 <div key={index} className="flex gap-2 items-end"><div className="flex-grow grid grid-cols-2 gap-2"><div><input required className="input-zotero" placeholder="Nom (ex: Zámbó)" value={author.lastName} onChange={e => updateAuthor(index, 'lastName', e.target.value)} /></div><div><input required className="input-zotero" placeholder="Prénom (ex: A.)" value={author.firstName} onChange={e => updateAuthor(index, 'firstName', e.target.value)} /></div></div>{authors.length > 1 && (<button type="button" onClick={() => removeAuthor(index)} className="mb-2 text-slate-400 hover:text-red-500">✕</button>)}</div>
+                 <div key={index} className="flex gap-2 items-end"><div className="flex-grow grid grid-cols-2 gap-2"><div><input required className="input-zotero" placeholder="Nom (ex: Nkodia)" value={author.lastName} onChange={e => updateAuthor(index, 'lastName', e.target.value)} /></div><div><input required className="input-zotero" placeholder="Prénom (ex: Hardy)" value={author.firstName} onChange={e => updateAuthor(index, 'firstName', e.target.value)} /></div></div>{authors.length > 1 && (<button type="button" onClick={() => removeAuthor(index)} className="mb-2 text-slate-400 hover:text-red-500">✕</button>)}</div>
                ))}
             </div>
 
-            {/* 3. DÉTAILS */}
+            {/* 3. DÉTAILS - DYNAMIQUE SELON LE TYPE */}
             <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
                <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">3. Détails</h3>
                
-               {docType === 'Article Scientifique' && (<><div className="grid grid-cols-3 gap-4"><div className="col-span-2"><label className="label-zotero">Journal / Institution</label><input className="input-zotero" value={publication} onChange={e => setPublication(e.target.value)} /></div><div><label className="label-zotero">Année</label><input className="input-zotero" value={date} onChange={e => setDate(e.target.value)} /></div></div><div className="grid grid-cols-3 gap-4"><div><label className="label-zotero">Vol</label><input className="input-zotero" value={volume} onChange={e => setVolume(e.target.value)} /></div><div><label className="label-zotero">No</label><input className="input-zotero" value={issue} onChange={e => setIssue(e.target.value)} /></div><div><label className="label-zotero">Pages</label><input className="input-zotero" value={pages} onChange={e => setPages(e.target.value)} /></div></div><div><label className="label-zotero">DOI</label><input className="input-zotero" value={doi} onChange={e => setDoi(e.target.value)} /></div></>)}
+               {docType === 'Article Scientifique' && (
+                 <>
+                   <div className="grid grid-cols-3 gap-4">
+                      <div className="col-span-2"><label className="label-zotero">Journal</label><input className="input-zotero" placeholder="ex: Nature, Zootaxa..." value={publication} onChange={e => setPublication(e.target.value)} /></div>
+                      <div><label className="label-zotero">Année</label><input className="input-zotero" placeholder="2024" value={date} onChange={e => setDate(e.target.value)} /></div>
+                   </div>
+                   <div className="grid grid-cols-3 gap-4">
+                      <div><label className="label-zotero">Vol</label><input className="input-zotero" placeholder="83" value={volume} onChange={e => setVolume(e.target.value)} /></div>
+                      <div><label className="label-zotero">No</label><input className="input-zotero" value={issue} onChange={e => setIssue(e.target.value)} /></div>
+                      <div><label className="label-zotero">Pages</label><input className="input-zotero" placeholder="10-15" value={pages} onChange={e => setPages(e.target.value)} /></div>
+                   </div>
+                   <div><label className="label-zotero">DOI</label><input className="input-zotero" value={doi} onChange={e => setDoi(e.target.value)} /></div>
+                 </>
+               )}
                
-               {docType === 'Actes de Conférence' && (<><div><label className="label-zotero">Conférence</label><input className="input-zotero" placeholder="ex: Actes du Colloque..." value={publication} onChange={e => setPublication(e.target.value)} /></div><div className="grid grid-cols-2 gap-4"><div><label className="label-zotero">Lieu</label><input className="input-zotero" value={place} onChange={e => setPlace(e.target.value)} /></div><div><label className="label-zotero">Date</label><input className="input-zotero" value={date} onChange={e => setDate(e.target.value)} /></div></div><div><label className="label-zotero">Pages</label><input className="input-zotero" value={pages} onChange={e => setPages(e.target.value)} /></div></>)}
+               {docType === 'Actes de Conférence' && (
+                 <>
+                   <div><label className="label-zotero">Conférence</label><input className="input-zotero" placeholder="ex: IGARSS 2015..." value={publication} onChange={e => setPublication(e.target.value)} /></div>
+                   <div className="grid grid-cols-2 gap-4">
+                      <div><label className="label-zotero">Lieu</label><input className="input-zotero" value={place} onChange={e => setPlace(e.target.value)} /></div>
+                      <div><label className="label-zotero">Année/Date</label><input className="input-zotero" placeholder="2024" value={date} onChange={e => setDate(e.target.value)} /></div>
+                   </div>
+                   <div><label className="label-zotero">Pages</label><input className="input-zotero" value={pages} onChange={e => setPages(e.target.value)} /></div>
+                 </>
+               )}
                
-               {(docType.includes('Thèse') || docType.includes('Mémoire')) && (<><div><label className="label-zotero">Université</label><input className="input-zotero" value={university} onChange={e => setUniversity(e.target.value)} /></div><div className="grid grid-cols-2 gap-4"><div><label className="label-zotero">Type</label><input className="input-zotero" value={docType} onChange={e => setDocType(e.target.value)} /></div><div><label className="label-zotero">Lieu</label><input className="input-zotero" value={place} onChange={e => setPlace(e.target.value)} /></div></div><div className="grid grid-cols-2 gap-4"><div><label className="label-zotero">Année</label><input className="input-zotero" value={date} onChange={e => setDate(e.target.value)} /></div><div><label className="label-zotero">Pages</label><input className="input-zotero" value={pages} onChange={e => setPages(e.target.value)} /></div></div></>)}
+               {(docType.includes('Thèse') || docType.includes('Mémoire')) && (
+                 <>
+                   <div><label className="label-zotero">Université</label><input className="input-zotero" placeholder="ex: UMNG" value={university} onChange={e => setUniversity(e.target.value)} /></div>
+                   <div className="grid grid-cols-2 gap-4">
+                      <div><label className="label-zotero">Type</label><input className="input-zotero" value={docType} onChange={e => setDocType(e.target.value)} /></div>
+                      <div><label className="label-zotero">Lieu</label><input className="input-zotero" value={place} onChange={e => setPlace(e.target.value)} /></div>
+                   </div>
+                   <div className="grid grid-cols-2 gap-4">
+                      <div><label className="label-zotero">Année</label><input className="input-zotero" value={date} onChange={e => setDate(e.target.value)} /></div>
+                      <div><label className="label-zotero">Pages</label><input className="input-zotero" value={pages} onChange={e => setPages(e.target.value)} /></div>
+                   </div>
+                 </>
+               )}
 
-               {(docType === 'Livre' || docType === 'Rapport') && (<><div><label className="label-zotero">Éditeur</label><input className="input-zotero" value={publication} onChange={e => setPublication(e.target.value)} /></div><div className="grid grid-cols-2 gap-4"><div><label className="label-zotero">Lieu</label><input className="input-zotero" value={place} onChange={e => setPlace(e.target.value)} /></div><div><label className="label-zotero">Année</label><input className="input-zotero" value={date} onChange={e => setDate(e.target.value)} /></div></div><div><label className="label-zotero">Pages/ISBN</label><input className="input-zotero" value={pages} onChange={e => setPages(e.target.value)} /></div></>)}
+               {(docType === 'Livre' || docType === 'Rapport') && (
+                 <>
+                   <div><label className="label-zotero">Éditeur</label><input className="input-zotero" value={publication} onChange={e => setPublication(e.target.value)} /></div>
+                   <div className="grid grid-cols-2 gap-4">
+                      <div><label className="label-zotero">Lieu</label><input className="input-zotero" value={place} onChange={e => setPlace(e.target.value)} /></div>
+                      <div><label className="label-zotero">Année</label><input className="input-zotero" value={date} onChange={e => setDate(e.target.value)} /></div>
+                   </div>
+                   <div><label className="label-zotero">Pages/ISBN</label><input className="input-zotero" value={pages} onChange={e => setPages(e.target.value)} /></div>
+                 </>
+               )}
             </div>
 
             {/* 4. DROITS */}
