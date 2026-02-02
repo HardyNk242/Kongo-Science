@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
+import emailjs from '@emailjs/browser';
 import { SCIMAGO_DOMAINS } from '../constants';
+
+// --- CONFIGURATION EMAILJS ---
+const SERVICE_ID = "service_ar9mjz8";
+const TEMPLATE_ID = "template_7f6izez";
+const PUBLIC_KEY = "VOTRE_PUBLIC_KEY"; // ⚠️ REMPLACEZ CECI PAR VOTRE CLÉ PUBLIQUE
 
 interface Props {
   onClose: () => void;
@@ -13,10 +19,11 @@ interface Author {
 
 const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
   // --- ÉTATS DU FORMULAIRE ---
-  const [status, setStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   
-  // 1. Info de base
+  // 1. Info de base du soumetteur
   const [submitterEmail, setSubmitterEmail] = useState('');
+  const [submitterName, setSubmitterName] = useState(''); // Ajouté pour EmailJS
   const [docType, setDocType] = useState('Article de Revue');
   const [domain, setDomain] = useState(SCIMAGO_DOMAINS[0].value);
   
@@ -26,14 +33,14 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
   const [authors, setAuthors] = useState<Author[]>([{ lastName: '', firstName: '' }]); 
   
   // 3. Champs Bibliométriques Contextuels
-  const [publication, setPublication] = useState(''); // Sert pour "Publication" (Journal) ou "Éditeur"
+  const [publication, setPublication] = useState(''); // Journal ou Éditeur
   const [volume, setVolume] = useState('');
   const [issue, setIssue] = useState('');
   const [pages, setPages] = useState('');
   const [date, setDate] = useState(''); // Date ou Année
   const [doi, setDoi] = useState('');   // DOI ou ISBN
   const [university, setUniversity] = useState(''); 
-  const [place, setPlace] = useState(''); // Nouveau : Lieu/Place (pour Thèse/Livre)
+  const [place, setPlace] = useState(''); 
   
   // 4. Gestion des Droits (Access)
   const [accessMode, setAccessMode] = useState<'open' | 'restricted' | 'paid'>('open');
@@ -59,22 +66,21 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
     setAuthors(newAuthors);
   };
 
-  // --- SOUMISSION ---
+  // --- SOUMISSION VIA EMAILJS ---
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus('submitting');
+    setStatus('sending');
 
-    // Mise en forme des auteurs pour l'email
+    // 1. Mise en forme des auteurs
     const formattedAuthors = authors.map(a => `${a.lastName.toUpperCase()} ${a.firstName}`).join(', ');
 
-    // Construction des détails bibliographiques selon le type
+    // 2. Construction des détails bibliographiques
     let biblioInfo = "";
     if (docType === 'Article de Revue') {
       biblioInfo = `Journal: ${publication}\nVol: ${volume} | No: ${issue} | pp: ${pages}\nDOI: ${doi}`;
     } else if (docType.includes('Thèse') || docType.includes('Mémoire')) {
       biblioInfo = `Université: ${university}\nLieu: ${place}\nType: ${docType}\nPages: ${pages}`;
     } else {
-      // Livres
       biblioInfo = `Éditeur: ${publication}\nLieu: ${place}\nISBN: ${doi}\nPages: ${pages}`;
     }
 
@@ -84,38 +90,46 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
         ? `💰 PAYANT (Prix: ${price})` 
         : "🔒 RESTREINT (Sur demande)";
 
-    const subject = encodeURIComponent(`Soumission : ${title.substring(0, 50)}...`);
-    
-    const bodyText = `
---- SOUMISSION ZOTERO KONGO SCIENCE ---
+    // 3. Construction du corps du message détaillé
+    // Ce texte sera injecté dans la variable {{message}} de votre template EmailJS
+    const detailedBody = `
+--- DÉTAILS ZOTERO ---
+Type : ${docType}
+Domaine : ${domain}
+Date : ${date}
 
-👤 SOUMIS PAR : ${submitterEmail}
+--- AUTEURS ---
+${formattedAuthors}
 
-📚 TYPE : ${docType}
-🏷️ DOMAINE : ${domain}
-
-📝 TITRE : ${title}
-👥 AUTEURS : ${formattedAuthors}
-📅 DATE : ${date}
-
-📊 DÉTAILS :
+--- BIBLIOGRAPHIE ---
 ${biblioInfo}
 
-🔐 ACCÈS :
+--- ACCÈS ---
 Statut : ${rightsInfo}
-Lien : ${link}
 
-📄 ABSTRACT :
+--- RÉSUMÉ ---
 ${abstract}
-`;
+    `;
 
-    const body = encodeURIComponent(bodyText);
-    
-    setTimeout(() => {
-        window.location.href = `mailto:nkodiahardy@gmail.com?subject=${subject}&body=${body}`;
-        setStatus('success');
-        setTimeout(onClose, 5000);
-    }, 1000);
+    // 4. Préparation des paramètres pour EmailJS
+    const templateParams = {
+        user_name: submitterName,   // Variable {{user_name}}
+        user_email: submitterEmail, // Variable {{user_email}}
+        title: title,               // Variable {{title}}
+        link: link,                 // Variable {{link}}
+        message: detailedBody       // Variable {{message}}
+    };
+
+    // 5. Envoi
+    emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY)
+      .then((result) => {
+          console.log('Succès:', result.text);
+          setStatus('success');
+          setTimeout(onClose, 4000); // Fermeture auto
+      }, (error) => {
+          console.error('Erreur:', error.text);
+          setStatus('error');
+      });
   };
 
   return (
@@ -130,17 +144,21 @@ ${abstract}
              </div>
              <div>
                 <h2 className="text-lg font-bold font-serif">Ajouter un document</h2>
-                <p className="text-xs text-slate-400">Standard Zotero</p>
+                <p className="text-xs text-slate-400">Standard Zotero • Via EmailJS</p>
              </div>
           </div>
           <button onClick={onClose} className="hover:bg-white/20 p-2 rounded-full transition-colors">✕</button>
         </div>
 
         {status === 'success' ? (
-           <div className="flex-grow flex flex-col items-center justify-center p-12 text-center">
-             <div className="text-6xl mb-4">✅</div>
-             <h3 className="text-2xl font-bold text-slate-800">Prêt à envoyer !</h3>
-             <p className="text-slate-500 mt-2">Votre application mail va s'ouvrir pour confirmer l'envoi.</p>
+           <div className="flex-grow flex flex-col items-center justify-center p-12 text-center bg-green-50">
+             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6 shadow-sm">
+                <svg className="w-10 h-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+             </div>
+             <h3 className="text-2xl font-bold text-green-800 font-serif">Soumission envoyée !</h3>
+             <p className="text-green-600 mt-2 max-w-sm">
+               Merci pour votre contribution. Un accusé de réception a été envoyé à votre adresse email.
+             </p>
            </div>
         ) : (
           <form onSubmit={handleSubmit} className="p-6 space-y-6 overflow-y-auto custom-scrollbar bg-slate-50">
@@ -149,22 +167,22 @@ ${abstract}
             <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
                <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">1. Type de Document</h3>
                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="label-zotero">Item Type (Zotero)</label>
-                    <select className="input-zotero" value={docType} onChange={e => setDocType(e.target.value)}>
-                      <option value="Article de Revue">Journal Article</option>
-                      <option value="Thèse">Thesis (Thèse/Mémoire)</option>
-                      <option value="Livre">Book (Livre)</option>
-                      <option value="Chapitre">Book Section</option>
-                      <option value="Rapport">Report</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="label-zotero">Domaine (Scimago)</label>
-                    <select className="input-zotero" value={domain} onChange={e => setDomain(e.target.value)}>
-                      {SCIMAGO_DOMAINS.map(d => <option key={d.value} value={d.value}>{d.label}</option>)}
-                    </select>
-                  </div>
+                 <div>
+                   <label className="label-zotero">Item Type (Zotero)</label>
+                   <select className="input-zotero" value={docType} onChange={e => setDocType(e.target.value)}>
+                     <option value="Article de Revue">Journal Article</option>
+                     <option value="Thèse">Thesis (Thèse/Mémoire)</option>
+                     <option value="Livre">Book (Livre)</option>
+                     <option value="Chapitre">Book Section</option>
+                     <option value="Rapport">Report</option>
+                   </select>
+                 </div>
+                 <div>
+                   <label className="label-zotero">Domaine (Scimago)</label>
+                   <select className="input-zotero" value={domain} onChange={e => setDomain(e.target.value)}>
+                     {SCIMAGO_DOMAINS.map(d => <option key={d.value} value={d.value}>{d.label}</option>)}
+                   </select>
+                 </div>
                </div>
                <div>
                  <label className="label-zotero">Titre (Title)</label>
@@ -348,15 +366,44 @@ ${abstract}
                <textarea required rows={5} className="input-zotero resize-none" placeholder="Copiez le résumé ici..." value={abstract} onChange={e => setAbstract(e.target.value)} />
             </div>
 
-            {/* EMAIL */}
-            <div>
-               <label className="label-zotero">Votre Email (Pour confirmation)</label>
-               <input required type="email" className="input-zotero border-blue-300 bg-blue-50/20" value={submitterEmail} onChange={e => setSubmitterEmail(e.target.value)} />
+            {/* VOS INFORMATIONS */}
+            <div className="bg-blue-50/50 p-5 rounded-xl border border-blue-100 shadow-sm space-y-4">
+               <h3 className="text-xs font-black text-blue-400 uppercase tracking-widest border-b border-blue-100 pb-2">Contact & Confirmation</h3>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                 <div>
+                   <label className="label-zotero text-blue-700">Votre Nom (Pour le suivi)</label>
+                   <input required className="input-zotero border-blue-200 focus:border-blue-500" placeholder="Votre nom" value={submitterName} onChange={e => setSubmitterName(e.target.value)} />
+                 </div>
+                 <div>
+                   <label className="label-zotero text-blue-700">Votre Email (Pour confirmation)</label>
+                   <input required type="email" className="input-zotero border-blue-200 focus:border-blue-500" placeholder="votre@email.com" value={submitterEmail} onChange={e => setSubmitterEmail(e.target.value)} />
+                 </div>
+               </div>
             </div>
 
-            <button type="submit" className="w-full bg-blue-700 text-white font-bold py-4 rounded-xl hover:bg-blue-800 transition-all shadow-lg">
-              Générer la demande de soumission
+            <button 
+              type="submit" 
+              disabled={status === 'sending'}
+              className="w-full bg-blue-700 text-white font-bold py-4 rounded-xl hover:bg-blue-800 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+            >
+              {status === 'sending' ? (
+                <>
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                  Envoi en cours...
+                </>
+              ) : (
+                <>
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
+                  Envoyer la soumission
+                </>
+              )}
             </button>
+
+            {status === 'error' && (
+              <p className="text-red-500 text-sm text-center bg-red-50 p-3 rounded-lg border border-red-100">
+                Une erreur est survenue lors de l'envoi. Veuillez vérifier votre connexion.
+              </p>
+            )}
 
           </form>
         )}
@@ -387,6 +434,16 @@ ${abstract}
           background-color: #fff;
           border-color: #2563eb;
           box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background-color: #cbd5e1;
+          border-radius: 20px;
         }
       `}</style>
     </div>
