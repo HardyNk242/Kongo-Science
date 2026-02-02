@@ -37,6 +37,17 @@ export const THESES_LIBRARY = [
     pdfUrl: "https://www.cambridge.org/core/journals/oryx/article/tracking-foraging-green-turtles-in-the-republic-of-the-congo-insights-into-spatial-ecology-from-a-data-poor-region/C7868A852577A741C2F117A2A9F0C33B",
   },
 {
+    id: "1770015989471",
+    title: "Pratique évaluative de la lecture au cycle primaire dans le département de Brazzaville, République du Congo",
+    type: "Actes de Conférence",
+    authors: ["KITENDI-MIZÈRE Charlotte"],
+    publication: "LAKISA",
+    year: "Decembre 2024",
+    link: "https://www.researchgate.net/publication/388119883_Pratique_evaluative_de_la_lecture_au_cycle_primaire_dans_le_departement_de_Brazzaville_Republique_du_Congo/fulltext/678af3101ec9f9589f4ac084/Pratique-evaluative-de-la-lecture-au-cycle-primaire-dans-le-departement-de-Brazzaville-Republique-du-Congo.pdf?origin=publicationDetail&_sg%5B0%5D=1miB82fvBrPqQyh-_zvGT-fZxqCUaxDvH8ZNbTO6oMQwJVVpEry8yiVbl8OvGpCUoYTR7TYWWty4JAvdLrUVLQ.4ld__3kHrF4mf0Yo4uztpsL2FT9VxKXvAOzQeRtl2wQ46Too0eW5D1bXJCOHGiiwpB_Vw2bM34yC7MfRJVTSfA&_sg%5B1%5D=W11sCFid89cmUMzIVM68_UNpRYVxC08SPFHpR1N8e1eG-EVhVi5v5Y9EULRD77UF_i6A4SNX_nyijMKBatGzxLxoJwqtNrxkJ5Ajdo7bYN38.4ld__3kHrF4mf0Yo4uztpsL2FT9VxKXvAOzQeRtl2wQ46Too0eW5D1bXJCOHGiiwpB_Vw2bM34yC7MfRJVTSfA&_iepl=&_rtd=eyJjb250ZW50SW50ZW50IjoibWFpbkl0ZW0ifQ%3D%3D&_tp=eyJjb250ZXh0Ijp7ImZpcnN0UGFnZSI6InB1YmxpY2F0aW9uIiwicGFnZSI6InB1YmxpY2F0aW9uIiwicG9zaXRpb24iOiJwYWdlSGVhZGVyIn19",
+    category: "Social Sciences",
+    abstract: "Cet article a pour objectif de vérifier la pratique de l’évaluation de la lecture communication des élèves de l’école primaire dans le département de ..."
+  },
+{
     id: 'art-koutika-2016',
     title: "Soil P availability under eucalypt and acacia on Ferralic Arenosols, Republic of the Congo",
     author: "Koutika, Lydie-Stella et al.",
