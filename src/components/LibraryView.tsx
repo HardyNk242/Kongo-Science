@@ -11,6 +11,7 @@ const LibraryView: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDomain, setSelectedDomain] = useState('Tous');
   const [selectedYearFilter, setSelectedYearFilter] = useState('any');
+  const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest'); 
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   
   // Navigation
@@ -30,9 +31,10 @@ const LibraryView: React.FC = () => {
     return counts;
   }, []);
 
-  // --- LOGIQUE DE FILTRAGE ---
+  // --- LOGIQUE DE FILTRAGE ET TRI ---
   const filteredTheses = useMemo(() => {
-    return THESES_LIBRARY.filter((t) => {
+    // 1. Filtrage
+    let results = THESES_LIBRARY.filter((t) => {
       const searchLower = searchTerm.toLowerCase();
       const matchesSearch = 
         (t.title || "").toLowerCase().includes(searchLower) || 
@@ -42,14 +44,23 @@ const LibraryView: React.FC = () => {
       const matchesDomain = selectedDomain === 'Tous' || t.domain === selectedDomain;
 
       let matchesYear = true;
-      const thesisYear = parseInt(t.year);
+      const thesisYear = parseInt(t.year) || 0;
       if (selectedYearFilter !== 'any') {
          matchesYear = thesisYear >= parseInt(selectedYearFilter);
       }
       
       return matchesSearch && matchesDomain && matchesYear;
     });
-  }, [searchTerm, selectedDomain, selectedYearFilter]);
+
+    // 2. Tri
+    results.sort((a, b) => {
+      const dateA = parseInt(a.year) || 0;
+      const dateB = parseInt(b.year) || 0;
+      return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+    });
+
+    return results;
+  }, [searchTerm, selectedDomain, selectedYearFilter, sortOrder]);
 
   // --- PAGINATION ---
   const totalPages = Math.ceil(filteredTheses.length / ITEMS_PER_PAGE);
@@ -58,7 +69,7 @@ const LibraryView: React.FC = () => {
     currentPage * ITEMS_PER_PAGE
   );
 
-  useEffect(() => { setCurrentPage(1); }, [searchTerm, selectedDomain, selectedYearFilter]);
+  useEffect(() => { setCurrentPage(1); }, [searchTerm, selectedDomain, selectedYearFilter, sortOrder]);
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, [currentPage, selectedThesis]);
 
   // --- ALGORITHME PAGINATION "GOOGLE STYLE" ---
@@ -167,7 +178,7 @@ const LibraryView: React.FC = () => {
                <p className="text-slate-700 leading-relaxed text-lg text-justify font-serif">{selectedThesis.abstract}</p>
              </div>
              
-             {/* --- ZONE DES BOUTONS (MODIFIÉE) --- */}
+             {/* --- ZONE DES BOUTONS --- */}
              <div className="flex flex-col gap-6 border-t border-slate-50 pt-8">
                 
                 <div className="flex flex-col sm:flex-row gap-4 flex-wrap">
@@ -186,7 +197,7 @@ const LibraryView: React.FC = () => {
                         </button>
                     )}
 
-                    {/* 3. CAS LIEN WEB : S'affiche TOUJOURS si pdfUrl existe (Même si restreint) */}
+                    {/* 3. CAS LIEN WEB */}
                     {selectedThesis.pdfUrl && (
                         <a href={selectedThesis.pdfUrl} target="_blank" rel="noopener noreferrer" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg transition-all hover:-translate-y-1">
                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
@@ -200,7 +211,7 @@ const LibraryView: React.FC = () => {
                     </button>
                 </div>
 
-                {/* NOTE EXPLICATIVE SUR LES DROITS D'AUTEUR */}
+                {/* NOTE EXPLICATIVE */}
                 {selectedThesis.isRestricted && (
                     <div className="flex items-start gap-3 bg-slate-50 p-4 rounded-lg border border-slate-100 text-sm text-slate-500">
                         <svg className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -218,43 +229,101 @@ const LibraryView: React.FC = () => {
   }
 
   // ----------------------------------------------------------------------------------
-  // VUE PRINCIPALE (LISTE)
+  // VUE PRINCIPALE (LISTE) - AVEC NOUVELLE PHRASE
   // ----------------------------------------------------------------------------------
   return (
     <div className="bg-white min-h-screen">
       {showSubmitModal && <SubmitPublicationModal onClose={() => setShowSubmitModal(false)} />}
       
-      {/* HEADER RECHERCHE */}
-      <section className="bg-slate-900 pt-32 pb-12 text-white sticky top-0 z-40 shadow-xl">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row gap-6 items-center">
-             <div className="relative flex-grow w-full">
-               <input 
-                 type="text" 
-                 placeholder="Rechercher (titre, auteur, mots-clés)..." 
-                 className="w-full h-12 pl-12 pr-4 rounded-lg text-slate-900 bg-white shadow-inner focus:ring-2 focus:ring-blue-500 outline-none"
-                 value={searchTerm}
-                 onChange={(e) => setSearchTerm(e.target.value)}
-               />
-               <svg className="w-5 h-5 text-slate-400 absolute left-4 top-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-             </div>
-             <button onClick={() => setShowSubmitModal(true)} className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-lg font-bold whitespace-nowrap transition-colors flex items-center gap-2">
-                Soumettre
-             </button>
+      {/* 1. SECTION HERO AVEC RECHERCHE (DESIGN SOMBRE) */}
+      <section className="bg-slate-900 pt-32 pb-20 px-6 text-center">
+        <div className="max-w-4xl mx-auto animate-fadeIn">
+            {/* SURTITRE */}
+            <h5 className="text-blue-500 font-bold text-xs tracking-[0.2em] uppercase mb-4">
+              Archive Scientifique Souveraine
+            </h5>
+            
+            {/* TITRE PRINCIPAL SERIF */}
+            <h1 className="text-4xl md:text-6xl font-serif font-bold text-white mb-6 leading-tight">
+              Bibliothèque des Publications
+            </h1>
+            
+            {/* DESCRIPTION MISE À JOUR */}
+            <p className="text-slate-400 text-lg mb-10 max-w-2xl mx-auto leading-relaxed">
+              Notre mission : Rendre le patrimoine scientifique du Bassin du Congo <span className="text-white font-bold border-b-2 border-blue-500">visible et accessible</span> à tous.
+            </p>
+
+            {/* BARRE DE RECHERCHE CENTRALE */}
+            <div className="relative max-w-2xl mx-auto group">
+               <div className="absolute inset-0 bg-blue-500 rounded-2xl blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
+               <div className="relative">
+                 <input 
+                   type="text" 
+                   placeholder="Rechercher une publication, un auteur, un domaine..." 
+                   className="w-full h-16 pl-14 pr-4 rounded-2xl text-lg text-slate-900 bg-white shadow-2xl focus:ring-4 focus:ring-blue-500/50 outline-none transition-all"
+                   value={searchTerm}
+                   onChange={(e) => setSearchTerm(e.target.value)}
+                 />
+                 <svg className="w-7 h-7 text-slate-400 absolute left-4 top-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                 </svg>
+               </div>
+            </div>
         </div>
       </section>
 
-      {/* CONTENU */}
+      {/* 2. BARRE D'OUTILS ET FILTRES (STICKY) */}
+      <div className="border-b border-slate-100 bg-white/95 backdrop-blur-md sticky top-0 z-30 shadow-sm transition-all">
+         <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col sm:flex-row gap-4 justify-between items-center">
+            
+            {/* Filtres de Tri et Année */}
+            <div className="flex items-center gap-3 w-full sm:w-auto overflow-x-auto pb-2 sm:pb-0">
+               <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
+                 <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" /></svg>
+                 <select 
+                   className="bg-transparent text-sm text-slate-700 outline-none font-medium cursor-pointer"
+                   value={sortOrder}
+                   onChange={(e) => setSortOrder(e.target.value as any)}
+                 >
+                   <option value="newest">Plus récents d'abord</option>
+                   <option value="oldest">Plus anciens d'abord</option>
+                 </select>
+               </div>
+
+               <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
+                 <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                 <select 
+                   className="bg-transparent text-sm text-slate-700 outline-none font-medium cursor-pointer"
+                   value={selectedYearFilter}
+                   onChange={(e) => setSelectedYearFilter(e.target.value)}
+                 >
+                   <option value="any">Toutes les années</option>
+                   <option value="2023">Depuis 2023</option>
+                   <option value="2020">Depuis 2020</option>
+                   <option value="2015">Depuis 2015</option>
+                   <option value="2010">Depuis 2010</option>
+                 </select>
+               </div>
+            </div>
+
+            <button onClick={() => setShowSubmitModal(true)} className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-bold text-sm whitespace-nowrap transition-colors flex items-center gap-2 shadow-lg shadow-blue-600/20">
+               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+               Contribuer
+            </button>
+         </div>
+      </div>
+
+      {/* 3. CONTENU PRINCIPAL */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 flex flex-col md:flex-row gap-12">
         
-        {/* SIDEBAR FILTRES */}
+        {/* SIDEBAR DOMAINES */}
         <aside className="w-full md:w-64 flex-shrink-0 space-y-8">
-           {/* Filtre Domaines AVEC COMPTEURS */}
            <div>
-             <h4 className="text-sm font-bold text-slate-900 uppercase tracking-widest mb-4 border-b border-slate-200 pb-2">
+             <h4 className="text-xs font-bold text-slate-900 uppercase tracking-widest mb-4 border-b border-slate-200 pb-2">
                Domaines
              </h4>
              <div className="flex flex-col gap-2 max-h-[60vh] overflow-y-auto custom-scrollbar pr-2">
-               <button
+               <button 
                   onClick={() => setSelectedDomain('Tous')}
                   className={`text-left text-sm flex justify-between items-center transition-colors ${selectedDomain === 'Tous' ? 'font-bold text-blue-700' : 'text-slate-600 hover:text-blue-600'}`}
                >
@@ -267,7 +336,7 @@ const LibraryView: React.FC = () => {
                  if (count === 0) return null;
 
                  return (
-                   <button
+                   <button 
                      key={dom.value}
                      onClick={() => setSelectedDomain(dom.value)}
                      className={`text-left text-sm flex justify-between items-center transition-colors ${selectedDomain === dom.value ? 'font-bold text-blue-700' : 'text-slate-600 hover:text-blue-600'}`}
@@ -283,34 +352,57 @@ const LibraryView: React.FC = () => {
            </div>
         </aside>
 
-        {/* RÉSULTATS */}
+        {/* LISTE DES RÉSULTATS */}
         <main className="flex-grow">
-            <div className="mb-6 text-slate-400 text-sm">
-              Environ {filteredTheses.length} résultats
+            <div className="mb-6 flex items-center justify-between">
+               <span className="text-slate-400 text-sm font-medium">
+                 {filteredTheses.length} résultats trouvés
+               </span>
             </div>
 
-            <div className="space-y-8">
+            <div className="space-y-6">
               {currentTheses.length > 0 ? (
                 currentTheses.map((thesis) => (
-                  <div key={thesis.id} className="group relative">
+                  <div key={thesis.id} className="group relative bg-white border border-slate-100 hover:border-blue-100 rounded-xl p-6 transition-all hover:shadow-lg hover:-translate-y-1 cursor-pointer" onClick={() => setSelectedThesis(thesis)}>
                     {renderZoteroCoins(thesis)}
-                    <h3 onClick={() => setSelectedThesis(thesis)} className="text-xl font-serif text-blue-800 font-medium cursor-pointer hover:underline hover:text-blue-600 mb-1 leading-snug">
-                      {thesis.title}
-                    </h3>
-                    <div className="text-sm text-green-800 mb-2 font-medium">
-                      {thesis.author} - <span className="italic">{thesis.institution}</span>, {thesis.year}
-                    </div>
-                    <div className="flex flex-wrap items-center gap-4 text-xs">
-                       <span className={`font-bold uppercase tracking-wider ${thesis.isForSale ? 'text-green-600' : thesis.isRestricted ? 'text-amber-600' : 'text-slate-500'}`}>
-                        {thesis.isForSale ? `[Achat ${thesis.price}]` : thesis.isRestricted ? '[Sur demande]' : '[PDF] Accès Libre'}
-                       </span>
-                       <button onClick={() => setSelectedThesis(thesis)} className="text-slate-400 hover:text-blue-700 hover:underline">Voir détails</button>
+                    
+                    <div className="flex justify-between items-start gap-4">
+                        <div>
+                            <h3 className="text-xl font-serif text-slate-900 font-bold mb-2 group-hover:text-blue-700 transition-colors leading-snug">
+                              {thesis.title}
+                            </h3>
+                            <div className="text-sm text-slate-500 mb-3">
+                              <span className="font-semibold text-slate-700">{thesis.author}</span> • {thesis.year}
+                            </div>
+                            <div className="flex flex-wrap items-center gap-3 text-xs">
+                                <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded">
+                                    {thesis.type || 'Publication'}
+                                </span>
+                                {thesis.isRestricted ? (
+                                    <span className="flex items-center gap-1 text-amber-600 font-bold bg-amber-50 px-2 py-1 rounded border border-amber-100">
+                                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                                        Accès Restreint
+                                    </span>
+                                ) : (
+                                    <span className="flex items-center gap-1 text-green-700 font-bold bg-green-50 px-2 py-1 rounded border border-green-100">
+                                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                                        Open Access
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+                        <div className="hidden sm:block text-slate-300">
+                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                        </div>
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="py-20 text-center bg-slate-50 rounded-xl border border-slate-100">
-                  <p className="text-slate-500">Aucun résultat ne correspond à votre recherche.</p>
+                <div className="py-20 text-center bg-slate-50 rounded-xl border border-slate-100 border-dashed">
+                  <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-8 h-8 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  </div>
+                  <p className="text-slate-500 font-medium">Aucun résultat ne correspond à votre recherche.</p>
                   <button 
                     onClick={() => {setSearchTerm(''); setSelectedDomain('Tous'); setSelectedYearFilter('any');}}
                     className="mt-4 text-blue-600 font-bold hover:underline"
@@ -321,7 +413,7 @@ const LibraryView: React.FC = () => {
               )}
             </div>
 
-            {/* PAGINATION GOOGLE STYLE */}
+            {/* PAGINATION */}
             {totalPages > 1 && (
               <div className="mt-16 pt-8 border-t border-slate-100 flex justify-center items-center gap-2 select-none flex-wrap">
                 <button 
@@ -337,18 +429,16 @@ const LibraryView: React.FC = () => {
                     <button
                       key={idx}
                       onClick={() => setCurrentPage(page)}
-                      className={`w-8 h-8 rounded text-sm font-bold transition-all ${
+                      className={`w-9 h-9 rounded-lg text-sm font-bold transition-all ${
                         currentPage === page
-                        ? 'bg-blue-600 text-white shadow-md'
+                        ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
                         : 'text-blue-700 hover:bg-blue-50'
                       }`}
                     >
                       {page}
                     </button>
                   ) : (
-                    <span key={idx} className="w-8 h-8 flex items-center justify-center text-slate-400">
-                      ...
-                    </span>
+                    <span key={idx} className="w-9 h-9 flex items-center justify-center text-slate-400">...</span>
                   )
                 ))}
 
