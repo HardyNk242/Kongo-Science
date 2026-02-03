@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import ReactGA from 'react-ga4'; // NOUVEAU : Import Google Analytics
 
 // --- COMPOSANTS ---
 import Header from './components/Header';
@@ -20,9 +21,19 @@ import PublicationsView from './components/PublicationsView';
 import { OBJECTIFS, CONFERENCES, PARTNERS } from './constants';
 import { Conference } from './types';
 
+// --- CONFIGURATION GOOGLE ANALYTICS ---
+const GA_MEASUREMENT_ID = "G-2N8BKNB1V0"; // Votre ID
+ReactGA.initialize(GA_MEASUREMENT_ID);
+
 const App: React.FC = () => {
   const [selectedConference, setSelectedConference] = useState<Conference | null>(null);
   const [currentPath, setCurrentPath] = useState('home');
+
+  // --- SUIVI GOOGLE ANALYTICS (NOUVEAU) ---
+  useEffect(() => {
+    // Envoie un signal à Google à chaque fois que la page (currentPath) change
+    ReactGA.send({ hitType: "pageview", page: window.location.hash || '/home' });
+  }, [currentPath]);
 
   // --- FILTRE DES CONFÉRENCES À VENIR (Pour la Home) ---
   const upcomingConferences = useMemo(() => {
