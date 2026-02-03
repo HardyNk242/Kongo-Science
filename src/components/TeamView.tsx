@@ -3,8 +3,8 @@ import React from 'react';
 // --- IMPORTS LOCAUX ---
 import hardyImg from '../assets/hardy.png'; 
 import princeImg from '../assets/prince.jpeg';
-import jemimaImg from '..//assets/jemima.png';
-import nicyImg from '..//assets/nicy.jpeg';
+import jemimaImg from '../assets/jemima.png';
+import nicyImg from '../assets/nicy.jpeg';
 
 const TeamView: React.FC = () => {
   const members = [
