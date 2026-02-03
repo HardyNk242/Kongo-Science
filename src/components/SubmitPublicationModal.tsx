@@ -22,7 +22,7 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
   // 1. Info de base
   const [submitterEmail, setSubmitterEmail] = useState('');
   const [submitterName, setSubmitterName] = useState(''); 
-  const [docType, setDocType] = useState('Article Scientifique'); // Valeur par défaut alignée sur ta DB
+  const [docType, setDocType] = useState('Article Scientifique');
   const [domain, setDomain] = useState(SCIMAGO_DOMAINS[0].value);
   
   // 2. Données
@@ -61,31 +61,28 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
     e.preventDefault();
     setStatus('sending');
 
-    // FORMATAGE AUTEURS : Transforme le tableau en String "Nom P., Nom2 P."
-    // Ex: "A. Zámbó, P. Baňař" pour coller à ton format 'author'
+    // FORMATAGE AUTEURS
     const authorString = authors.map(a => {
         const initial = a.firstName ? `${a.firstName.charAt(0)}.` : '';
         return `${initial} ${a.lastName}`;
     }).join(', ');
 
-    // GÉNÉRATION ID INTELLIGENTE : art-nom-annee-motcle
-    // Ex: art-zambo-2022-drymini
+    // GÉNÉRATION ID
     const cleanName = authors[0]?.lastName.toLowerCase().replace(/[^a-z0-9]/g, '') || 'aut';
     const cleanYear = date.substring(0, 4) || new Date().getFullYear().toString();
     const cleanTitle = title.split(' ')[0].toLowerCase().replace(/[^a-z0-9]/g, '') || 'doc';
     const generatedId = `art-${cleanName}-${cleanYear}-${cleanTitle}`;
 
-    // FORMATAGE PAGES : Gestion du "Vol" ou juste "pp."
+    // FORMATAGE PAGES
     let pageString = pages;
     if (pages) {
         pageString = volume ? `Vol ${volume}, pp. ${pages}` : `pp. ${pages}`;
     }
 
-    // INSTITUTION CAMÉLÉON
+    // INSTITUTION
     const institutionValue = publication || university || 'Institution Inconnue';
 
-    // --- CONSTRUCTION DU SNIPPET JSON PARFAIT ---
-    // Utilise pdfUrl, institution, author (singulier), etc.
+    // --- CONSTRUCTION DU JSON ---
     const codeSnippet = `
   {
     id: '${generatedId}',
@@ -101,12 +98,6 @@ const SubmitPublicationModal: React.FC<Props> = ({ onClose }) => {
     isExclusive: false,
     pdfUrl: '${link}',
   },`;
-
-    // Infos lisibles pour l'humain dans le mail
-    let biblioInfo = "";
-    if (docType === 'Article Scientifique') biblioInfo = `Journal: ${publication} | Vol: ${volume}`;
-    else if (docType === 'Actes de Conférence') biblioInfo = `Conférence: ${publication} | Lieu: ${place}`;
-    else biblioInfo = `Source: ${institutionValue}`;
 
     const detailedBody = `
 --- ✂️ CODE À COPIER DANS LIBRARYDATA.TS ✂️ ---
@@ -168,7 +159,6 @@ Lien : ${link}
                  <div>
                    <label className="label-zotero">Type</label>
                    <select className="input-zotero" value={docType} onChange={e => setDocType(e.target.value)}>
-                     {/* J'ai mis les valeurs exactes que tu utilises dans ta DB */}
                      <option value="Article Scientifique">Article Scientifique</option>
                      <option value="Actes de Conférence">Actes de Conférence</option>
                      <option value="Thèse">Thèse/Mémoire</option>
