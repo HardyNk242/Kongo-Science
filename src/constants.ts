@@ -108,6 +108,7 @@ export const CONFERENCES: (Conference & { imageUrl: string })[] = [
     date: '2026-02-08',
     time: '19:30',
     day: '08',
+    replayUrl: 'https://youtu.be/XxPdm_BEuUI',
     month: 'FEV',
     location: 'Brazzaville (heure locale)',
     type: 'Webinaire',

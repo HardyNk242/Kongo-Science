@@ -12,7 +12,7 @@ import ProposalView from './components/ProposalView';
 import ChatAssistant from './components/ChatAssistant';
 import Footer from './components/Footer';
 
-// --- VOS NOUVELLES PAGES (IMPORTÉES DEPUIS VOS FICHIERS) ---
+// --- VOS NOUVELLES PAGES ---
 import HistoryView from './components/HistoryView';
 import TeamView from './components/TeamView';
 import ProgramsView from './components/ProgramsView';
@@ -22,20 +22,19 @@ import { OBJECTIFS, CONFERENCES, PARTNERS } from './constants';
 import { Conference } from './types';
 
 // --- CONFIGURATION GOOGLE ANALYTICS ---
-const GA_MEASUREMENT_ID = "G-2N8BKNB1V0"; // Votre ID
+const GA_MEASUREMENT_ID = "G-2N8BKNB1V0"; 
 ReactGA.initialize(GA_MEASUREMENT_ID);
 
 const App: React.FC = () => {
   const [selectedConference, setSelectedConference] = useState<Conference | null>(null);
   const [currentPath, setCurrentPath] = useState('home');
 
-  // --- SUIVI GOOGLE ANALYTICS (NOUVEAU) ---
+  // --- SUIVI GOOGLE ANALYTICS ---
   useEffect(() => {
-    // Envoie un signal à Google à chaque fois que la page (currentPath) change
     ReactGA.send({ hitType: "pageview", page: window.location.hash || '/home' });
   }, [currentPath]);
 
-  // --- FILTRE DES CONFÉRENCES À VENIR (Pour la Home) ---
+  // --- FILTRE DES CONFÉRENCES À VENIR ---
   const upcomingConferences = useMemo(() => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -91,7 +90,6 @@ const App: React.FC = () => {
   const renderContent = () => {
     switch (currentPath) {
       
-      // --- NOUVELLES ROUTES ---
       case 'publications':
         return <PublicationsView />;
 
@@ -101,13 +99,16 @@ const App: React.FC = () => {
       case 'team':
         return <TeamView />;
 
+      // --- LE RACCOURCI MARKETING (Lien direct vers les prix) ---
+      case 'offres':
+        return <ProgramsView forceView="offers" />;
+
       case 'programmes':
         return <ProgramsView />;
         
       case 'library':
         return <LibraryView />;
 
-      // --- AGENDA & INSCRIPTIONS ---
       case 'agenda':
         return (
           <ConferencesView
@@ -137,7 +138,6 @@ const App: React.FC = () => {
           </div>
         );
 
-      // --- PAGE D'ACCUEIL ---
       case 'home':
       default:
         return (
@@ -186,7 +186,67 @@ const App: React.FC = () => {
               </div>
             </section>
 
-            {/* SECTION CONFÉRENCES (HOME PREVIEW) */}
+            {/* --- SECTION OFFRES & BOUQUETS (Avec couleurs) --- */}
+            <section className="py-16 bg-blue-900 text-white overflow-hidden relative">
+              <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500 rounded-full blur-[100px] opacity-20 translate-x-1/2 -translate-y-1/2"></div>
+              
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                 <div className="bg-white/10 backdrop-blur-lg rounded-[3rem] p-10 md:p-16 border border-white/10 shadow-2xl">
+                    <div className="flex flex-col md:flex-row items-center gap-12">
+                       <div className="flex-1">
+                          <span className="inline-block bg-blue-500 text-white text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest shadow-lg mb-6">
+                            Lancement 2026
+                          </span>
+                          <h2 className="text-3xl md:text-5xl font-serif font-bold mb-6 italic leading-tight">
+                            Offres d'Accompagnement Scientifique
+                          </h2>
+                          <p className="text-blue-100 text-lg leading-relaxed mb-8">
+                            Propulsez votre carrière avec nos 5 bouquets exclusifs : du mentorat Master/Doctorat à l'accélérateur de carrière internationale.
+                          </p>
+                          
+                          {/* TAGS COLORÉS ICI */}
+                          <div className="flex flex-wrap gap-3 mb-10">
+                            <span className="bg-amber-500 text-white border-2 border-amber-400 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wide shadow-lg shadow-amber-900/20 transform hover:scale-105 transition-transform cursor-default">
+                              Stratégie Express
+                            </span>
+                            <span className="bg-blue-500 text-white border-2 border-blue-400 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wide shadow-lg shadow-blue-900/20 transform hover:scale-105 transition-transform cursor-default">
+                              Bouquet Standard
+                            </span>
+                            <span className="bg-purple-600 text-white border-2 border-purple-400 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wide shadow-lg shadow-purple-900/40 ring-2 ring-purple-300/30 transform hover:scale-105 transition-transform cursor-default">
+                              Bouquet Premium 👑
+                            </span>
+                            <span className="bg-pink-600 text-white border-2 border-pink-400 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wide shadow-lg shadow-pink-900/20 transform hover:scale-105 transition-transform cursor-default">
+                              Publication Int.
+                            </span>
+                            <span className="bg-emerald-600 text-white border-2 border-emerald-400 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wide shadow-lg shadow-emerald-900/20 transform hover:scale-105 transition-transform cursor-default">
+                              Finisher
+                            </span>
+                          </div>
+
+                          <button 
+                            onClick={() => navigateTo('offres')}
+                            className="bg-white text-blue-900 px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-blue-50 transition-all shadow-xl flex items-center gap-2"
+                          >
+                            Découvrir les Offres
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                          </button>
+                       </div>
+                       
+                       <div className="hidden md:block w-1/3">
+                           {/* Illustration abstraite */}
+                           <div className="grid grid-cols-2 gap-4 opacity-80">
+                              <div className="bg-blue-500/20 h-32 rounded-3xl backdrop-blur-sm border border-white/10"></div>
+                              <div className="bg-blue-300/20 h-32 rounded-3xl backdrop-blur-sm border border-white/10 mt-8"></div>
+                              <div className="bg-white/20 h-32 rounded-3xl backdrop-blur-sm border border-white/10 -mt-8"></div>
+                              <div className="bg-blue-600/20 h-32 rounded-3xl backdrop-blur-sm border border-white/10"></div>
+                           </div>
+                       </div>
+                    </div>
+                 </div>
+              </div>
+            </section>
+
+            {/* SECTION CONFÉRENCES */}
             <section className="py-24 bg-white relative">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-16">
