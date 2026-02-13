@@ -28,6 +28,8 @@ ReactGA.initialize(GA_MEASUREMENT_ID);
 const App: React.FC = () => {
   const [selectedConference, setSelectedConference] = useState<Conference | null>(null);
   const [currentPath, setCurrentPath] = useState('home');
+  // AJOUT : État pour stocker l'ID de l'article s'il est dans l'URL
+  const [urlArticleId, setUrlArticleId] = useState<string | null>(null);
 
   // --- SUIVI GOOGLE ANALYTICS ---
   useEffect(() => {
@@ -51,6 +53,14 @@ const App: React.FC = () => {
 
     setCurrentPath(path || 'home');
 
+    // AJOUT : Capture l'ID de l'article si on est sur la page publications
+    if (path === 'publications') {
+      setUrlArticleId(id || null);
+    } else {
+      setUrlArticleId(null);
+    }
+
+    // Gestion existante pour l'inscription aux conférences
     if (path === 'registration') {
       if (id) {
         const conf = CONFERENCES.find(c => c.id === id);
@@ -91,7 +101,8 @@ const App: React.FC = () => {
     switch (currentPath) {
       
       case 'publications':
-        return <PublicationsView />;
+        // AJOUT : On passe l'ID de l'article au composant
+        return <PublicationsView initialArticleId={urlArticleId} />;
 
       case 'history':
         return <HistoryView />;

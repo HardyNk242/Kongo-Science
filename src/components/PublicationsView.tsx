@@ -8,11 +8,38 @@ import { Helmet } from 'react-helmet-async';
 // Simulation d'une "Base de données" locale pour la session
 const collectedEmails: string[] = [];
 
-const PublicationsView: React.FC = () => {
+// AJOUT : Interface pour recevoir l'ID de l'article depuis l'URL
+interface PublicationsViewProps {
+  initialArticleId?: string | null;
+}
+
+const PublicationsView: React.FC<PublicationsViewProps> = ({ initialArticleId }) => {
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [email, setEmail] = useState("");
   const [hasSubscribed, setHasSubscribed] = useState(false);
+
+  // AJOUT : Effet pour ouvrir automatiquement l'article si un ID est présent dans l'URL
+  useEffect(() => {
+    if (initialArticleId) {
+      const foundArticle = ARTICLES.find(a => a.id === initialArticleId);
+      if (foundArticle) {
+        setSelectedArticle(foundArticle);
+      }
+    }
+  }, [initialArticleId]);
+
+  // AJOUT : Fonction pour ouvrir un article et mettre à jour l'URL
+  const openArticle = (article: Article) => {
+    setSelectedArticle(article);
+    window.location.hash = `publications/${article.id}`;
+  };
+
+  // AJOUT : Fonction pour fermer un article et nettoyer l'URL
+  const closeArticle = () => {
+    setSelectedArticle(null);
+    window.location.hash = `publications`;
+  };
 
   // Remonter en haut quand on ouvre un article
   useEffect(() => {
@@ -50,7 +77,7 @@ const PublicationsView: React.FC = () => {
           <meta
             name="description"
             content={
-              selectedArticle.excerpt || "Article scientifique de la bibliothÃ¨que Kongo Science."
+              selectedArticle.excerpt || "Article scientifique de la bibliothèque Kongo Science."
             }
           />
           <meta property="og:title" content={selectedArticle.title} />
@@ -65,7 +92,7 @@ const PublicationsView: React.FC = () => {
         {/* Navbar Article */}
         <div className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm py-3 px-4 flex justify-between items-center font-sans">
             <button 
-              onClick={() => setSelectedArticle(null)}
+              onClick={closeArticle} // UTILISATION DE LA NOUVELLE FONCTION
               className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-black transition-colors"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
@@ -122,7 +149,7 @@ const PublicationsView: React.FC = () => {
           {/* Footer Article */}
           <div className="mt-16 pt-8 border-t border-slate-200 text-center font-sans">
             <button 
-               onClick={() => setSelectedArticle(null)}
+               onClick={closeArticle} // UTILISATION DE LA NOUVELLE FONCTION
                className="bg-black text-white px-8 py-4 text-sm font-bold uppercase tracking-wider hover:bg-slate-800 transition-colors"
             >
               Lire d'autres articles
@@ -195,13 +222,13 @@ const PublicationsView: React.FC = () => {
                 <ArticleCard 
                   key={article.id} 
                   article={article} 
-                  onClick={(art) => setSelectedArticle(art)} 
+                  onClick={(art) => openArticle(art)} // UTILISATION DE LA NOUVELLE FONCTION
                 />
               ))}
             </div>
           </div>
 
-          {/* --- DROITE : BOURSES (C'est ici qu'elles étaient manquantes) --- */}
+          {/* --- DROITE : BOURSES --- */}
           <div className="lg:col-span-4">
             <div className="sticky top-32">
                <div className="flex items-center justify-between mb-10 border-b border-slate-200 pb-6">
@@ -219,7 +246,7 @@ const PublicationsView: React.FC = () => {
                      <div key={scholarship.id} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl transition-all group">
                         <div className="flex justify-between items-start mb-4">
                            <span className="text-[10px] font-black bg-blue-50 text-blue-700 px-3 py-1 rounded-full uppercase tracking-tighter">
-                              {scholarship.level}
+                             {scholarship.level}
                            </span>
                            {isUrgent && (
                              <span className="flex h-2 w-2 rounded-full bg-red-500 animate-ping" title="Urgent"></span>
@@ -232,10 +259,10 @@ const PublicationsView: React.FC = () => {
                         
                         <div className="bg-slate-50 p-4 rounded-2xl mb-4">
                            <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">
-                              {scholarship.description}
+                             {scholarship.description}
                            </p>
                            <div className="mt-3 text-[10px] font-bold text-slate-500 border-t border-slate-200 pt-2">
-                              DEADLINE : {scholarship.deadline}
+                             DEADLINE : {scholarship.deadline}
                            </div>
                         </div>
 
