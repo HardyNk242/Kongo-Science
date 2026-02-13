@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom'; // IMPORT CRUCIAL
 import { ARTICLES } from '../data/articles';
 import { SCHOLARSHIPS } from '../data/scholarships'; 
 import ArticleCard from './ArticleCard';
@@ -8,37 +9,43 @@ import { Helmet } from 'react-helmet-async';
 // Simulation d'une "Base de données" locale pour la session
 const collectedEmails: string[] = [];
 
-// AJOUT : Interface pour recevoir l'ID de l'article depuis l'URL
+// Interface pour recevoir l'ID de l'article depuis l'URL
 interface PublicationsViewProps {
   initialArticleId?: string | null;
 }
 
 const PublicationsView: React.FC<PublicationsViewProps> = ({ initialArticleId }) => {
+  const navigate = useNavigate(); // Hook pour changer l'URL
+  
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [email, setEmail] = useState("");
   const [hasSubscribed, setHasSubscribed] = useState(false);
 
-  // AJOUT : Effet pour ouvrir automatiquement l'article si un ID est présent dans l'URL
+  // --- EFFET : OUVRIR DEPUIS L'URL ---
   useEffect(() => {
     if (initialArticleId) {
       const foundArticle = ARTICLES.find(a => a.id === initialArticleId);
       if (foundArticle) {
         setSelectedArticle(foundArticle);
       }
+    } else {
+        // Important : si pas d'ID, on ferme
+        setSelectedArticle(null);
     }
   }, [initialArticleId]);
 
-  // AJOUT : Fonction pour ouvrir un article et mettre à jour l'URL
+  // --- NAVIGATION (ROUTAGE PROPRE) ---
   const openArticle = (article: Article) => {
     setSelectedArticle(article);
-    window.location.hash = `publications/${article.id}`;
+    // Change l'URL sans #
+    navigate(`/publications/${article.id}`);
   };
 
-  // AJOUT : Fonction pour fermer un article et nettoyer l'URL
   const closeArticle = () => {
     setSelectedArticle(null);
-    window.location.hash = `publications`;
+    // Revient à la liste
+    navigate(`/publications`);
   };
 
   // Remonter en haut quand on ouvre un article
@@ -132,7 +139,7 @@ const PublicationsView: React.FC<PublicationsViewProps> = ({ initialArticleId })
             </figcaption>
           </figure>
 
-          {/* CORPS DU TEXTE (Avec Correction Espacements) */}
+          {/* CORPS DU TEXTE */}
           <div className="
             font-serif text-lg md:text-xl leading-loose text-gray-900
             [&_p]:mb-8
@@ -237,7 +244,7 @@ const PublicationsView: React.FC<PublicationsViewProps> = ({ initialArticleId })
 
                <div className="space-y-6 max-h-[80vh] overflow-y-auto pr-2 custom-scrollbar">
                  {SCHOLARSHIPS.map(scholarship => {
-                   // Gestion de la date pour éviter les erreurs d'affichage
+                   // Gestion de la date
                    const isUrgent = !isNaN(new Date(scholarship.deadline).getTime()) 
                         ? (new Date(scholarship.deadline).getTime() - new Date().getTime() < 1000 * 60 * 60 * 24 * 30)
                         : false;

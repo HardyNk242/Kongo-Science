@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom'; // IMPORT CRUCIAL
 import { SCIMAGO_DOMAINS } from '../constants';
 import { THESES_LIBRARY } from '../data/library';
 import { Thesis } from '../types';
@@ -6,12 +7,14 @@ import SubmitPublicationModal from './SubmitPublicationModal';
 
 const ITEMS_PER_PAGE = 10;
 
-// AJOUT : Interface pour recevoir l'ID depuis l'URL
 interface LibraryViewProps {
   initialThesisId?: string | null;
 }
 
 const LibraryView: React.FC<LibraryViewProps> = ({ initialThesisId }) => {
+  const navigate = useNavigate(); // Hook pour changer d'URL
+  const location = useLocation();
+
   // --- ÉTATS ---
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDomain, setSelectedDomain] = useState('Tous');
@@ -26,25 +29,30 @@ const LibraryView: React.FC<LibraryViewProps> = ({ initialThesisId }) => {
   // État pour la Pop-up de demande d'email
   const [showMailPopup, setShowMailPopup] = useState(false);
 
-  // --- NOUVEAU : EFFET POUR OUVRIR DEPUIS L'URL ---
+  // --- EFFET : OUVRIR DEPUIS L'URL ---
   useEffect(() => {
     if (initialThesisId) {
       const found = THESES_LIBRARY.find(t => t.id === initialThesisId);
       if (found) {
         setSelectedThesis(found);
       }
+    } else {
+      // Si l'URL ne contient pas d'ID, on s'assure que la vue détail est fermée
+      setSelectedThesis(null);
     }
   }, [initialThesisId]);
 
-  // --- NOUVEAU : FONCTIONS POUR GÉRER L'URL ---
+  // --- NAVIGATION (ROUTAGE PROPRE) ---
   const openThesis = (thesis: Thesis) => {
     setSelectedThesis(thesis);
-    window.location.hash = `library/${thesis.id}`;
+    // Change l'URL pour /library/mon-id (sans #)
+    navigate(`/library/${thesis.id}`);
   };
 
   const closeThesis = () => {
     setSelectedThesis(null);
-    window.location.hash = `library`;
+    // Revient à la liste principale
+    navigate(`/library`);
   };
 
   // --- 1. CALCUL DES COMPTEURS PAR DOMAINE ---
@@ -59,7 +67,6 @@ const LibraryView: React.FC<LibraryViewProps> = ({ initialThesisId }) => {
 
   // --- LOGIQUE DE FILTRAGE ET TRI ---
   const filteredTheses = useMemo(() => {
-    // 1. Filtrage
     let results = THESES_LIBRARY.filter((t) => {
       const searchLower = searchTerm.toLowerCase();
       const matchesSearch = 
@@ -78,7 +85,6 @@ const LibraryView: React.FC<LibraryViewProps> = ({ initialThesisId }) => {
       return matchesSearch && matchesDomain && matchesYear;
     });
 
-    // 2. Tri
     results.sort((a, b) => {
       const dateA = parseInt(a.year) || 0;
       const dateB = parseInt(b.year) || 0;
@@ -98,7 +104,6 @@ const LibraryView: React.FC<LibraryViewProps> = ({ initialThesisId }) => {
   useEffect(() => { setCurrentPage(1); }, [searchTerm, selectedDomain, selectedYearFilter, sortOrder]);
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, [currentPage, selectedThesis]);
 
-  // --- ALGORITHME PAGINATION "GOOGLE STYLE" ---
   const getVisiblePages = () => {
     const delta = 2;
     const range = [];
@@ -135,10 +140,10 @@ const LibraryView: React.FC<LibraryViewProps> = ({ initialThesisId }) => {
     alert('Citation copiée !');
   };
 
-  // --- FONCTION WHATSAPP (CORRIGÉE AVEC LIEN PRÉCIS) ---
+  // --- FONCTION WHATSAPP (CORRIGÉE URL PROPRE) ---
   const shareOnWhatsApp = (thesis: Thesis) => {
-    // On génère le lien exact vers CETTE thèse
-    const preciseLink = `${window.location.origin}/#library/${thesis.id}`;
+    // Génère le lien propre : https://site.com/library/id
+    const preciseLink = `${window.location.origin}/library/${thesis.id}`;
     
     const text = `*Regarde cette publication sur Kongo Science :*\n\n"${thesis.title}"\n${thesis.author} (${thesis.year})\n\nLien : ${preciseLink}`;
     const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
@@ -157,7 +162,7 @@ const LibraryView: React.FC<LibraryViewProps> = ({ initialThesisId }) => {
     return <span className="Z3988" title={coinsData} style={{ display: 'none' }}></span>;
   };
 
-  // --- COMPOSANT POP-UP EMAIL ---
+  // --- POP-UP EMAIL ---
   const MailRequestPopup = () => {
     if (!showMailPopup || !selectedThesis) return null;
     const subject = encodeURIComponent(`Demande d'accès : ${selectedThesis.title.substring(0, 50)}...`);
@@ -186,16 +191,14 @@ const LibraryView: React.FC<LibraryViewProps> = ({ initialThesisId }) => {
     );
   };
 
-  // ----------------------------------------------------------------------------------
-  // VUE DÉTAILLÉE
-  // ----------------------------------------------------------------------------------
+  // --- VUE DÉTAILLÉE ---
   if (selectedThesis) {
     return (
       <div className="bg-white min-h-screen pt-32 pb-20 px-6">
         {showMailPopup && <MailRequestPopup />}
         <div className="max-w-4xl mx-auto">
           <button 
-            onClick={closeThesis} // MODIFIÉ : Utilise la fonction qui nettoie l'URL
+            onClick={closeThesis} // UTILISE LA NOUVELLE FONCTION NAVIGATE
             className="group flex items-center gap-2 text-sm text-slate-500 hover:text-blue-700 mb-8 transition-colors"
           >
             <svg className="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
@@ -214,18 +217,15 @@ const LibraryView: React.FC<LibraryViewProps> = ({ initialThesisId }) => {
                 <p className="text-slate-700 leading-relaxed text-lg text-justify font-serif">{selectedThesis.abstract}</p>
               </div>
               
-              {/* --- ZONE DES BOUTONS --- */}
               <div className="flex flex-col gap-6 border-t border-slate-50 pt-8">
-                
                 <div className="flex flex-col sm:flex-row gap-4 flex-wrap">
-                    {/* 1. CAS VENTE */}
+                    {/* BOUTONS D'ACTION */}
                     {selectedThesis.isForSale && selectedThesis.purchaseUrl ? (
                       <a href={selectedThesis.purchaseUrl} target="_blank" rel="noopener noreferrer" className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg transition-all hover:-translate-y-1">
                         Acheter
                       </a>
                     ) : null}
 
-                    {/* 2. CAS RESTREINT : Bouton Demande */}
                     {selectedThesis.isRestricted && (
                         <button onClick={() => setShowMailPopup(true)} className="bg-amber-500 hover:bg-amber-600 text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg transition-all hover:-translate-y-1">
                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
@@ -233,7 +233,6 @@ const LibraryView: React.FC<LibraryViewProps> = ({ initialThesisId }) => {
                         </button>
                     )}
 
-                    {/* 3. CAS LIEN WEB */}
                     {selectedThesis.pdfUrl && (
                         <a href={selectedThesis.pdfUrl} target="_blank" rel="noopener noreferrer" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg transition-all hover:-translate-y-1">
                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
@@ -241,19 +240,16 @@ const LibraryView: React.FC<LibraryViewProps> = ({ initialThesisId }) => {
                         </a>
                     )}
 
-                    {/* 4. WHATSAPP */}
                     <button onClick={() => shareOnWhatsApp(selectedThesis)} className="bg-[#25D366] hover:bg-[#20bd5a] text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg transition-all hover:-translate-y-1">
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" /></svg>
                         Partager
                     </button>
 
-                    {/* 5. BOUTON CITER */}
                     <button onClick={() => copyCitation(selectedThesis)} className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all">
                         Citer
                     </button>
                 </div>
 
-                {/* NOTE EXPLICATIVE */}
                 {selectedThesis.isRestricted && (
                     <div className="flex items-start gap-3 bg-slate-50 p-4 rounded-lg border border-slate-100 text-sm text-slate-500">
                         <svg className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -270,32 +266,22 @@ const LibraryView: React.FC<LibraryViewProps> = ({ initialThesisId }) => {
     );
   }
 
-  // ----------------------------------------------------------------------------------
-  // VUE PRINCIPALE (LISTE)
-  // ----------------------------------------------------------------------------------
+  // --- VUE LISTE ---
   return (
     <div className="bg-white min-h-screen">
       {showSubmitModal && <SubmitPublicationModal onClose={() => setShowSubmitModal(false)} />}
       
-      {/* 1. SECTION HERO AVEC RECHERCHE (DESIGN SOMBRE) */}
       <section className="bg-slate-900 pt-32 pb-20 px-6 text-center">
         <div className="max-w-4xl mx-auto animate-fadeIn">
-            {/* SURTITRE */}
             <h5 className="text-blue-500 font-bold text-xs tracking-[0.2em] uppercase mb-4">
               Archive Scientifique Souveraine
             </h5>
-            
-            {/* TITRE PRINCIPAL SERIF */}
             <h1 className="text-4xl md:text-6xl font-serif font-bold text-white mb-6 leading-tight">
               Bibliothèque des Publications
             </h1>
-            
-            {/* DESCRIPTION MISE À JOUR (MISSION) */}
             <p className="text-slate-400 text-lg mb-10 max-w-2xl mx-auto leading-relaxed">
               Notre mission : Rendre le patrimoine scientifique du Bassin du Congo <span className="text-white font-bold border-b-2 border-blue-500">visible et accessible</span> à tous.
             </p>
-
-            {/* BARRE DE RECHERCHE CENTRALE */}
             <div className="relative max-w-2xl mx-auto group">
                <div className="absolute inset-0 bg-blue-500 rounded-2xl blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
                <div className="relative">
@@ -314,11 +300,9 @@ const LibraryView: React.FC<LibraryViewProps> = ({ initialThesisId }) => {
         </div>
       </section>
 
-      {/* 2. BARRE D'OUTILS ET FILTRES (STICKY) */}
       <div className="border-b border-slate-100 bg-white/95 backdrop-blur-md sticky top-0 z-30 shadow-sm transition-all">
          <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col sm:flex-row gap-4 justify-between items-center">
-            
-            {/* Filtres de Tri et Année */}
+            {/* Filtres... */}
             <div className="flex items-center gap-3 w-full sm:w-auto overflow-x-auto pb-2 sm:pb-0">
                <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
                  <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" /></svg>
@@ -355,10 +339,7 @@ const LibraryView: React.FC<LibraryViewProps> = ({ initialThesisId }) => {
          </div>
       </div>
 
-      {/* 3. CONTENU PRINCIPAL */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 flex flex-col md:flex-row gap-12">
-        
-        {/* SIDEBAR DOMAINES */}
         <aside className="w-full md:w-64 flex-shrink-0 space-y-8">
            <div>
              <h4 className="text-xs font-bold text-slate-900 uppercase tracking-widest mb-4 border-b border-slate-200 pb-2">
@@ -394,7 +375,6 @@ const LibraryView: React.FC<LibraryViewProps> = ({ initialThesisId }) => {
            </div>
         </aside>
 
-        {/* LISTE DES RÉSULTATS */}
         <main className="flex-grow">
             <div className="mb-6 flex items-center justify-between">
                <span className="text-slate-400 text-sm font-medium">
