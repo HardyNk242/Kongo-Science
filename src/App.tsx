@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import ReactGA from 'react-ga4'; 
+import { useLocation, useNavigate } from 'react-router-dom'; // NOUVEAU : Imports essentiels pour Vercel
 
 // --- COMPOSANTS ---
 import Header from './components/Header';
@@ -31,10 +32,15 @@ const App: React.FC = () => {
   // État partagé pour stocker l'ID (Article ou Thèse)
   const [urlId, setUrlId] = useState<string | null>(null);
 
+  // NOUVEAU : Hooks du routeur moderne
+  const location = useLocation();
+  const navigate = useNavigate();
+
   // --- SUIVI GOOGLE ANALYTICS ---
   useEffect(() => {
-    ReactGA.send({ hitType: "pageview", page: window.location.hash || '/home' });
-  }, [currentPath]);
+    // On suit maintenant le "pathname" propre au lieu du hash
+    ReactGA.send({ hitType: "pageview", page: location.pathname + location.search });
+  }, [location]);
 
   // --- FILTRE DES CONFÉRENCES À VENIR ---
   const upcomingConferences = useMemo(() => {
@@ -45,30 +51,29 @@ const App: React.FC = () => {
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   }, []);
 
-  // --- GESTION DU HASH (URL) ---
-  const syncFromHash = () => {
-    const raw = window.location.hash || '';
-    // On nettoie le hash pour éviter les erreurs de double slash
-    const cleaned = raw.replace(/^#\/?/, ''); 
-    const parts = cleaned.split('/');
+  // --- GESTION DU ROUTAGE (URLS PROPRES) ---
+  // Cette fonction remplace l'ancien "syncFromHash"
+  useEffect(() => {
+    // On découpe l'URL proprement : /library/mon-article
+    // .filter(Boolean) enlève les éléments vides (ex: le premier slash)
+    const pathParts = location.pathname.split('/').filter(Boolean);
     
-    const path = parts[0] || 'home';
-    const id = parts[1] || null; // On prend la deuxième partie comme ID
+    const mainPath = pathParts[0] || 'home';
+    const subId = pathParts[1] || null;
 
-    setCurrentPath(path);
+    setCurrentPath(mainPath);
 
-    // MISE À JOUR CRITIQUE : Capture l'ID pour Publications ET Library
-    if (path === 'publications' || path === 'library') {
-      // On force la mise à jour même si c'est null pour fermer si besoin
-      setUrlId(id);
+    // Capture l'ID pour Publications ET Library
+    if (mainPath === 'publications' || mainPath === 'library') {
+      setUrlId(subId);
     } else {
       setUrlId(null);
     }
 
     // Gestion de l'inscription conférence
-    if (path === 'registration') {
-      if (id) {
-        const conf = CONFERENCES.find(c => c.id === id);
+    if (mainPath === 'registration') {
+      if (subId) {
+        const conf = CONFERENCES.find(c => c.id === subId);
         setSelectedConference(conf ?? null);
       } else {
         setSelectedConference(null);
@@ -76,30 +81,18 @@ const App: React.FC = () => {
     } else {
       setSelectedConference(null);
     }
-  };
+  }, [location]); // Se déclenche à chaque changement d'URL
 
-  useEffect(() => {
-    // Écoute les changements
-    window.addEventListener('hashchange', syncFromHash);
-    
-    // Appel initial au chargement de la page (CRITIQUE pour le lien direct)
-    syncFromHash(); 
-    
-    return () => {
-      window.removeEventListener('hashchange', syncFromHash);
-    };
-  }, []);
-
+  // --- NAVIGATION MODERNE ---
   const navigateTo = (path: string, conf?: Conference) => {
     if (conf) {
       setSelectedConference(conf);
-      setCurrentPath(path);
-      window.location.hash = `${path}/${conf.id}`;
+      // Change l'URL proprement sans rechargement ni #
+      navigate(`/${path}/${conf.id}`);
     } else {
       setSelectedConference(null);
-      setCurrentPath(path);
-      // Attention : on ne remet pas l'ID ici pour revenir à la liste
-      window.location.hash = path;
+      // Change l'URL proprement
+      navigate(`/${path}`);
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -107,14 +100,13 @@ const App: React.FC = () => {
   // --- ROUTEUR PRINCIPAL ---
   const renderContent = () => {
     // Astuce : On utilise "key" pour forcer React à re-rendre le composant si l'ID change
-    // Cela garantit que le useEffect interne de LibraryView se déclenche bien.
     switch (currentPath) {
       
       case 'publications':
-        return <PublicationsView initialArticleId={urlId} key={urlId || 'list'} />;
+        return <PublicationsView initialArticleId={urlId} key={urlId || 'pub-list'} />;
 
       case 'library':
-        return <LibraryView initialThesisId={urlId} key={urlId || 'list'} />;
+        return <LibraryView initialThesisId={urlId} key={urlId || 'lib-list'} />;
 
       case 'history':
         return <HistoryView />;
