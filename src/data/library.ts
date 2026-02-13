@@ -23,6 +23,20 @@ export const THESES_LIBRARY = [
     pdfUrl: 'https://www.researchgate.net/profile/Aime-Christian-Kayath/publication/348153985_IMPLICATION_DES_BACTERIES_DU_GENRE_BACILLUS_DANS_LA_BIOCONVERSION_DU_JUS_DE_GINGEMBRE_Zingiber_officinale_Roscoe/links/5ff0b0e4299bf1408868599b/IMPLICATION-DES-BACTERIES-DU-GENRE-BACILLUS-DANS-LA-BIOCONVERSION-DU-JUS-DE-GINGEMBRE-Zingiber-officinale-Roscoe.pdf',
   },
 {
+    id: 'art-tolovousamabide-2025-preliminary',
+    title: "Preliminary inventory of bats (Mammalia Chiroptera) from Ouesso and Impfondo forests (north of Congo Republic) with three new records for the country",
+    author: "K. TOLOVOU SAMABIDE, A. LENGA",
+    year: '2025',
+    institution: "Biodiversity Journal",
+    domain: 'Agricultural and Biological Sciences',
+    type: 'Article Scientifique',
+    abstract: `In order to update the basic data on the species richness of frugivorous and insectivorous bats (Mammalia Chiroptera) living in the northern forests of the Republic of Congo, collections were carried out between March 2021 and September 2023. Black mist nets installed in the treetops at four sites over an 18–month period enabled 567 individuals belonging to 11 species, ten genera and four families to be collected. Fruit bats revealed 11 species of the same family, while insectivorous bats were represented by three species in three families. Eidolon helvum (n = 352) was the species most often observed at the various sites. Three species were recorded for the first time in Congo: Epomophorus intermedius, Epomophorus gambianus and Saccolaimus peli. `,
+    pages: 'Vol 16, pp. 47-55',
+    isRestricted: false,
+    isExclusive: false,
+    pdfUrl: ' https://doi.org/10.31396/Biodiv.Jour.2025.16.1.47.55',
+  }
+{
     id: 'art-bazebizonza-2026-karst',
     title: "Inventory of karstic cavities of the Schisto-Calcaire group, Republic of Congo: Applying a geoheritage promotion approach in the Madingou region",
     author: "Bazebizonza Tchiguina N.C., Samba Prefina R.R., Nkodia Hardy M.D., Boudzoumou F. et al.",
