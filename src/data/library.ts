@@ -34,8 +34,8 @@ export const THESES_LIBRARY = [
     pages: 'Vol 16, pp. 47-55',
     isRestricted: false,
     isExclusive: false,
-    pdfUrl: ' https://doi.org/10.31396/Biodiv.Jour.2025.16.1.47.55',
-  }
+    pdfUrl: 'https://doi.org/10.31396/Biodiv.Jour.2025.16.1.47.55',
+  },
 {
     id: 'art-bazebizonza-2026-karst',
     title: "Inventory of karstic cavities of the Schisto-Calcaire group, Republic of Congo: Applying a geoheritage promotion approach in the Madingou region",
