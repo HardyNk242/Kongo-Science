@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import ReactGA from 'react-ga4'; // NOUVEAU : Import Google Analytics
+import ReactGA from 'react-ga4'; // Import Google Analytics
 
 // --- COMPOSANTS ---
 import Header from './components/Header';
@@ -12,7 +12,7 @@ import ProposalView from './components/ProposalView';
 import ChatAssistant from './components/ChatAssistant';
 import Footer from './components/Footer';
 
-// --- VOS NOUVELLES PAGES ---
+// --- VOS PAGES ---
 import HistoryView from './components/HistoryView';
 import TeamView from './components/TeamView';
 import ProgramsView from './components/ProgramsView';
@@ -28,8 +28,8 @@ ReactGA.initialize(GA_MEASUREMENT_ID);
 const App: React.FC = () => {
   const [selectedConference, setSelectedConference] = useState<Conference | null>(null);
   const [currentPath, setCurrentPath] = useState('home');
-  // AJOUT : État pour stocker l'ID de l'article s'il est dans l'URL
-  const [urlArticleId, setUrlArticleId] = useState<string | null>(null);
+  // État partagé pour stocker l'ID (Article ou Thèse) s'il est dans l'URL
+  const [urlId, setUrlId] = useState<string | null>(null);
 
   // --- SUIVI GOOGLE ANALYTICS ---
   useEffect(() => {
@@ -53,14 +53,14 @@ const App: React.FC = () => {
 
     setCurrentPath(path || 'home');
 
-    // AJOUT : Capture l'ID de l'article si on est sur la page publications
-    if (path === 'publications') {
-      setUrlArticleId(id || null);
+    // MISE À JOUR : Capture l'ID pour Publications ET Library
+    if (path === 'publications' || path === 'library') {
+      setUrlId(id || null);
     } else {
-      setUrlArticleId(null);
+      setUrlId(null);
     }
 
-    // Gestion existante pour l'inscription aux conférences
+    // Gestion de l'inscription conférence
     if (path === 'registration') {
       if (id) {
         const conf = CONFERENCES.find(c => c.id === id);
@@ -101,8 +101,12 @@ const App: React.FC = () => {
     switch (currentPath) {
       
       case 'publications':
-        // AJOUT : On passe l'ID de l'article au composant
-        return <PublicationsView initialArticleId={urlArticleId} />;
+        // Passe l'ID à la vue Publications
+        return <PublicationsView initialArticleId={urlId} />;
+
+      case 'library':
+        // MISE À JOUR : Passe l'ID à la vue Library
+        return <LibraryView initialThesisId={urlId} />;
 
       case 'history':
         return <HistoryView />;
@@ -110,16 +114,12 @@ const App: React.FC = () => {
       case 'team':
         return <TeamView />;
 
-      // --- LE RACCOURCI MARKETING (Lien direct vers les prix) ---
       case 'offres':
         return <ProgramsView forceView="offers" />;
 
       case 'programmes':
         return <ProgramsView />;
         
-      case 'library':
-        return <LibraryView />;
-
       case 'agenda':
         return (
           <ConferencesView
@@ -197,7 +197,7 @@ const App: React.FC = () => {
               </div>
             </section>
 
-            {/* --- SECTION OFFRES & BOUQUETS (Avec couleurs) --- */}
+            {/* --- SECTION OFFRES & BOUQUETS --- */}
             <section className="py-16 bg-blue-900 text-white overflow-hidden relative">
               <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500 rounded-full blur-[100px] opacity-20 translate-x-1/2 -translate-y-1/2"></div>
               
@@ -215,7 +215,6 @@ const App: React.FC = () => {
                             Propulsez votre carrière avec nos 5 bouquets exclusifs : du mentorat Master/Doctorat à l'accélérateur de carrière internationale.
                           </p>
                           
-                          {/* TAGS COLORÉS ICI */}
                           <div className="flex flex-wrap gap-3 mb-10">
                             <span className="bg-amber-500 text-white border-2 border-amber-400 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wide shadow-lg shadow-amber-900/20 transform hover:scale-105 transition-transform cursor-default">
                               Stratégie Express
@@ -244,7 +243,6 @@ const App: React.FC = () => {
                        </div>
                        
                        <div className="hidden md:block w-1/3">
-                           {/* Illustration abstraite */}
                            <div className="grid grid-cols-2 gap-4 opacity-80">
                               <div className="bg-blue-500/20 h-32 rounded-3xl backdrop-blur-sm border border-white/10"></div>
                               <div className="bg-blue-300/20 h-32 rounded-3xl backdrop-blur-sm border border-white/10 mt-8"></div>
