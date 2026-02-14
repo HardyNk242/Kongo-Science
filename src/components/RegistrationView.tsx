@@ -81,9 +81,9 @@ function resolveEventId(conference: Conference): string {
     return conference.title.trim();
   }
 
-  // Fallback : Hash URL
-  const hash = (window.location.hash || "").replace(/^#\/?/, "");
-  const parts = hash.split("/");
+  // Fallback : Path URL
+  const path = (window.location.pathname || "").replace(/^\/+/, "");
+  const parts = path.split("/");
   if (parts[0] === "registration" && parts[1]) return String(parts[1]).trim();
 
   return "unknown-event";
