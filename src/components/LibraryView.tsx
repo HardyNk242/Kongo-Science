@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom'; // IMPORT CRUCIAL
+import { useNavigate, useLocation, useParams } from 'react-router-dom'; // AJOUT: useParams
 import { SCIMAGO_DOMAINS } from '../constants';
 import { THESES_LIBRARY } from '../data/library';
 import { Thesis } from '../types';
@@ -14,6 +14,7 @@ interface LibraryViewProps {
 const LibraryView: React.FC<LibraryViewProps> = ({ initialThesisId }) => {
   const navigate = useNavigate(); // Hook pour changer d'URL
   const location = useLocation();
+  const { thesisId } = useParams(); // Récupère l'ID via le routeur
 
   // --- ÉTATS ---
   const [searchTerm, setSearchTerm] = useState('');
@@ -29,18 +30,49 @@ const LibraryView: React.FC<LibraryViewProps> = ({ initialThesisId }) => {
   // État pour la Pop-up de demande d'email
   const [showMailPopup, setShowMailPopup] = useState(false);
 
-  // --- EFFET : OUVRIR DEPUIS L'URL ---
+  // Fonction utilitaire pour normaliser les IDs (sécurité)
+  const normalizeId = (text: string | undefined) => {
+    if (!text) return '';
+    return text.toLowerCase().trim().replace(/\s+/g, '-');
+  };
+
+  // --- EFFET : OUVRIR DEPUIS L'URL (LOGIQUE ROBUSTE VERCEL) ---
   useEffect(() => {
-    if (initialThesisId) {
-      const found = THESES_LIBRARY.find(t => t.id === initialThesisId);
+    // 1. Récupération de l'ID depuis l'URL (priorité au Pathname pour Vercel)
+    const path = window.location.pathname;
+    const parts = path.split('/');
+    const libIndex = parts.indexOf('library');
+    
+    let urlId = '';
+
+    // Priorité 1 : URL brute (ex: /library/mon-id)
+    if (libIndex !== -1 && parts[libIndex + 1]) {
+      urlId = decodeURIComponent(parts[libIndex + 1]);
+    } 
+    // Priorité 2 : useParams (React Router)
+    else if (thesisId) {
+      urlId = thesisId;
+    }
+    // Priorité 3 : Prop initiale
+    else if (initialThesisId) {
+      urlId = initialThesisId;
+    }
+
+    // 2. Recherche et affichage
+    if (urlId) {
+      const found = THESES_LIBRARY.find(t => 
+        normalizeId(t.id) === normalizeId(urlId) ||
+        normalizeId(t.title) === normalizeId(urlId) // Fallback sur le titre si l'ID change
+      );
+      
       if (found) {
         setSelectedThesis(found);
       }
     } else {
-      // Si l'URL ne contient pas d'ID, on s'assure que la vue détail est fermée
+      // Si aucune ID dans l'URL, on ferme la vue détail
       setSelectedThesis(null);
     }
-  }, [initialThesisId]);
+  }, [initialThesisId, thesisId, location]);
 
   // --- NAVIGATION (ROUTAGE PROPRE) ---
   const openThesis = (thesis: Thesis) => {
