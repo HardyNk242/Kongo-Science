@@ -6,6 +6,7 @@ import petroleumCard from "./assets/conf-ingenierie-petroliere.png";
 import geotechCard from "./assets/conf-risques-geotech.png";
 import technoGeoCard from "./assets/conf-techno-geo.png";
 import solKoutikaCard from "./assets/conf-sol-koutika.png";
+import eauPotableCard from './assets/conf-eau-potable.jpg'; // Adaptez le chemin et le nom du fichier
 
 // Équipe
 import hardyImg from './assets/hardy.png';
@@ -86,6 +87,20 @@ export const CONFERENCES: (Conference & { imageUrl: string })[] = [
     type: 'Webinaire',
     organizer: 'Kongo Science',
     imageUrl: peatlandsCard
+  },
+  {
+    id: 'conf-eau-potable',
+    title: 'De la source au robinet : sécuriser l’accès à l’eau potable face aux risques sanitaires',
+    description: 'Une expertise sur le génie des eaux et l\'environnement avec le Dr Gilver Mendel KOMBO (PhD, MSc, M.ing), chercheur à l\'École de Technologie Supérieure (ETS), Université du Québec.',
+    date: '2026-02-24',
+    // replayUrl: '', // À ajouter une fois la conférence passée
+    time: '20:00',
+    day: '24',
+    month: 'FÉV',
+    location: 'En ligne',
+    type: 'Webinaire',
+    organizer: 'Kongo Science',
+    imageUrl: eauPotableCard, // Pensez à importer l'image en haut du fichier : import eauPotableCard from './assets/1000462933.jpg';
   },
   {
     id: 'conf-ingenierie-petroliere',
