@@ -78,9 +78,12 @@ const RegistrationModal: React.FC<Props> = ({ conference, onClose }) => {
   const [status, setStatus] = useState<"idle" | "checking" | "submitting" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyjqDo9cSCncf_KKMJB6LGRXyAKuwtfs3ZDfyt_fV0w1eP74LosMvDSTK5LP73NXU12/exec";
+  // MISE À JOUR ICI : Nouvelle URL de déploiement
+  const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby2QOJtSBLXavDoAssvNKFKgj30kG-nKXy8QM_ieicDB1mJmhqI6J5YPo1qewKE2UpM/exec";
+  
+  // Si vous avez des URLs spécifiques, vous pouvez les laisser ou utiliser la nouvelle par défaut
   const SCRIPT_URLS: Record<string, string> = {
-    "conf-ingenierie-petroliere": "https://script.google.com/macros/s/AKfycbxj29r4wCZte8QJBBIuE-JCTVQdh404NvuW3Hq6Hdy6ON4ZGw4uyu9jWTfDj3YLMDSKRg/exec"
+    // "conf-ingenierie-petroliere": "URL_SPECIFIQUE_SI_BESOIN" 
   };
 
   const GOOGLE_SCRIPT_URL = SCRIPT_URLS[conference.id] ?? DEFAULT_SCRIPT_URL;
