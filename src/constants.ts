@@ -93,7 +93,7 @@ export const CONFERENCES: (Conference & { imageUrl: string })[] = [
     title: 'De la source au robinet : sécuriser l’accès à l’eau potable face aux risques sanitaires',
     description: 'Une expertise sur le génie des eaux et l\'environnement avec le Dr Gilver Mendel KOMBO (PhD, MSc, M.ing), chercheur à l\'École de Technologie Supérieure (ETS), Université du Québec.',
     date: '2026-02-24',
-    // replayUrl: '', // À ajouter une fois la conférence passée
+    replayUrl: 'https://youtu.be/Qe6MNant8LA',
     time: '20:00',
     day: '24',
     month: 'FÉV',
