@@ -162,6 +162,7 @@ export const CONFERENCES: (Conference & { imageUrl: string })[] = [
     title: 'Le Sol : Fondement invisible de la sécurité alimentaire et du développement durable',
     description: 'Keynote par Dr. Lydie-Stella Koutika (Prix Glinka FAO, Prix Kwame Nkrumah UA, Auteure GIEC). Une intervention de haut niveau sur le rôle vital des sols.',
     date: '2026-03-02',
+     replayUrl: 'https://youtu.be/KzC_-jbRllA',
     time: '14:00',
     day: '02',
     month: 'MAR',
