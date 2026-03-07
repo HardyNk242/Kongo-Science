@@ -6,7 +6,7 @@ import petroleumCard from "./assets/conf-ingenierie-petroliere.png";
 import geotechCard from "./assets/conf-risques-geotech.png";
 import technoGeoCard from "./assets/conf-techno-geo.png";
 import solKoutikaCard from "./assets/conf-sol-koutika.png";
-import eauPotableCard from './assets/conf-eau-potable.jpg'; // Adaptez le chemin et le nom du fichier
+import eauPotableCard from './assets/conf-eau-potable.jpg';
 
 // Équipe
 import hardyImg from './assets/hardy.png';
@@ -36,12 +36,12 @@ export const SCIMAGO_DOMAINS = [
 export const NAV_ITEMS: NavItem[] = [
   { label: 'Accueil', path: 'home' },
   { label: 'Bibliothèque', path: 'library' },
-  { label: 'Actualité', path: 'publications' }, // Nouvelle page
+  { label: 'Actualité', path: 'publications' },
   { label: 'Programmes', path: 'programmes' },
   { 
     label: 'À Propos', 
     path: 'about',
-    submenu: [ // Nouveau sous-menu
+    submenu: [
       { label: 'Notre Histoire', path: 'history' },
       { label: 'Notre Équipe', path: 'team' },
       { label: 'Agenda', path: 'agenda' }
@@ -100,7 +100,7 @@ export const CONFERENCES: (Conference & { imageUrl: string })[] = [
     location: 'En ligne',
     type: 'Webinaire',
     organizer: 'Kongo Science',
-    imageUrl: eauPotableCard, // Pensez à importer l'image en haut du fichier : import eauPotableCard from './assets/1000462933.jpg';
+    imageUrl: eauPotableCard
   },
   {
     id: 'conf-ingenierie-petroliere',
