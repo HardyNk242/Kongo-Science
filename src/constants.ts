@@ -7,6 +7,7 @@ import geotechCard from "./assets/conf-risques-geotech.png";
 import technoGeoCard from "./assets/conf-techno-geo.png";
 import solKoutikaCard from "./assets/conf-sol-koutika.png";
 import eauPotableCard from './assets/conf-eau-potable.jpg';
+import cimentsCard from './assets/conf-ciments-radioactivite.png'; // Ajout de la nouvelle image
 
 // Équipe
 import hardyImg from './assets/hardy.png';
@@ -170,6 +171,19 @@ export const CONFERENCES: (Conference & { imageUrl: string })[] = [
     type: 'Webinaire',
     organizer: 'Kongo Science',
     imageUrl: solKoutikaCard
+  },
+  {
+    id: 'conf-ciments-radioactivite',
+    title: 'Ciments au Congo : la population est-elle exposée à une radioactivité ignorée ?',
+    description: 'Une analyse chimique et environnementale inédite sur la composition des matériaux de construction au Congo et les risques potentiels de santé publique. Présentée par Mabossy Jounior, Ingénieur en Chimie.',
+    date: '2026-03-24',
+    time: '20:00',
+    day: '24',
+    month: 'MAR',
+    location: 'En ligne',
+    type: 'Webinaire',
+    organizer: 'Kongo Science',
+    imageUrl: cimentsCard // Utilisation de la nouvelle image
   }
 ];
 
