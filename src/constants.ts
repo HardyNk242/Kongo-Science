@@ -7,7 +7,8 @@ import geotechCard from "./assets/conf-risques-geotech.png";
 import technoGeoCard from "./assets/conf-techno-geo.png";
 import solKoutikaCard from "./assets/conf-sol-koutika.png";
 import eauPotableCard from './assets/conf-eau-potable.jpg';
-import cimentsCard from './assets/conf-ciments-radioactivite.png'; // Ajout de la nouvelle image
+import cimentsCard from './assets/conf-ciments-radioactivite.png';
+import cartographieCard from './assets/conf-cartographie-miniere.png'; // Ajout de la nouvelle image
 
 // Équipe
 import hardyImg from './assets/hardy.png';
@@ -183,7 +184,20 @@ export const CONFERENCES: (Conference & { imageUrl: string })[] = [
     location: 'En ligne',
     type: 'Webinaire',
     organizer: 'Kongo Science',
-    imageUrl: cimentsCard // Utilisation de la nouvelle image
+    imageUrl: cimentsCard
+  },
+  {
+    id: 'conf-cartographie-miniere',
+    title: 'Cartographie géologique et ressources minières au Congo : apports de la télédétection et des nouvelles méthodes d’analyse',
+    description: 'La République Démocratique du Congo et l\'Afrique centrale regorgent de ressources minières dont l\'exploration requiert aujourd\'hui des technologies de pointe. Ce webinaire mettra en lumière l\'utilisation de méthodes avancées, telles que la télédétection spatiale et le Machine Learning, pour optimiser la cartographie géologique. Présenté par Matthieu Tshanga (Chercheur et Doctorant, UNISA).',
+    date: '2026-03-31',
+    time: '20:00',
+    day: '31',
+    month: 'MAR',
+    location: 'En ligne',
+    type: 'Webinaire',
+    organizer: 'Kongo Science',
+    imageUrl: cartographieCard // Utilisation de la nouvelle image
   }
 ];
 
