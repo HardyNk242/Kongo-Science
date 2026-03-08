@@ -9,7 +9,8 @@ import solKoutikaCard from "./assets/conf-sol-koutika.png";
 import eauPotableCard from './assets/conf-eau-potable.jpg';
 import cimentsCard from './assets/conf-ciments-radioactivite.png';
 import cartographieCard from './assets/conf-cartographie-miniere.png';
-import telecomCard from './assets/conf-telecoms.png'; // Nouvelle image pour Richy Mobongui
+import telecomCard from './assets/conf-telecoms.png'; 
+import dataManagementCard from './assets/conf-data-management.png'; // Nouvelle image pour la formation de Hardy Nkodia
 
 // Équipe
 import hardyImg from './assets/hardy.png';
@@ -56,7 +57,7 @@ export const NAV_ITEMS: NavItem[] = [
 export const OBJECTIFS = [
   {
     id: 1,
-    title: "Mémoire & Souveraineté Numérique",
+    title: "MéMémoire & Souveraineté Numérique",
     description: "Centraliser et immortaliser la production scientifique congolaise (Thèses, Mémoires) via une bibliothèque numérique indexée aux standards internationaux (Zenodo/DOI), rendant notre savoir accessible et visible mondialement.",
     iconPath: "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253",
     linkTo: 'library'
@@ -212,6 +213,19 @@ export const CONFERENCES: (Conference & { imageUrl: string })[] = [
     type: 'Webinaire',
     organizer: 'Kongo Science',
     imageUrl: telecomCard
+  },
+  {
+    id: 'conf-data-management',
+    title: 'Introduction à la gestion des données scientifiques : Structurer pour durer',
+    description: 'Formation animée par le Dr. Hardy Nkodia (PhD), chercheur postdoctoral. Objectif : Maîtriser les bases de l\'organisation des données de recherche (dossiers d\'organisation, nommage intelligent, sauvegarde et réplication).',
+    date: '2026-04-21',
+    time: '10:00',
+    day: '21',
+    month: 'AVR',
+    location: 'En ligne',
+    type: 'Formation',
+    organizer: 'Kongo Science',
+    imageUrl: dataManagementCard
   }
 ];
 
