@@ -8,7 +8,8 @@ import technoGeoCard from "./assets/conf-techno-geo.png";
 import solKoutikaCard from "./assets/conf-sol-koutika.png";
 import eauPotableCard from './assets/conf-eau-potable.jpg';
 import cimentsCard from './assets/conf-ciments-radioactivite.png';
-import cartographieCard from './assets/conf-cartographie-miniere.png'; // Ajout de la nouvelle image
+import cartographieCard from './assets/conf-cartographie-miniere.png';
+import telecomCard from './assets/conf-telecoms.png'; // Nouvelle image pour Richy Mobongui
 
 // Équipe
 import hardyImg from './assets/hardy.png';
@@ -197,7 +198,20 @@ export const CONFERENCES: (Conference & { imageUrl: string })[] = [
     location: 'En ligne',
     type: 'Webinaire',
     organizer: 'Kongo Science',
-    imageUrl: cartographieCard // Utilisation de la nouvelle image
+    imageUrl: cartographieCard
+  },
+  {
+    id: 'conf-telecoms',
+    title: 'Garder l’Afrique Connectée : Les Héros des Télécoms',
+    description: 'Derrière chaque appel et chaque connexion internet en Afrique, des experts travaillent sans relâche. Ce webinaire explore les coulisses des opérations réseaux et le rôle crucial des équipes de terrain. Présenté par Richy Mobongui (MTN CONGO).',
+    date: '2026-04-04',
+    time: '20:30',
+    day: '04',
+    month: 'AVR',
+    location: 'En ligne',
+    type: 'Webinaire',
+    organizer: 'Kongo Science',
+    imageUrl: telecomCard
   }
 ];
 
