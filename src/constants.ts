@@ -180,6 +180,7 @@ export const CONFERENCES: (Conference & { imageUrl: string })[] = [
     title: 'Ciments au Congo : la population est-elle exposée à une radioactivité ignorée ?',
     description: 'Une analyse chimique et environnementale inédite sur la composition des matériaux de construction au Congo et les risques potentiels de santé publique. Présentée par Mabossy Jounior, Ingénieur en Chimie.',
     date: '2026-03-24',
+    replayUrl: 'https://youtu.be/mNiYKt6nXXo',
     time: '20:00',
     day: '24',
     month: 'MAR',
