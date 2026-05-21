@@ -6,78 +6,90 @@ interface Props {
   onRegister: (conference: Conference) => void;
 }
 
+const typeStyles: Record<string, { bg: string; ring: string; label: string }> = {
+  Webinaire:  { bg: 'bg-violet-500/90',   ring: 'ring-violet-300/50',  label: 'Webinaire' },
+  Présentiel: { bg: 'bg-emerald-500/90',  ring: 'ring-emerald-300/50', label: 'Présentiel' },
+  Hybride:    { bg: 'bg-amber-500/90',    ring: 'ring-amber-300/50',   label: 'Hybride' },
+};
+
 const ConferenceCard: React.FC<Props> = ({ conference, onRegister }) => {
+  const typeStyle = typeStyles[conference.type] || typeStyles.Webinaire;
+
   return (
-    <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-slate-100 group flex flex-col h-full">
-      {/* 1:1 Aspect Ratio Image (1080x1080) */}
-      <div className="relative aspect-square overflow-hidden">
-        <img 
-          src={conference.imageUrl} 
-          alt={conference.title} 
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+    <article className="relative bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 hover:border-slate-200 group flex flex-col h-full">
+      {/* Image */}
+      <div className="relative aspect-square overflow-hidden bg-slate-100">
+        <img
+          src={conference.imageUrl}
+          alt=""
+          loading="lazy"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-60"></div>
-        
-        {/* Date Badge Overlay */}
-        <div className="absolute top-6 left-6 w-14 h-16 bg-white rounded-2xl flex flex-col items-center justify-center shadow-lg border border-slate-100 transform group-hover:-translate-y-1 transition-transform">
-          <span className="text-xl font-bold text-blue-700 leading-none">{conference.day}</span>
-          <span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">{conference.month}</span>
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-900/20 to-transparent"></div>
+
+        {/* Date badge */}
+        <div className="absolute top-5 left-5 w-14 h-16 bg-white rounded-2xl flex flex-col items-center justify-center shadow-xl border border-white">
+          <span className="text-2xl font-serif font-bold text-slate-900 leading-none italic">{conference.day}</span>
+          <span className="text-[9px] font-black text-blue-700 uppercase tracking-widest mt-1">{conference.month}</span>
         </div>
 
-        {/* Type Label */}
-        <div className="absolute bottom-6 left-6">
-          <span className={`text-[10px] font-bold px-4 py-1.5 rounded-full uppercase tracking-widest text-white backdrop-blur-md border border-white/30 shadow-sm ${
-            conference.type === 'Webinaire' ? 'bg-purple-500/60' : 
-            conference.type === 'Présentiel' ? 'bg-green-500/60' : 'bg-orange-500/60'
-          }`}>
-            {conference.type}
+        {/* Type badge */}
+        <div className="absolute top-5 right-5">
+          <span className={`inline-flex items-center gap-1.5 text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest text-white backdrop-blur-md shadow-lg ring-1 ${typeStyle.bg} ${typeStyle.ring}`}>
+            <span className="w-1.5 h-1.5 bg-white rounded-full"></span>
+            {typeStyle.label}
           </span>
         </div>
-      </div>
-      
-      {/* Content */}
-      <div className="p-8 flex flex-col flex-grow">
-        <div className="flex items-center gap-2 mb-4">
-          <div className="w-2 h-2 rounded-full bg-blue-600"></div>
-          <span className="text-[11px] font-bold text-blue-600 uppercase tracking-widest">{conference.organizer}</span>
+
+        {/* Organisateur sur l'image */}
+        <div className="absolute bottom-5 left-5 right-5">
+          <p className="text-[10px] font-black uppercase tracking-widest text-white/80 mb-1">{conference.organizer}</p>
         </div>
-        
-        <h4 className="text-2xl font-serif font-bold text-slate-900 mb-4 leading-tight group-hover:text-blue-700 transition-colors">
+      </div>
+
+      {/* Contenu */}
+      <div className="p-7 flex flex-col flex-grow">
+        <h4 className="text-xl font-serif font-bold text-slate-900 mb-3 leading-snug group-hover:text-blue-700 transition-colors line-clamp-2">
           {conference.title}
         </h4>
-        
-        <p className="text-slate-500 text-sm mb-6 line-clamp-3 leading-relaxed">
+
+        <p className="text-slate-600 text-sm mb-5 line-clamp-3 leading-relaxed flex-grow">
           {conference.description}
         </p>
 
-        <div className="space-y-2 mb-8">
-          <div className="flex items-center gap-2 text-slate-500 text-xs">
-            <svg className="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span className="font-semibold">{conference.time}</span>
+        {/* Métadonnées */}
+        <div className="space-y-2.5 mb-6 pb-6 border-b border-slate-100">
+          <div className="flex items-center gap-2.5 text-slate-700 text-xs">
+            <span className="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
+              <svg className="w-3.5 h-3.5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </span>
+            <span className="font-bold">{conference.time}</span>
           </div>
-          <div className="flex items-center gap-2 text-slate-400 text-xs">
-            <svg className="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-            </svg>
-            <span className="truncate max-w-[200px]">{conference.location}</span>
+          <div className="flex items-center gap-2.5 text-slate-500 text-xs">
+            <span className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
+              <svg className="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </span>
+            <span className="truncate font-medium">{conference.location}</span>
           </div>
         </div>
-        
-        <div className="mt-auto pt-6 border-t border-slate-100">
-          <button 
-            onClick={() => onRegister(conference)}
-            className="w-full bg-blue-700 text-white px-5 py-3 rounded-xl font-bold text-sm hover:bg-blue-800 transition-all shadow-md hover:shadow-lg active:scale-95 flex items-center justify-center gap-2"
-          >
-            S'inscrire
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </button>
-        </div>
+
+        <button
+          onClick={() => onRegister(conference)}
+          aria-label={`S'inscrire à ${conference.title}`}
+          className="group/btn w-full bg-slate-900 hover:bg-blue-700 text-white px-5 py-3.5 rounded-xl font-bold text-xs uppercase tracking-widest transition-all shadow-md hover:shadow-xl active:scale-[0.98] flex items-center justify-center gap-2"
+        >
+          S'inscrire
+          <svg className="w-4 h-4 group-hover/btn:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </button>
       </div>
-    </div>
+    </article>
   );
 };
 

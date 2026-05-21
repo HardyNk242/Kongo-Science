@@ -19,6 +19,7 @@ const ProgramsView: React.FC<Props> = ({ forceView }) => {
   // Si on reçoit "forceView" (ex: via le lien WhatsApp), on l'utilise, sinon on affiche le Hub
   const [activeView, setActiveView] = useState<ProgramType>(forceView || 'hub');
   const [selectedDetail, setSelectedDetail] = useState<DetailContent | null>(null);
+  const [activeCategory, setActiveCategory] = useState<'all' | 'coaching' | 'manuscrit'>('all');
 
   // ==========================================
   // 1. DONNÉES (NOUVELLES OFFRES 2026)
@@ -28,7 +29,11 @@ const ProgramsView: React.FC<Props> = ({ forceView }) => {
       id: 'express',
       title: 'STRATÉGIE EXPRESS',
       subtitle: 'Session Unique',
-      price: '30 000 FCFA',
+      price: '30 000',
+      category: 'coaching',
+      duration: '90 min',
+      icon: 'lightning',
+      accentColor: 'amber',
       idealFor: 'Débloquer une situation précise ou valider une orientation.',
       format: '1 Session intensive (Visioconférence)',
       inclus: [
@@ -42,7 +47,11 @@ const ProgramsView: React.FC<Props> = ({ forceView }) => {
       id: 'standard',
       title: 'STANDARD',
       subtitle: 'Le Mentorat',
-      price: '65 000 FCFA',
+      price: '65 000',
+      category: 'coaching',
+      duration: '3 mois',
+      icon: 'compass',
+      accentColor: 'sky',
       idealFor: 'L\'étudiant en Master ou Doctorat qui veut un guide fiable.',
       format: 'Suivi régulier (Pack de sessions)',
       inclus: [
@@ -56,7 +65,11 @@ const ProgramsView: React.FC<Props> = ({ forceView }) => {
       id: 'premium',
       title: 'PREMIUM',
       subtitle: 'L\'Accélérateur de Carrière',
-      price: '150 000 FCFA',
+      price: '150 000',
+      category: 'coaching',
+      duration: '6 mois',
+      icon: 'crown',
+      accentColor: 'blue',
       isBestSeller: true,
       idealFor: 'Le chercheur visant une carrière internationale d\'excellence.',
       inclus: [
@@ -69,7 +82,12 @@ const ProgramsView: React.FC<Props> = ({ forceView }) => {
     {
       id: 'publication',
       title: 'PUBLICATION INTERNATIONALE',
-      price: '150 000 FCFA',
+      subtitle: 'Article Scientifique',
+      price: '150 000',
+      category: 'manuscrit',
+      duration: 'Forfait',
+      icon: 'globe',
+      accentColor: 'indigo',
       idealFor: 'Chercheurs avec résultats prêts mais bloqués à la rédaction.',
       goal: 'Transformer vos données en un article publiable.',
       inclus: [
@@ -83,7 +101,11 @@ const ProgramsView: React.FC<Props> = ({ forceView }) => {
       id: 'finisher',
       title: 'FINISHER',
       subtitle: 'Relecture & Mise aux Normes',
-      price: '100 000 FCFA',
+      price: '100 000',
+      category: 'manuscrit',
+      duration: '65 pages',
+      icon: 'seal',
+      accentColor: 'emerald',
       isNew: true,
       idealFor: 'Un manuscrit "Zéro Défaut" avant le dépôt final.',
       note: 'Volume : Jusqu\'à 65 pages standard.',
@@ -95,6 +117,27 @@ const ProgramsView: React.FC<Props> = ({ forceView }) => {
       ]
     }
   ];
+
+  // Map des icônes SVG par bouquet
+  const renderIcon = (name: string) => {
+    const icons: Record<string, React.ReactNode> = {
+      lightning: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M13 10V3L4 14h7v7l9-11h-7z" />,
+      compass: <><circle cx="12" cy="12" r="9" strokeWidth={1.8} /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M14.5 9.5l-2 5-5 2 2-5 5-2z" /></>,
+      crown: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M5 17h14M5 17l-1-9 5 4 3-7 3 7 5-4-1 9M5 17v2a1 1 0 001 1h12a1 1 0 001-1v-2" />,
+      globe: <><circle cx="12" cy="12" r="9" strokeWidth={1.8} /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18" /></>,
+      seal: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />,
+    };
+    return icons[name] || icons.compass;
+  };
+
+  // Map des classes tailwind par couleur d'accent (évite la purge dynamique)
+  const accentMap: Record<string, { bg: string; text: string; border: string; ring: string; soft: string }> = {
+    amber:   { bg: 'bg-amber-500',   text: 'text-amber-600',   border: 'border-amber-200',   ring: 'ring-amber-100',   soft: 'bg-amber-50' },
+    sky:     { bg: 'bg-sky-500',     text: 'text-sky-600',     border: 'border-sky-200',     ring: 'ring-sky-100',     soft: 'bg-sky-50' },
+    blue:    { bg: 'bg-blue-600',    text: 'text-blue-700',    border: 'border-blue-300',    ring: 'ring-blue-200',    soft: 'bg-blue-50' },
+    indigo:  { bg: 'bg-indigo-500',  text: 'text-indigo-600',  border: 'border-indigo-200',  ring: 'ring-indigo-100',  soft: 'bg-indigo-50' },
+    emerald: { bg: 'bg-emerald-500', text: 'text-emerald-600', border: 'border-emerald-200', ring: 'ring-emerald-100', soft: 'bg-emerald-50' },
+  };
 
   const paccModulesSimple = [
     { id: 1, title: 'Démarrer son projet & Philosophie des sciences' },
@@ -273,85 +316,182 @@ const ProgramsView: React.FC<Props> = ({ forceView }) => {
   );
 
   // --- B. OFFRES 2026 (LE CONTENU DU PACC MODERNE) ---
-  const OffersView = () => (
+  const OffersView = () => {
+    const filteredBouquets = activeCategory === 'all'
+      ? bouquets
+      : bouquets.filter(b => b.category === activeCategory);
+
+    return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20">
-      <div className="max-w-7xl mx-auto px-6">
-        
-        {/* Navigation Retour */}
-        <button onClick={() => setActiveView('hub')} className="mb-8 flex items-center gap-2 text-blue-600 hover:text-slate-900 transition-colors text-xs font-bold uppercase tracking-widest">
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-          Retour à l'accueil des programmes
-        </button>
 
-        {/* Hero Section */}
-        <div className="text-center mb-24">
-          <span className="text-blue-700 font-black text-[10px] uppercase tracking-[0.4em] mb-4 block">Excellence 2026</span>
-          <h1 className="text-4xl md:text-6xl font-serif font-bold text-slate-900 mb-6 italic leading-tight">
-            Offres d'Accompagnement <br /> Kongo Science
-          </h1>
-          <p className="text-slate-600 text-lg max-w-2xl mx-auto leading-relaxed">
-            Éveiller l'esprit scientifique, propulser les chercheurs africains. Une approche holistique pour transformer vos travaux en standards internationaux.
-          </p>
+      {/* ====== HERO REDESIGNÉ ====== */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-slate-50 via-white to-white pt-12 pb-20">
+        {/* Décor : grille subtile + halos */}
+        <div className="absolute inset-0 opacity-[0.35]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgb(203 213 225) 1px, transparent 0)', backgroundSize: '32px 32px' }}></div>
+        <div className="absolute top-20 -left-32 w-96 h-96 bg-blue-400/20 rounded-full blur-[120px]"></div>
+        <div className="absolute top-40 right-0 w-96 h-96 bg-indigo-400/15 rounded-full blur-[120px]"></div>
+
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          {/* Retour */}
+          <button onClick={() => setActiveView('hub')} className="mb-10 inline-flex items-center gap-2 text-slate-500 hover:text-blue-700 transition-colors text-xs font-bold uppercase tracking-widest">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+            Retour aux programmes
+          </button>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
+            <div className="lg:col-span-8">
+              <div className="inline-flex items-center gap-2 bg-white border border-slate-200 px-4 py-2 rounded-full shadow-sm mb-6">
+                <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                <span className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-700">Saison 2026 — Inscriptions ouvertes</span>
+              </div>
+              <h1 className="text-5xl md:text-7xl font-serif font-bold text-slate-900 mb-6 leading-[1.05]">
+                Offres d'<span className="italic text-blue-700">Accompagnement</span><br />
+                <span className="italic">Scientifique</span>
+              </h1>
+              <p className="text-slate-600 text-lg max-w-2xl leading-relaxed">
+                Cinq parcours sur-mesure pour transformer vos travaux en publications, soutenances et carrières à standards internationaux.
+              </p>
+            </div>
+
+            {/* Stat trio */}
+            <div className="lg:col-span-4 grid grid-cols-3 gap-3">
+              {[
+                { v: '50+', l: 'Chercheurs' },
+                { v: '15', l: 'Publications' },
+                { v: '6 ans', l: 'Expertise' },
+              ].map((s, i) => (
+                <div key={i} className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm text-center">
+                  <p className="text-2xl font-serif font-bold text-blue-700 italic">{s.v}</p>
+                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">{s.l}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
+      </section>
 
-        {/* Pricing Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-32">
-          {bouquets.map((b) => (
-            <div 
-              key={b.id} 
-              className={`relative bg-white border ${b.isBestSeller ? 'border-blue-500 ring-2 ring-blue-100' : 'border-slate-200'} p-8 rounded-[2.5rem] shadow-sm hover:shadow-xl transition-all group flex flex-col h-full`}
-            >
-              {b.isBestSeller && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest shadow-lg">
-                  Best-Seller 🔥
-                </div>
-              )}
-              {b.isNew && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-indigo-500 text-white text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest shadow-lg">
-                  Nouveau ✨
-                </div>
-              )}
+      <div className="max-w-7xl mx-auto px-6">
 
-              <div className="mb-8">
-                <h3 className="text-xl font-black text-slate-900 mb-1 group-hover:text-blue-700 transition-colors uppercase tracking-tight">{b.title}</h3>
-                {b.subtitle && <p className="text-blue-600 font-bold text-xs uppercase tracking-widest">{b.subtitle}</p>}
-              </div>
-
-              <div className="mb-8">
-                <span className="text-4xl font-serif font-bold text-slate-900 italic">{b.price}</span>
-              </div>
-
-              <div className="bg-slate-50 p-5 rounded-2xl mb-8 flex-grow">
-                 <p className="text-xs text-slate-500 font-bold uppercase tracking-tighter mb-2">Idéal pour :</p>
-                 <p className="text-sm text-slate-700 leading-relaxed italic">"{b.idealFor}"</p>
-                 {b.note && <p className="mt-2 text-[10px] text-blue-600 font-bold uppercase">{b.note}</p>}
-                 {b.goal && <p className="mt-2 text-xs font-bold text-slate-900">Objectif : {b.goal}</p>}
-              </div>
-
-              <div className="space-y-4 mb-10">
-                {b.inclus.map((item, i) => (
-                  <div key={i} className="flex gap-3 text-sm text-slate-600 items-start">
-                    <svg className="w-5 h-5 text-blue-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
-                    {item}
-                  </div>
-                ))}
-              </div>
-
-              <a 
-                href="https://wa.me/242068347820" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className={`w-full py-4 rounded-2xl text-xs font-black uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-2 ${
-                  b.isBestSeller 
-                    ? 'bg-blue-700 text-white hover:bg-blue-800' 
-                    : 'bg-slate-900 text-white hover:bg-blue-700'
+        {/* ====== FILTRES CATÉGORIE ====== */}
+        <div className="flex flex-wrap items-center justify-between gap-6 mb-12 pb-6 border-b border-slate-100">
+          <div className="flex flex-wrap items-center gap-2 bg-slate-100/70 p-1.5 rounded-2xl">
+            {([
+              { id: 'all', label: 'Toutes les offres', count: bouquets.length },
+              { id: 'coaching', label: 'Coaching & Mentorat', count: bouquets.filter(b => b.category === 'coaching').length },
+              { id: 'manuscrit', label: 'Manuscrit & Publication', count: bouquets.filter(b => b.category === 'manuscrit').length },
+            ] as const).map(c => (
+              <button
+                key={c.id}
+                onClick={() => setActiveCategory(c.id)}
+                className={`px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 ${
+                  activeCategory === c.id
+                    ? 'bg-white text-slate-900 shadow-sm'
+                    : 'text-slate-500 hover:text-slate-900'
                 }`}
               >
-                Réserver mon bouquet
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-              </a>
-            </div>
-          ))}
+                {c.label}
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${activeCategory === c.id ? 'bg-blue-100 text-blue-700' : 'bg-slate-200 text-slate-600'}`}>{c.count}</span>
+              </button>
+            ))}
+          </div>
+          <p className="text-xs text-slate-400 italic">Tous les tarifs sont en FCFA · Paiement flexible disponible</p>
+        </div>
+
+        {/* ====== GRILLE DES BOUQUETS ====== */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 mb-32">
+          {filteredBouquets.map((b) => {
+            const a = accentMap[b.accentColor];
+            return (
+              <div
+                key={b.id}
+                className={`relative bg-white rounded-[2rem] p-8 flex flex-col h-full transition-all duration-300 group
+                  ${b.isBestSeller
+                    ? 'bg-gradient-to-b from-slate-900 to-slate-800 text-white shadow-2xl shadow-blue-900/20 scale-100 lg:scale-[1.03] ring-1 ring-blue-500/30'
+                    : 'border border-slate-200 hover:border-slate-300 hover:shadow-xl hover:-translate-y-1'}`}
+              >
+                {/* Badges */}
+                {b.isBestSeller && (
+                  <div className="absolute -top-3 left-8 bg-gradient-to-r from-blue-500 to-indigo-500 text-white text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-[0.2em] shadow-lg flex items-center gap-1.5">
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l2.5 7h7.5l-6 4.5 2.5 7.5-6.5-5-6.5 5 2.5-7.5-6-4.5h7.5z" /></svg>
+                    Best-Seller
+                  </div>
+                )}
+                {b.isNew && (
+                  <div className="absolute -top-3 left-8 bg-emerald-500 text-white text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-[0.2em] shadow-lg flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
+                    Nouveau
+                  </div>
+                )}
+
+                {/* Header carte : icône + durée */}
+                <div className="flex items-start justify-between mb-7">
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center
+                    ${b.isBestSeller ? 'bg-white/10 text-blue-300' : `${a.soft} ${a.text}`}`}>
+                    <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      {renderIcon(b.icon)}
+                    </svg>
+                  </div>
+                  <div className={`text-right ${b.isBestSeller ? 'text-blue-300' : 'text-slate-400'}`}>
+                    <p className="text-[10px] font-bold uppercase tracking-widest">Durée</p>
+                    <p className={`text-sm font-bold ${b.isBestSeller ? 'text-white' : 'text-slate-700'}`}>{b.duration}</p>
+                  </div>
+                </div>
+
+                {/* Titre */}
+                <div className="mb-6">
+                  <h3 className={`text-2xl font-black tracking-tight mb-1 ${b.isBestSeller ? 'text-white' : 'text-slate-900'}`}>
+                    {b.title}
+                  </h3>
+                  {b.subtitle && (
+                    <p className={`font-bold text-xs uppercase tracking-widest ${b.isBestSeller ? 'text-blue-300' : a.text}`}>
+                      {b.subtitle}
+                    </p>
+                  )}
+                </div>
+
+                {/* Prix */}
+                <div className={`flex items-baseline gap-2 mb-6 pb-6 border-b ${b.isBestSeller ? 'border-white/10' : 'border-slate-100'}`}>
+                  <span className={`text-5xl font-serif font-bold italic ${b.isBestSeller ? 'text-white' : 'text-slate-900'}`}>{b.price}</span>
+                  <span className={`text-xs font-bold uppercase tracking-wider ${b.isBestSeller ? 'text-blue-300' : 'text-slate-400'}`}>FCFA</span>
+                </div>
+
+                {/* Idéal pour */}
+                <div className={`mb-6 p-4 rounded-2xl ${b.isBestSeller ? 'bg-white/5 border border-white/10' : 'bg-slate-50'}`}>
+                  <p className={`text-[10px] font-black uppercase tracking-widest mb-1.5 ${b.isBestSeller ? 'text-blue-300' : 'text-slate-400'}`}>Idéal pour</p>
+                  <p className={`text-sm leading-relaxed italic ${b.isBestSeller ? 'text-slate-200' : 'text-slate-700'}`}>"{b.idealFor}"</p>
+                  {b.note && <p className={`mt-2 text-[10px] font-bold uppercase ${b.isBestSeller ? 'text-blue-300' : a.text}`}>{b.note}</p>}
+                  {b.goal && <p className={`mt-2 text-xs font-bold ${b.isBestSeller ? 'text-white' : 'text-slate-900'}`}>🎯 {b.goal}</p>}
+                </div>
+
+                {/* Liste inclus */}
+                <ul className="space-y-3 mb-8 flex-grow">
+                  {b.inclus.map((item, i) => (
+                    <li key={i} className={`flex gap-3 text-sm items-start ${b.isBestSeller ? 'text-slate-200' : 'text-slate-600'}`}>
+                      <span className={`mt-0.5 flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center
+                        ${b.isBestSeller ? 'bg-blue-500/20 text-blue-300' : `${a.soft} ${a.text}`}`}>
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                      </span>
+                      <span className="leading-snug">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* CTA */}
+                <a
+                  href="https://wa.me/242068347820"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`w-full py-4 rounded-2xl text-xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 group/cta
+                    ${b.isBestSeller
+                      ? 'bg-white text-slate-900 hover:bg-blue-50'
+                      : `${a.bg} text-white hover:opacity-90 shadow-md hover:shadow-xl`}`}
+                >
+                  Réserver maintenant
+                  <svg className="w-4 h-4 group-hover/cta:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                </a>
+              </div>
+            );
+          })}
         </div>
 
         {/* PACC Focus Section */}
@@ -417,7 +557,8 @@ const ProgramsView: React.FC<Props> = ({ forceView }) => {
         </section>
       </div>
     </div>
-  );
+    );
+  };
 
   // --- C. SIG DETAIL (L'ANCIENNE VUE SIG) ---
   const SigDetailView = () => (

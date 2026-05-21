@@ -98,36 +98,59 @@ const ChatAssistant: React.FC = () => {
   return (
     <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-end">
       {isOpen && (
-        <div className="mb-4 w-80 sm:w-96 h-[500px] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300">
-          <div className="bg-blue-700 p-4 text-white flex justify-between items-center shadow-md">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-xs font-bold">
-                KS
+        <div
+          role="dialog"
+          aria-label="Assistant Kongo Science"
+          className="mb-4 w-[calc(100vw-3rem)] sm:w-96 h-[560px] max-h-[80vh] bg-white rounded-3xl shadow-2xl shadow-slate-900/20 border border-slate-200 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300"
+        >
+          {/* Header dégradé */}
+          <div className="relative bg-gradient-to-br from-slate-900 to-blue-900 p-5 text-white">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <div className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center text-sm font-serif font-bold border border-white/20">
+                    KS
+                  </div>
+                  <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-slate-900"></span>
+                </div>
+                <div>
+                  <p className="font-serif font-bold text-base leading-tight">Assistant Kongo Science</p>
+                  <p className="text-[10px] uppercase tracking-widest text-blue-200 font-bold mt-0.5 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
+                    En ligne · IA scientifique
+                  </p>
+                </div>
               </div>
-              <span className="font-bold">Assistant Kongo Science</span>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="hover:bg-white/10 rounded-full p-1.5 transition-colors"
+                type="button"
+                aria-label="Fermer l'assistant"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
-            <button
-              onClick={() => setIsOpen(false)}
-              className="hover:bg-blue-600 rounded-full p-1 transition-colors"
-              type="button"
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
           </div>
 
-          <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50">
+          {/* Messages */}
+          <div ref={scrollRef} className="flex-1 overflow-y-auto p-5 space-y-4 bg-slate-50" aria-live="polite">
             {messages.map((msg, idx) => (
               <div
                 key={idx}
-                className={`flex ${msg.role === MessageRole.USER ? "justify-end" : "justify-start"}`}
+                className={`flex ${msg.role === MessageRole.USER ? "justify-end" : "justify-start"} animate-in fade-in slide-in-from-bottom-2 duration-300`}
               >
+                {msg.role !== MessageRole.USER && (
+                  <div className="w-7 h-7 rounded-full bg-slate-900 text-white text-[10px] font-bold flex items-center justify-center mr-2 flex-shrink-0">
+                    KS
+                  </div>
+                )}
                 <div
-                  className={`max-w-[85%] p-3 rounded-2xl text-sm shadow-sm ${
+                  className={`max-w-[80%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm ${
                     msg.role === MessageRole.USER
-                      ? "bg-blue-600 text-white rounded-tr-none"
-                      : "bg-white text-slate-800 border border-slate-200 rounded-tl-none"
+                      ? "bg-slate-900 text-white rounded-tr-sm"
+                      : "bg-white text-slate-800 border border-slate-100 rounded-tl-sm"
                   }`}
                 >
                   {msg.text}
@@ -136,63 +159,78 @@ const ChatAssistant: React.FC = () => {
             ))}
 
             {isLoading && (
-              <div className="flex justify-start">
-                <div className="bg-white border border-slate-200 p-3 rounded-2xl rounded-tl-none flex gap-1">
-                  <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></div>
-                  <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce delay-75"></div>
-                  <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce delay-150"></div>
+              <div className="flex justify-start items-center gap-2">
+                <div className="w-7 h-7 rounded-full bg-slate-900 text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0">
+                  KS
+                </div>
+                <div className="bg-white border border-slate-100 px-4 py-3 rounded-2xl rounded-tl-sm shadow-sm flex gap-1.5">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce [animation-delay:120ms]"></div>
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce [animation-delay:240ms]"></div>
                 </div>
               </div>
             )}
           </div>
 
-          <div className="p-4 bg-white border-t border-slate-200">
-            <div className="flex gap-2">
+          {/* Input */}
+          <div className="p-4 bg-white border-t border-slate-100">
+            <div className="flex gap-2 items-end">
+              <label htmlFor="chat-input" className="sr-only">Votre question</label>
               <input
+                id="chat-input"
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                placeholder="Posez une question scientifique..."
-                className="flex-1 bg-slate-100 border-none rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                placeholder="Posez une question scientifique…"
+                disabled={isLoading}
+                className="flex-1 bg-slate-50 border border-slate-200 hover:border-slate-300 focus:border-blue-500 focus:bg-white rounded-xl px-4 py-3 text-sm outline-none transition-colors disabled:opacity-50"
               />
               <button
                 onClick={handleSend}
-                disabled={isLoading}
-                className="bg-blue-700 text-white p-2 rounded-xl hover:bg-blue-800 disabled:opacity-50 transition-colors"
+                disabled={isLoading || !inputValue.trim()}
+                aria-label="Envoyer le message"
+                className="bg-slate-900 hover:bg-blue-700 text-white p-3 rounded-xl disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95 flex-shrink-0"
                 type="button"
               >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                 </svg>
               </button>
             </div>
+            <p className="text-[10px] text-slate-400 mt-2 text-center">Propulsé par IA · Réponses scientifiques uniquement</p>
           </div>
         </div>
       )}
 
+      {/* Bouton flottant */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-14 h-14 bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-blue-800 hover:scale-110 transition-all duration-300 group"
+        className="group relative w-14 h-14 bg-slate-900 hover:bg-blue-700 text-white rounded-full shadow-2xl shadow-slate-900/30 flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300"
         type="button"
         aria-label={isOpen ? "Fermer l'assistant" : "Ouvrir l'assistant"}
+        aria-expanded={isOpen}
       >
+        {/* Halo pulse */}
+        {!isOpen && (
+          <>
+            <span className="absolute inset-0 rounded-full bg-blue-500/30 animate-ping"></span>
+            <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-400 rounded-full border-2 border-white"></span>
+          </>
+        )}
         {isOpen ? (
-          <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-6 h-6 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         ) : (
-          <div className="relative">
-            <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-              />
-            </svg>
-            <span className="absolute -top-1 -right-1 w-3 h-3 bg-blue-400 rounded-full border-2 border-white animate-ping"></span>
-          </div>
+          <svg className="w-6 h-6 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+            />
+          </svg>
         )}
       </button>
     </div>
