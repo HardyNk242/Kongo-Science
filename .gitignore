@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Configuration locale de l'outillage Claude Code (ne concerne pas le site)
+.claude/

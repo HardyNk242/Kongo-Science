@@ -289,3 +289,143 @@ export const TEAM = [
     image: hardyImg,
   },
 ];
+
+// =====================================================================
+// --- REJOINDRE KONGO SCIENCE ---
+// =====================================================================
+
+export const JOIN_PROFILES = [
+  "Relecteur scientifique",
+  "Comité éditorial",
+  "Membre de l'association",
+  "Étudiant / Jeune chercheur",
+] as const;
+
+export type JoinProfile = (typeof JOIN_PROFILES)[number];
+
+/**
+ * Cadrage rédactionnel du formulaire « Rejoindre ».
+ * Pour chaque profil : ce que le bureau lit réellement, ce que Kongo Science
+ * s'engage à donner en retour, et surtout ce qu'il vaut mieux écrire —
+ * avec un exemple fort opposé à un exemple faible.
+ */
+export const MEMBERSHIP_PSYCHOLOGY = {
+  main_promise: "Kongo Science ne recrute pas des CV. Elle réunit des personnes qui font avancer la science congolaise.",
+  strategic_question: "Qu'est-ce que vous voulez avoir rendu possible dans deux ans, avec nous ?",
+
+  profiles: {
+    "Relecteur scientifique": {
+      want: "Précision du domaine et fiabilité dans les délais.",
+      promise:
+        "Vos relectures façonnent la crédibilité du Journal of K-Geo. Chaque évaluation est tracée, et votre contribution est reconnue nommément si vous le souhaitez.",
+      focus: "Votre spécialité exacte compte plus que l'étendue de votre CV.",
+      writeWell: [
+        "Nommez votre sous-domaine précis, pas la discipline entière : « inversion de tenseurs de contraintes sur données de failles » vaut mieux que « géologie ».",
+        "Dites combien de manuscrits par an vous pouvez réellement évaluer. Deux relectures tenues valent mieux que six promises.",
+        "Signalez les méthodes que vous maîtrisez assez pour les vérifier chez d'autres : logiciels, protocoles de terrain, traitements statistiques.",
+      ],
+      exampleGood:
+        "Géologie structurale, spécialisé en cinématique des failles et inversion de paléocontraintes (Win-Tensor, FSA). Je relis 3 à 4 manuscrits par an, en français comme en anglais. Terrain : bassin côtier congolais et chaîne du Mayombe.",
+      exampleWeak:
+        "Je suis géologue et j'aimerais bien relire des articles. J'ai beaucoup d'expérience dans plusieurs domaines.",
+    },
+
+    "Comité éditorial": {
+      want: "Autorité scientifique et engagement dans la durée.",
+      promise:
+        "Vous orientez la ligne éditoriale d'une revue en libre accès diamant, et vous garantissez son sérieux devant DOAJ et AJOL. Aucun nom n'est publié sans votre accord écrit.",
+      focus: "Le comité s'engage sur plusieurs années : dites ce que vous pouvez tenir.",
+      writeWell: [
+        "Décrivez votre expérience éditoriale concrète : revues où vous avez relu, édité, ou siégé, et sur quelle période.",
+        "Indiquez le champ dont vous accepteriez d'être responsable — c'est ainsi que sont répartis les manuscrits entre éditeurs associés.",
+        "Mentionnez votre réseau de relecteurs mobilisables : c'est souvent ce qui manque le plus à une jeune revue.",
+      ],
+      exampleGood:
+        "Douze ans d'enseignement-recherche en hydrogéologie, relecteur régulier pour deux revues internationales, éditeur invité d'un numéro spécial en 2024. Je peux prendre la responsabilité du champ « ressources en eau » et mobiliser une dizaine de relecteurs en Afrique centrale.",
+      exampleWeak:
+        "Je souhaite faire partie du comité éditorial car cela correspond à mon profil et à mes ambitions académiques.",
+    },
+
+    "Membre de l'association": {
+      want: "Une contribution claire, même modeste, plutôt qu'une adhésion passive.",
+      promise:
+        "Vous rejoignez un collectif qui construit une bibliothèque, un agenda scientifique et une revue. Ce que vous savez faire trouve un usage immédiat.",
+      focus: "Dites ce que vous savez faire, pas seulement ce que vous aimeriez recevoir.",
+      writeWell: [
+        "Une compétence précise que vous pouvez donner : traduction, cartographie, montage vidéo, gestion de bases de données, droit des associations, comptabilité.",
+        "Le temps réel dont vous disposez par mois. Trois heures assumées valent mieux qu'un engagement vague.",
+        "Ce qui vous a fait cliquer : une conférence, un article de la bibliothèque, un manque que vous constatez. Le concret est toujours plus convaincant.",
+      ],
+      exampleGood:
+        "Ingénieur data, je peux consacrer environ 5 heures par mois au nettoyage et à la structuration de la bibliothèque numérique (Python, métadonnées bibliographiques). J'ai découvert Kongo Science via la conférence sur la cartographie minière.",
+      exampleWeak:
+        "Je veux devenir membre pour élargir mon réseau et bénéficier des opportunités offertes par l'association.",
+    },
+
+    "Étudiant / Jeune chercheur": {
+      want: "Une trajectoire, un blocage identifié, une envie de travail.",
+      promise:
+        "Mentorat, accès à la bibliothèque, accompagnement à la publication. Nous suivons des personnes, pas des dossiers — et nous répondons à tout le monde.",
+      focus: "Ne cherchez pas à impressionner : décrivez où vous en êtes vraiment.",
+      writeWell: [
+        "Votre niveau, votre sujet, et votre établissement — en une phrase claire.",
+        "Le point précis qui vous bloque : accès à la littérature, méthode statistique, rédaction en anglais, choix de revue, analyse de données de terrain.",
+        "Ce que vous êtes prêt à fournir comme travail. Un mentorat fonctionne dans les deux sens.",
+      ],
+      exampleGood:
+        "Master 2 en sciences de la Terre à l'Université Marien Ngouabi, mémoire sur l'altération des grès de l'Inkisi. Je bloque sur le traitement statistique de mes analyses granulométriques et je n'ai pas accès aux articles payants. Je peux travailler 8 heures par semaine sur ma progression.",
+      exampleWeak:
+        "Je suis étudiant et je cherche un encadrement pour réussir mes études et avoir un bon avenir professionnel.",
+    },
+  },
+} as const;
+
+/** Domaines scientifiques proposés dans le formulaire (cases à cocher). */
+export const EXPERTISE_DOMAINS = [
+  "Géologie & Tectonique",
+  "Hydrogéologie & Ressources en eau",
+  "Ressources minérales & Énergie",
+  "Environnement & Climat",
+  "Agronomie & Sols",
+  "Santé & Sciences biomédicales",
+  "Mathématiques & Physique",
+  "Informatique & Données",
+  "Ingénierie & Technologies",
+  "Sciences sociales & Humaines",
+  "Économie & Gestion",
+  "Droit & Gouvernance",
+];
+
+/** Formes de contribution possibles au sein de l'association. */
+export const CONTRIBUTION_AREAS = [
+  "Relecture d'articles",
+  "Animation de conférences",
+  "Formation & Renforcement de capacités",
+  "Mentorat d'étudiants",
+  "Bibliothèque numérique & Métadonnées",
+  "Communication & Réseaux sociaux",
+  "Traduction français / anglais",
+  "Cartographie & SIG",
+  "Développement web & Informatique",
+  "Recherche de financements & Partenariats",
+];
+
+/** Disponibilité déclarée — libellé adapté au profil dans le formulaire. */
+export const AVAILABILITY_OPTIONS = [
+  "Moins de 2 heures par mois",
+  "2 à 5 heures par mois",
+  "5 à 10 heures par mois",
+  "Plus de 10 heures par mois",
+  "Ponctuellement, selon les sollicitations",
+];
+
+export const ACADEMIC_LEVELS = [
+  "Étudiant (Licence)",
+  "Étudiant (Master)",
+  "Doctorant",
+  "Post-doctorant",
+  "Enseignant-chercheur",
+  "Chercheur",
+  "Ingénieur / Professionnel",
+  "Autre",
+];

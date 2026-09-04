@@ -10,6 +10,7 @@ import LibraryView from './components/LibraryView';
 import ConferencesView from './components/ConferencesView';
 import RegistrationView from './components/RegistrationView';
 import ProposalView from './components/ProposalView';
+import JoinView from './components/JoinView';
 import ChatAssistant from './components/ChatAssistant';
 import Footer from './components/Footer';
 
@@ -130,6 +131,9 @@ const App: React.FC = () => {
 
       case 'proposal':
         return <ProposalView onBack={() => navigateTo('home')} />;
+
+      case 'rejoindre':
+        return <JoinView onBack={() => navigateTo('home')} />;
 
       case 'registration':
         return selectedConference ? (

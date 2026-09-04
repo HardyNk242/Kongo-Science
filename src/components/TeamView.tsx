@@ -1,12 +1,15 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // --- IMPORTS LOCAUX ---
-import hardyImg from '../assets/hardy.png'; 
+import hardyImg from '../assets/hardy.png';
 import princeImg from '../assets/prince.jpeg';
 import jemimaImg from '../assets/jemima.png';
 import nicyImg from '../assets/nicy.jpeg';
 
 const TeamView: React.FC = () => {
+  const navigate = useNavigate();
+
   const members = [
     {
       name: "Dr. Hardy Nkodia",
@@ -125,12 +128,16 @@ const TeamView: React.FC = () => {
                  ))}
               </div>
               
-              <a 
-                href="mailto:contact@kongoscience.com" 
+              <button
+                type="button"
+                onClick={() => {
+                  navigate('/rejoindre');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
                 className="inline-block bg-white text-blue-900 px-10 py-5 rounded-2xl font-black text-lg hover:bg-blue-50 transition-all shadow-xl"
               >
                  Postuler pour nous rejoindre
-              </a>
+              </button>
            </div>
            <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-blue-700 rounded-full translate-x-1/2 translate-y-1/2 blur-[120px] opacity-20"></div>
         </section>
