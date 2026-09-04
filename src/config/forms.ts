@@ -69,6 +69,15 @@ export const FORM_ENDPOINTS = {
    */
   proposition:
     'https://script.google.com/macros/s/AKfycbxW22g18om1SldbuUXGNreyK2RKcV3N2z-34ZXBic7dJgqEXdHvXlD5y0S59mKGVS6y/exec',
+
+  /**
+   * Inscription à la liste de diffusion des annonces de conférences.
+   * Code source : docs/diffusion-apps-script.gs
+   * Classeur : 1gbcT8CZWgPUlTVz5ovz5wXsy_u0TO79WwcIZD33sxp8
+   * ✅ Déployé sous kongoscience25@gmail.com.
+   */
+  diffusion:
+    'https://script.google.com/macros/s/AKfycbw0hKjK2fnoKkxf_VY4qX0D6RIMBgMpHxLMII_swVAG0dUjwFVfXUwv0iL11SbFAk9f/exec',
 } as const;
 
 /**

@@ -5,9 +5,7 @@ import { SCHOLARSHIPS } from '../data/scholarships';
 import ArticleCard from './ArticleCard';
 import { Article } from '../types';
 import Seo from './Seo';
-
-// Simulation d'une "Base de données" locale pour la session
-const collectedEmails: string[] = [];
+import { FORM_ENDPOINTS } from '../config/forms';
 
 // Interface pour recevoir l'ID de l'article depuis l'URL
 interface PublicationsViewProps {
@@ -21,6 +19,8 @@ const PublicationsView: React.FC<PublicationsViewProps> = ({ initialArticleId })
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [email, setEmail] = useState("");
   const [hasSubscribed, setHasSubscribed] = useState(false);
+  const [isSubscribing, setIsSubscribing] = useState(false);
+  const [subscribeError, setSubscribeError] = useState("");
 
   // --- EFFET : OUVRIR DEPUIS L'URL ---
   useEffect(() => {
@@ -62,14 +62,40 @@ const PublicationsView: React.FC<PublicationsViewProps> = ({ initialArticleId })
     return () => clearTimeout(timer);
   }, [selectedArticle, hasSubscribed]);
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  /**
+   * Inscription à la liste de diffusion.
+   *
+   * Cette fonction se contentait d'un console.log et d'un push dans un tableau
+   * en mémoire, tout en affichant « Email sauvegardé » : chaque adresse était
+   * perdue au rechargement de la page. Elle est désormais transmise au
+   * classeur de diffusion.
+   */
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
-      console.log("NOUVEL EMAIL CAPTURÉ :", email);
-      collectedEmails.push(email); 
-      alert(`Merci ! Email sauvegardé : ${email}`);
+
+    const propre = email.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(propre)) {
+      setSubscribeError("Veuillez saisir une adresse email valide.");
+      return;
+    }
+
+    setSubscribeError("");
+    setIsSubscribing(true);
+
+    try {
+      await fetch(FORM_ENDPOINTS.diffusion, {
+        method: "POST",
+        mode: "no-cors", // Indispensable pour Google Apps Script
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ email: propre, source: "Site — page Actualité" }),
+      });
       setHasSubscribed(true);
       setShowEmailModal(false);
+    } catch (err) {
+      console.error(err);
+      setSubscribeError("Impossible de joindre le serveur. Vérifiez votre connexion.");
+    } finally {
+      setIsSubscribing(false);
     }
   };
 
@@ -168,14 +194,19 @@ const PublicationsView: React.FC<PublicationsViewProps> = ({ initialArticleId })
                     >
                         <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
-                    <h2 className="font-serif font-bold text-3xl mb-2 text-slate-900">Keep reading.</h2>
-                    <p className="text-slate-600 mb-6 font-sans text-sm">
-                        Create a free account to access our exclusive research and historical archives.
+                    {/* L'ancien texte annonçait un « compte gratuit » donnant accès à
+                        des « archives exclusives » : ni l'un ni l'autre n'existent, et
+                        la bibliothèque est déjà librement accessible. */}
+                    <h2 className="font-serif font-bold text-3xl mb-2 text-slate-900">Restez informé.</h2>
+                    <p className="text-slate-600 mb-6 font-sans text-sm leading-relaxed">
+                        Recevez l'annonce de nos conférences scientifiques : le thème,
+                        l'intervenant et le lien d'inscription, à chaque fois.
+                        Rien d'autre, et vous pouvez vous désinscrire en un clic.
                     </p>
                     <form onSubmit={handleSubscribe} className="space-y-4">
                         <div>
-                            <input 
-                                type="email" 
+                            <input
+                                type="email"
                                 required
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
@@ -183,9 +214,28 @@ const PublicationsView: React.FC<PublicationsViewProps> = ({ initialArticleId })
                                 className="w-full border border-slate-300 p-3 font-sans focus:outline-none focus:border-black transition-colors"
                             />
                         </div>
-                        <button type="submit" className="w-full bg-black text-white font-bold py-3 uppercase tracking-widest hover:bg-slate-800 transition-colors">
-                            Continue
+
+                        {subscribeError && (
+                            <p role="alert" className="text-red-600 text-xs font-sans bg-red-50 border border-red-100 p-3">
+                                {subscribeError}
+                            </p>
+                        )}
+
+                        <button
+                            type="submit"
+                            disabled={isSubscribing}
+                            className="w-full bg-black text-white font-bold py-3 uppercase tracking-widest hover:bg-slate-800 transition-colors disabled:opacity-50 flex items-center justify-center gap-3"
+                        >
+                            {isSubscribing ? (
+                                <>
+                                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                                    Envoi...
+                                </>
+                            ) : "Je m'inscris"}
                         </button>
+                        <p className="text-[11px] text-slate-400 font-sans text-center">
+                            Votre adresse sert uniquement aux annonces de Kongo Science.
+                        </p>
                     </form>
                 </div>
             </div>

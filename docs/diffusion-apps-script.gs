@@ -296,6 +296,173 @@ function doGet(e) {
   return renderDashboard_();
 }
 
+/****************
+ * POST : NOUVELLE INSCRIPTION À LA LISTE
+ *
+ * Reçoit les inscriptions depuis le site (fenêtre d'abonnement de la page
+ * Actualité). Ces adresses étaient jusqu'ici perdues : le site affichait
+ * « Email sauvegardé » alors que rien n'était enregistré.
+ ****************/
+function doPost(e) {
+  let data;
+  try {
+    const raw = (e && e.postData && e.postData.contents) ? e.postData.contents : "";
+    if (!raw) return text_("error:payload_vide");
+    data = JSON.parse(raw);
+  } catch (err) {
+    return text_("error:json_invalide");
+  }
+
+  const email = String(data.email || "").trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return text_("error:email_invalide");
+
+  const nom = String(data.nom || "").trim();
+  const source = String(data.source || "Site").trim();
+
+  const lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(30000);
+  } catch (err) {
+    return text_("error:server_busy");
+  }
+
+  let nouvelle = false;
+  try {
+    const sheet = getSheet_(SHEET_ABONNES);
+    const trouve = sheet.getRange("A:A").createTextFinder(email).matchEntireCell(true).findNext();
+
+    if (trouve) {
+      const ligne = trouve.getRow();
+      const statut = String(sheet.getRange(ligne, A_STATUT + 1).getValue()).trim();
+      // Quelqu'un qui se réinscrit après s'être désinscrit doit être réactivé,
+      // pas ignoré silencieusement.
+      if (statut === "Désinscrit") {
+        sheet.getRange(ligne, A_STATUT + 1).setValue("Actif");
+        sheet.getRange(ligne, COLS_ABONNES.indexOf("Note") + 1)
+          .setValue("Réinscription du " + Utilities.formatDate(new Date(), ORG_TZ, "yyyy-MM-dd"));
+      } else {
+        return text_("success:deja_inscrit");
+      }
+    } else {
+      sheet.appendRow([
+        email, nom, "", "", "Actif",
+        Utilities.formatDate(new Date(), ORG_TZ, "yyyy-MM-dd"),
+        source, ""
+      ]);
+      nouvelle = true;
+    }
+    SpreadsheetApp.flush();
+  } catch (err) {
+    return text_("error:" + String(err));
+  } finally {
+    lock.releaseLock();
+  }
+
+  try {
+    if (nouvelle) {
+      MailApp.sendEmail({
+        to: email,
+        subject: "Vous êtes inscrit aux annonces Kongo Science",
+        replyTo: NOTIFY_EMAIL,
+        htmlBody: buildBienvenueHtml_(nom, email)
+      });
+    }
+    updateDashboardSheet_();
+  } catch (err) {
+    console.error("Erreur post-traitement : " + err);
+  }
+
+  return text_("success");
+}
+
+/**
+ * Conférence à mettre en avant auprès d'un nouvel abonné : la campagne
+ * « En cours » dont la date n'est pas encore passée. Sans campagne active,
+ * on renvoie vers l'agenda, qui reste toujours valable.
+ */
+function prochaineConference_() {
+  const campagnes = indexerCampagnes_();
+  const aujourdhui = Utilities.formatDate(new Date(), ORG_TZ, "yyyy-MM-dd");
+
+  let meilleure = null;
+  for (const id in campagnes) {
+    const c = campagnes[id];
+    if (c.statut !== "En cours" || !c.dateISO || c.dateISO < aujourdhui) continue;
+    // La plus proche dans le temps, pas la dernière saisie.
+    if (!meilleure || c.dateISO < meilleure.dateISO) meilleure = c;
+  }
+  return meilleure;
+}
+
+function buildBienvenueHtml_(nom, email) {
+  const esc = escapeHtml_;
+  const prenom = (nom || "").split(" ")[0] || "Bonjour";
+  const lienDesinscription =
+    `${ScriptApp.getService().getUrl()}?action=desinscription` +
+    `&email=${encodeURIComponent(email)}&jeton=${encodeURIComponent(jetonPour_(email))}`;
+
+  // Un nouvel abonné ne doit pas attendre la prochaine campagne pour pouvoir
+  // s'inscrire : on lui donne le lien tout de suite.
+  const conf = prochaineConference_();
+  const quand = conf ? [conf.dateLisible, conf.heure].filter(Boolean).join(" à ") : "";
+
+  const blocConference = conf ? `
+          <div style="background:linear-gradient(135deg,#d9770615 0%,#dc262610 100%);border-left:4px solid #d97706;border-radius:10px;padding:18px;margin:22px 0;">
+            <div style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:#92400e;font-weight:700;margin-bottom:8px;">
+              Prochaine conférence
+            </div>
+            <h2 style="margin:0 0 8px;color:#d97706;font-size:17px;font-weight:800;line-height:1.35;">
+              ${esc(conf.titre)}
+            </h2>
+            ${quand ? `<p style="margin:0 0 14px;font-size:14px;color:#4b5563;">${esc(quand)} (heure de Brazzaville)</p>` : ""}
+            <a href="${SITE_URL}/registration/${encodeURIComponent(conf.eventId)}" target="_blank" rel="noopener noreferrer"
+              style="display:inline-block;background:#d97706;color:#fff;text-decoration:none;padding:12px 24px;border-radius:8px;font-size:15px;font-weight:800;">
+              Je m'inscris
+            </a>
+          </div>` : `
+          <div style="text-align:center;margin:22px 0;">
+            <a href="${SITE_URL}/agenda" target="_blank" rel="noopener noreferrer"
+              style="display:inline-block;background:#d97706;color:#fff;text-decoration:none;padding:12px 24px;border-radius:8px;font-size:15px;font-weight:800;">
+              Voir l'agenda et s'inscrire
+            </a>
+          </div>`;
+
+  return `
+  <div style="margin:0;padding:0;background:#fff8e7;width:100%;">
+    <div style="max-width:600px;margin:0 auto;padding:28px 16px;">
+      <div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.07);">
+        <div style="background:linear-gradient(135deg,#d97706 0%,#dc2626 100%);padding:28px;text-align:center;">
+          <h1 style="margin:0;color:#fff;font-family:Georgia,serif;font-size:24px;">Bienvenue 👋</h1>
+        </div>
+        <div style="padding:30px 26px;font-family:Georgia,serif;color:#1f2937;line-height:1.7;">
+          <p style="margin:0 0 16px;font-size:16px;">Bonjour <strong style="color:#d97706;">${esc(prenom)}</strong>,</p>
+          <p style="margin:0 0 18px;font-size:16px;">
+            Vous recevrez désormais l'annonce de nos conférences scientifiques :
+            la date, le thème, l'intervenant et le lien d'inscription, à chaque fois.
+          </p>
+
+          ${blocConference}
+
+          <p style="margin:18px 0 0;font-size:16px;">
+            La bibliothèque et l'agenda restent librement accessibles sur
+            <a href="${SITE_URL}" style="color:#d97706;font-weight:700;">kongoscience.com</a>.
+          </p>
+        </div>
+        <div style="background:#fff8e7;padding:16px 22px;text-align:center;border-top:1px solid #e5e7eb;">
+          <p style="margin:0;font-size:11px;color:#9ca3af;">
+            Kongo Science — Brazzaville ·
+            <a href="${lienDesinscription}" style="color:#6b7280;">Se désinscrire</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function text_(s) {
+  return ContentService.createTextOutput(String(s)).setMimeType(ContentService.MimeType.TEXT);
+}
+
 function traiterDesinscription_(p) {
   const email = String(p.email || "").trim().toLowerCase();
   const jeton = String(p.jeton || "").trim();
