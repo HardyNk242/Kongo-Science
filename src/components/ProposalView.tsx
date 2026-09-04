@@ -1,6 +1,6 @@
 import { FORM_ENDPOINTS } from "../config/forms";
 import React, { useMemo, useState, useEffect } from "react";
-import { COUNTRIES, PROPOSAL_PSYCHOLOGY } from "../constants";
+import { COUNTRIES, PROPOSAL_PSYCHOLOGY, PROPOSAL_PRICING } from "../constants";
 
 interface Props {
   onBack: () => void;
@@ -233,6 +233,59 @@ const ProposalView: React.FC<Props> = ({ onBack }) => {
                 Ne vendez pas une conférence. Vendez une solution à une tension interne : légitimité, crédibilité et reconnaissance institutionnelle. Kongo Science est votre partenaire de sécurité académique.
              </p>
           </div>
+
+          {/* Conditions financières — annoncées AVANT l'envoi. Personne ne doit
+              découvrir des frais au moment où sa proposition est acceptée. */}
+          <div className="bg-white border-2 border-amber-200 rounded-[2.5rem] p-8">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-11 h-11 bg-amber-500 rounded-2xl flex items-center justify-center text-white flex-shrink-0">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h4 className="text-slate-900 font-bold text-lg leading-tight">Conditions de participation</h4>
+            </div>
+
+            <div className="bg-amber-50 rounded-2xl p-5 mb-5">
+              <p className="text-sm text-slate-700 leading-relaxed">
+                Une proposition <strong>retenue</strong> donne lieu à des frais de
+                <strong className="text-amber-700"> {PROPOSAL_PRICING.fraisAcceptation} {PROPOSAL_PRICING.devise}</strong>.
+                <span className="block mt-2 text-slate-600">
+                  Rien n'est dû au dépôt : ces frais ne s'appliquent qu'après acceptation par le comité.
+                </span>
+              </p>
+            </div>
+
+            <div className="mb-5">
+              <div className="text-[10px] font-black uppercase tracking-widest text-green-700 mb-3">
+                Gratuit dans deux cas
+              </div>
+              <ul className="space-y-2.5">
+                {PROPOSAL_PRICING.gratuitSi.map((cas) => (
+                  <li key={cas} className="flex gap-3 text-sm text-slate-700 leading-relaxed">
+                    <svg className="w-4 h-4 text-green-600 flex-shrink-0 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>{cas}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="pt-5 border-t border-slate-100">
+              <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">
+                Ce que les frais couvrent
+              </div>
+              <ul className="space-y-2.5">
+                {PROPOSAL_PRICING.couvre.map((poste) => (
+                  <li key={poste} className="flex gap-3 text-sm text-slate-600 leading-relaxed">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0 mt-2"></span>
+                    <span>{poste}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
 
         <div className="animate-in slide-in-from-right-4 duration-700">
@@ -446,6 +499,16 @@ const ProposalView: React.FC<Props> = ({ onBack }) => {
                       </>
                     )}
                   </button>
+
+                  {/* Rappel au moment de l'envoi : la colonne de gauche n'est
+                      pas visible sur mobile une fois le formulaire rempli. */}
+                  <p className="text-center text-slate-500 text-[11px] mt-5 leading-relaxed">
+                    Le dépôt est gratuit. Si votre proposition est retenue, des frais de{" "}
+                    <strong className="text-slate-700">
+                      {PROPOSAL_PRICING.fraisAcceptation} {PROPOSAL_PRICING.devise}
+                    </strong>{" "}
+                    s'appliquent — sauf sur invitation de Kongo Science ou pour les membres premium.
+                  </p>
                 </div>
               </form>
             )}

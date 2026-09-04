@@ -63,10 +63,12 @@ export const FORM_ENDPOINTS = {
 
   /**
    * Propositions d'intervention scientifique.
-   * ⚠️  À REDÉPLOYER depuis kongoscience25@gmail.com.
+   * Code source : docs/propositions-apps-script.gs
+   * Classeur : 1hQJPZMy9ZGIgEB2EfdBKG5WHBh_NdmYxGZghcviU3-g
+   * ✅ Déployé sous kongoscience25@gmail.com.
    */
   proposition:
-    'https://script.google.com/macros/s/AKfycbz5gO1pZtR9HnMnQbGzzP67c8eYPGUpY335vTAZXgdq4D_XwSnj3L6PFtl0S17r70s7QA/exec',
+    'https://script.google.com/macros/s/AKfycbxW22g18om1SldbuUXGNreyK2RKcV3N2z-34ZXBic7dJgqEXdHvXlD5y0S59mKGVS6y/exec',
 } as const;
 
 /**

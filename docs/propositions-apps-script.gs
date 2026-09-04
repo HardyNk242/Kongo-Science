@@ -31,7 +31,7 @@
  * CONFIGURATION
  ****************/
 // ⚠️ À REMPLACER par l'identifiant du classeur des propositions.
-const SPREADSHEET_ID = "COLLER_ICI_L_ID_DU_CLASSEUR_PROPOSITIONS";
+const SPREADSHEET_ID = "1hQJPZMy9ZGIgEB2EfdBKG5WHBh_NdmYxGZghcviU3-g";
 
 const SHEET_PROP = "Propositions";
 const SHEET_DASH = "Dashboard";

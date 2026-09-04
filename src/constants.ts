@@ -294,6 +294,32 @@ export const PROPOSAL_PSYCHOLOGY = {
   }
 };
 
+/**
+ * Conditions financières d'une proposition d'intervention.
+ *
+ * Annoncées sur la page de proposition avant l'envoi du formulaire : un
+ * intervenant ne doit jamais découvrir des frais au moment où sa proposition
+ * est acceptée.
+ */
+export const PROPOSAL_PRICING = {
+  devise: 'FCFA',
+  fraisAcceptation: '12 500',
+  adhesionPremium: '25 000',
+
+  /** Cas dans lesquels aucun frais n'est dû. */
+  gratuitSi: [
+    "Votre intervention est proposée sur invitation de Kongo Science",
+    "Vous êtes membre premium de l'association (25 000 FCFA par an)",
+  ],
+
+  /** Ce que les frais financent. */
+  couvre: [
+    "La promotion de l'événement sur les réseaux sociaux",
+    "L'abonnement Zoom et la diffusion technique",
+    "La délivrance d'un certificat reconnu par le CAMES, volet communication publique",
+  ],
+};
+
 // --- ÉQUIPE (TEAM) ---
 export const TEAM = [
   {
