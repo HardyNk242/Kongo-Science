@@ -23,7 +23,8 @@ type Status = "idle" | "submitting" | "success" | "error";
  * sans jamais perdre la saisie du candidat.
  * Procédure complète : docs/rejoindre-apps-script.gs
  */
-const JOIN_SCRIPT_URL = "";
+const JOIN_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbxwH3tBvH3ds2v43n9ptWLzm90WPDssEAQg4Z1MKiFvP3zlKCaXicYPtUUyhNhryKgs5A/exec";
 
 /** Adresse principale affichée au candidat. */
 const CONTACT_EMAIL = "contact@kongoscience.com";
