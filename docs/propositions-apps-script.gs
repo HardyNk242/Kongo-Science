@@ -393,10 +393,11 @@ function buildConfirmationHtml_(nomComplet, titre, format) {
             </p>
             <p style="margin:0 0 10px;font-size:14px;color:#1f2937;line-height:1.6;">
               Une proposition retenue donne lieu à des frais de
-              <strong>12 500 FCFA</strong>. Ils couvrent la promotion de
-              l'événement sur les réseaux sociaux, l'abonnement Zoom et la
-              délivrance d'un certificat reconnu par le CAMES, volet
-              communication publique.
+              <strong>12 500 FCFA</strong>, réglables par <strong>Mobile Money</strong>.
+              Ils couvrent la promotion de l'événement sur les réseaux sociaux,
+              l'abonnement Zoom et la délivrance d'une attestation de
+              communication publique, valorisable dans un dossier de promotion
+              CAMES.
             </p>
             <p style="margin:0;font-size:13px;color:#6b7280;line-height:1.6;">
               Aucun frais n'est dû si votre intervention est proposée sur

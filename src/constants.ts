@@ -316,8 +316,18 @@ export const PROPOSAL_PRICING = {
   couvre: [
     "La promotion de l'événement sur les réseaux sociaux",
     "L'abonnement Zoom et la diffusion technique",
-    "La délivrance d'un certificat reconnu par le CAMES, volet communication publique",
+    "La délivrance d'une attestation de communication publique, valorisable dans un dossier de promotion CAMES",
   ],
+
+  /**
+   * Règlement des frais. Kongo Science n'encaisse pas en ligne : le paiement
+   * se fait par Mobile Money après acceptation, sur la base des coordonnées
+   * communiquées dans le courriel d'acceptation.
+   */
+  paiement: {
+    moyen: 'Mobile Money',
+    quand: "après acceptation de votre proposition, avant l'annonce publique de l'événement",
+  },
 };
 
 // --- ÉQUIPE (TEAM) ---

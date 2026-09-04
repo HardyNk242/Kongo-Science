@@ -142,36 +142,55 @@ async function prerendre() {
       else requete.continue();
     });
 
+    /** Rend une route et écrit le fichier. Lève en cas d'échec. */
+    const rendre = async (route) => {
+      await page.goto(`http://localhost:${PORT}${route}`, {
+        waitUntil: 'networkidle0',
+        timeout: 30000,
+      });
+
+      // On attend que React ait remplacé l'écran de chargement *et* que le
+      // composant Seo ait posé le titre de la page.
+      await page.waitForFunction(
+        () => {
+          const racine = document.getElementById('root');
+          return racine && racine.children.length > 0 && !document.body.innerText.includes('Chargement de la bibliothèque');
+        },
+        { timeout: 20000 }
+      );
+
+      const html = '<!DOCTYPE html>\n' + (await page.content()).replace(/^<!DOCTYPE html>/i, '').trim();
+
+      const cible = destination(route);
+      await fs.mkdir(path.dirname(cible), { recursive: true });
+      await fs.writeFile(cible, html, 'utf-8');
+    };
+
     for (const route of routes) {
-      try {
-        await page.goto(`http://localhost:${PORT}${route}`, {
-          waitUntil: 'networkidle0',
-          timeout: 30000,
-        });
+      // Une seconde tentative : sur une machine chargée, un dépassement de
+      // délai est fréquent et sans rapport avec la page elle-même. Sans
+      // reprise, cette page partirait en production sans pré-rendu.
+      let derniereErreur = null;
+      for (let essai = 1; essai <= 2; essai++) {
+        try {
+          await rendre(route);
+          derniereErreur = null;
+          break;
+        } catch (err) {
+          derniereErreur = err;
+          if (essai === 1) await new Promise((r) => setTimeout(r, 1500));
+        }
+      }
 
-        // On attend que React ait remplacé l'écran de chargement *et* que le
-        // composant Seo ait posé le titre de la page.
-        await page.waitForFunction(
-          () => {
-            const racine = document.getElementById('root');
-            return racine && racine.children.length > 0 && !document.body.innerText.includes('Chargement de la bibliothèque');
-          },
-          { timeout: 20000 }
-        );
-
-        const html = '<!DOCTYPE html>\n' + (await page.content()).replace(/^<!DOCTYPE html>/i, '').trim();
-
-        const cible = destination(route);
-        await fs.mkdir(path.dirname(cible), { recursive: true });
-        await fs.writeFile(cible, html, 'utf-8');
-
+      if (derniereErreur) {
+        const message = derniereErreur.message.split('\n')[0];
+        echecs.push({ route, message });
+        console.warn(`  ✗ ${route} — ${message}`);
+      } else {
         reussies += 1;
         if (reussies % 25 === 0 || routes.length <= 30) {
           console.log(`  ✓ ${route}`);
         }
-      } catch (err) {
-        echecs.push({ route, message: err.message.split('\n')[0] });
-        console.warn(`  ✗ ${route} — ${err.message.split('\n')[0]}`);
       }
     }
   } finally {

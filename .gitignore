@@ -25,3 +25,11 @@ dist-ssr
 
 # Configuration locale de l'outillage Claude Code (ne concerne pas le site)
 .claude/
+
+# Donnees personnelles : ne doivent JAMAIS etre publiees.
+# Le depot est public ; toute adresse commitee ici devient accessible a tous.
+docs/banque_emails*.csv
+docs/banques_emails*.xlsx
+docs/~$*
+*.csv
+!public/*.csv

@@ -285,6 +285,17 @@ const ProposalView: React.FC<Props> = ({ onBack }) => {
                 ))}
               </ul>
             </div>
+
+            <div className="mt-5 pt-5 border-t border-slate-100 flex items-start gap-3">
+              <svg className="w-4 h-4 text-slate-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              </svg>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Règlement par <strong className="text-slate-700">{PROPOSAL_PRICING.paiement.moyen}</strong>,{" "}
+                {PROPOSAL_PRICING.paiement.quand}. Les coordonnées vous seront communiquées
+                dans le courriel d'acceptation.
+              </p>
+            </div>
           </div>
         </div>
 
