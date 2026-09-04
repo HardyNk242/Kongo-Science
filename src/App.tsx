@@ -94,8 +94,11 @@ const App: React.FC = () => {
       navigate(`/${path}/${conf.id}`);
     } else {
       setSelectedConference(null);
-      // Change l'URL proprement
-      navigate(`/${path}`);
+      // L'accueil est servi à la racine. Naviguer vers « /home » produisait
+      // une URL qui n'existe pas sur le serveur : rechargée ou partagée, elle
+      // renvoyait un 404 rattrapé de justesse par la redirection de secours,
+      // et un moteur de recherche y voyait une page fantôme.
+      navigate(path === 'home' ? '/' : `/${path}`);
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };

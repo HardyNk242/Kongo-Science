@@ -690,8 +690,22 @@ function isValidTimeZone_(tz) {
   try { Utilities.formatDate(new Date(), tz || "", "yyyy"); return true; } catch (e) { return false; }
 }
 
+/**
+ * Date lisible en français.
+ *
+ * Utilities.formatDate avec « MMMM » suit la langue du projet Apps Script,
+ * qui est l'anglais par défaut : les confirmations annonçaient « 22 September
+ * 2026 » au milieu d'un texte français. Les mois sont donc écrits en clair.
+ */
+const MOIS_FR = ["janvier", "février", "mars", "avril", "mai", "juin",
+                 "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+
 function fmtNice_(d, tz) {
-  return Utilities.formatDate(d, tz, "d MMMM yyyy 'à' HH:mm");
+  const jour = Utilities.formatDate(d, tz, "d");
+  const mois = MOIS_FR[parseInt(Utilities.formatDate(d, tz, "M"), 10) - 1];
+  const annee = Utilities.formatDate(d, tz, "yyyy");
+  const heure = Utilities.formatDate(d, tz, "HH:mm");
+  return `${jour} ${mois} ${annee} à ${heure}`;
 }
 
 function getGoogleCalendarLink_(name, eventLabel, start) {
