@@ -77,7 +77,7 @@ export const FORM_ENDPOINTS = {
    * ✅ Déployé sous kongoscience25@gmail.com.
    */
   diffusion:
-    'https://script.google.com/macros/s/AKfycbw0hKjK2fnoKkxf_VY4qX0D6RIMBgMpHxLMII_swVAG0dUjwFVfXUwv0iL11SbFAk9f/exec',
+    'https://script.google.com/macros/s/AKfycbyyFYUVfX3FPWhwuBUO1X9I3S02L9H33bYn2Wzdgb_dOqpS3mVCCCIVP-pY4lkpLm1K/exec',
 } as const;
 
 /**
