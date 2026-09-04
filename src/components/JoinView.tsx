@@ -185,8 +185,7 @@ const JoinView: React.FC<Props> = ({ onBack }) => {
 
     const href =
       `mailto:${CONTACT_EMAIL}` +
-      `?cc=${encodeURIComponent(CONTACT_EMAIL_CC)}` +
-      `&subject=${encodeURIComponent(`Candidature ${p.profil} — ${p.name}`)}` +
+      `?subject=${encodeURIComponent(`Candidature ${p.profil} — ${p.name}`)}` +
       `&body=${encodeURIComponent(corps)}`;
 
     window.location.href = href;
@@ -349,9 +348,6 @@ const JoinView: React.FC<Props> = ({ onBack }) => {
                     S'il ne s'est pas ouvert, écrivez directement à{" "}
                     <a href={`mailto:${CONTACT_EMAIL}`} className="text-blue-600 font-bold hover:underline">
                       {CONTACT_EMAIL}
-                    </a>{" "}ou à{" "}
-                    <a href={`mailto:${CONTACT_EMAIL_CC}`} className="text-blue-600 font-bold hover:underline">
-                      {CONTACT_EMAIL_CC}
                     </a>.
                   </p>
                 ) : (

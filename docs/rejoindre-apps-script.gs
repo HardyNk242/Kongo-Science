@@ -35,12 +35,12 @@ const SHEET_DASH = "Dashboard";
 
 const ORG_TZ = "Africa/Brazzaville";
 
-// Destinataires de l'alerte interne, séparés par des virgules.
-const NOTIFY_EMAILS = "contact@kongoscience.com,kongoscience25@gmail.com";
+// Destinataire des alertes. contact@kongoscience.com n'etant pas
+// operationnelle, tout arrive sur la boite institutionnelle.
+const NOTIFY_EMAILS = "kongoscience25@gmail.com";
 
-// Adresse de réponse affichée aux candidats. Si contact@kongoscience.com
-// n'est pas opérationnelle, mettre "kongoscience25@gmail.com".
-const REPLY_TO = "contact@kongoscience.com";
+// Adresse de reponse affichee aux candidats.
+const REPLY_TO = "kongoscience25@gmail.com";
 
 // Colonnes de la feuille, dans l'ordre. Les index nommés évitent les
 // décalages silencieux si l'ordre change un jour.

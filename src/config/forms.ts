@@ -24,18 +24,23 @@
  * L'état de chaque point de collecte est indiqué par son commentaire.
  */
 
-/** Adresse institutionnelle, à utiliser partout. */
-export const CONTACT_EMAIL = 'contact@kongoscience.com';
-
-/** Boîte de secours, indépendante de la configuration du domaine. */
-export const CONTACT_EMAIL_FALLBACK = 'kongoscience25@gmail.com';
+/**
+ * Adresse institutionnelle unique du site.
+ *
+ * contact@kongoscience.com n'est pas opérationnelle : l'afficher reviendrait
+ * à perdre le courrier des visiteurs. Tout passe donc par la boîte Gmail de
+ * l'association. Le jour où l'adresse du domaine sera active, cette seule
+ * ligne sera à changer.
+ */
+export const CONTACT_EMAIL = 'kongoscience25@gmail.com';
 
 /**
- * Adresse affichée aux visiteurs pour toute demande directe.
- * Tant que contact@kongoscience.com n'est pas confirmée opérationnelle,
- * c'est la boîte Gmail institutionnelle qui reçoit.
+ * Conservées pour compatibilité : les composants qui distinguaient une
+ * adresse principale d'une adresse en copie pointent désormais sur la même
+ * boîte, ce qui évite d'envoyer deux fois le même message.
  */
-export const CONTACT_EMAIL_PUBLIC = CONTACT_EMAIL_FALLBACK;
+export const CONTACT_EMAIL_FALLBACK = CONTACT_EMAIL;
+export const CONTACT_EMAIL_PUBLIC = CONTACT_EMAIL;
 
 export const FORM_ENDPOINTS = {
   /**
