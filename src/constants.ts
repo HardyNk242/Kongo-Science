@@ -424,6 +424,43 @@ export const SEO_ROUTES: Record<string, { title: string; description: string; pa
 // --- REJOINDRE KONGO SCIENCE ---
 // =====================================================================
 
+/**
+ * Formules d'adhésion à l'association.
+ *
+ * Affichées sur la page « Rejoindre », au moment où le visiteur choisit le
+ * profil « Membre de l'association » : c'est là que la question du coût se
+ * pose, pas après l'envoi du formulaire.
+ */
+export const MEMBERSHIP_TIERS = [
+  {
+    id: 'adherent',
+    nom: 'Adhésion',
+    prix: '6 500',
+    devise: 'FCFA',
+    periode: 'par an',
+    resume: "Pour suivre et profiter des activités de l'association.",
+    avantages: [
+      "20 % de réduction sur la participation aux conférences",
+      "10 % de réduction sur les formations",
+    ],
+  },
+  {
+    id: 'premium',
+    nom: 'Adhésion premium',
+    prix: '25 000',
+    devise: 'FCFA',
+    periode: 'par an',
+    resume: "Pour prendre part à l'organisation et porter ses propres projets.",
+    misEnAvant: true,
+    avantages: [
+      "Organiser vos conférences en ligne gratuitement",
+      "Proposer une intervention sans frais de dossier",
+      "Siéger dans les comités d'organisation des activités de Kongo Science",
+      "Accès au réseau professionnel de l'association",
+    ],
+  },
+];
+
 export const JOIN_PROFILES = [
   "Relecteur scientifique",
   "Comité éditorial",

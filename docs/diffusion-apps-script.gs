@@ -116,8 +116,14 @@ function preparerCampagnes() {
   const fileSheet = getSheet_(SHEET_FILE);
   let preparees = 0;
 
+  const statutsVus = [];
   for (let i = 1; i < lignes.length; i++) {
-    if (String(lignes[i][C_STATUT] || "").trim().toLowerCase() !== "à préparer") continue;
+    if (!String(lignes[i][C_TITRE] || "").trim()) continue;
+    statutsVus.push(String(lignes[i][C_STATUT] || "(vide)"));
+    // Comparaison tolérante : « A preparer », « à préparer », « À PRÉPARER »
+    // doivent tous fonctionner. Exiger l'accent exact faisait échouer la
+    // préparation en silence.
+    if (normaliserStatut_(lignes[i][C_STATUT]) !== "a preparer") continue;
 
     const titre = String(lignes[i][C_TITRE] || "").trim();
     if (!titre) continue;
@@ -150,7 +156,20 @@ function preparerCampagnes() {
   }
 
   SpreadsheetApp.flush();
-  if (preparees === 0) Logger.log("Aucune campagne au statut « À préparer ».");
+  if (preparees === 0) {
+    Logger.log("Aucune campagne au statut « À préparer ».");
+    Logger.log(`Statuts trouvés dans l'onglet Campagnes : ${statutsVus.join(" | ") || "(aucune ligne)"}`);
+    Logger.log("Pour préparer une campagne, mettez sa colonne Statut à « À préparer », puis relancez.");
+  }
+}
+
+/** Statut sans accents ni casse, pour comparer sans piéger l'utilisateur. */
+function normaliserStatut_(v) {
+  return String(v || "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
 }
 
 /****************
@@ -180,7 +199,7 @@ function envoyerLot() {
   // tout : on arrête d'office les campagnes dont la date est passée.
   for (const id in campagnes) {
     const c = campagnes[id];
-    if (c.statut === "En cours" && c.dateISO && c.dateISO < aujourdhui) {
+    if (normaliserStatut_(c.statut) === "en cours" && c.dateISO && c.dateISO < aujourdhui) {
       getSheet_(SHEET_CAMPAGNES).getRange(c.ligne, C_STATUT + 1).setValue("Expirée");
       c.statut = "Expirée";
       Logger.log(`Campagne « ${c.titre} » expirée : la date est passée, envois interrompus.`);
@@ -198,7 +217,7 @@ function envoyerLot() {
 
     // Seul le statut « En cours » autorise l'envoi. Mettre « En pause » dans
     // l'onglet Campagnes suffit à tout arrêter, sans toucher au déclencheur.
-    if (campagne.statut !== "En cours") { ignores++; continue; }
+    if (normaliserStatut_(campagne.statut) !== "en cours") { ignores++; continue; }
 
     const email = String(file[i][F_EMAIL] || "").trim();
     const nom = String(file[i][F_NOM] || "").trim();
@@ -227,7 +246,12 @@ function envoyerLot() {
   majAvancementCampagnes_();
   updateDashboardSheet_();
 
-  if (envoyes === 0 && ignores === 0) Logger.log("Rien à envoyer : aucune campagne en cours.");
+  if (envoyes === 0 && ignores === 0) {
+    const enAttente = file.filter(r => String(r[F_STATUT] || "").trim() === "En attente").length;
+    Logger.log(enAttente === 0
+      ? "File d'attente VIDE : personne n'a ete mis en file. Executez preparerCampagnes()."
+      : `${enAttente} destinataire(s) en attente, mais aucune campagne correspondante « En cours ».`);
+  }
   Logger.log(`${envoyes} envoi(s), ${echecs} échec(s), ${ignores} ignoré(s) (campagne en pause ou terminée). Quota restant : ${MailApp.getRemainingDailyQuota()}.`);
 }
 
@@ -301,7 +325,7 @@ function desinstallerDeclencheurEnvoi() {
  */
 function envoyerTestAMoi() {
   const campagnes = indexerCampagnes_();
-  const id = Object.keys(campagnes).find(k => campagnes[k].statut === "En cours");
+  const id = Object.keys(campagnes).find(k => normaliserStatut_(campagnes[k].statut) === "en cours");
 
   if (!id) {
     Logger.log("Aucune campagne « En cours ». Préparez-en une avec preparerCampagnes().");
@@ -420,7 +444,7 @@ function prochaineConference_() {
   let meilleure = null;
   for (const id in campagnes) {
     const c = campagnes[id];
-    if (c.statut !== "En cours" || !c.dateISO || c.dateISO < aujourdhui) continue;
+    if (normaliserStatut_(c.statut) !== "en cours" || !c.dateISO || c.dateISO < aujourdhui) continue;
     // La plus proche dans le temps, pas la dernière saisie.
     if (!meilleure || c.dateISO < meilleure.dateISO) meilleure = c;
   }

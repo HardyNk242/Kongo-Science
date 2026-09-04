@@ -7,6 +7,7 @@ import {
   CONTRIBUTION_AREAS,
   AVAILABILITY_OPTIONS,
   ACADEMIC_LEVELS,
+  MEMBERSHIP_TIERS,
   type JoinProfile,
 } from "../constants";
 
@@ -302,6 +303,58 @@ const JoinView: React.FC<Props> = ({ onBack }) => {
               ))}
             </ul>
           </div>
+
+          {/* Formules d'adhésion — affichées seulement quand elles concernent
+              le profil choisi, pour ne pas faire fuir un relecteur bénévole
+              avec une grille tarifaire qui ne le regarde pas. */}
+          {formData.profil === "Membre de l'association" && (
+            <div className="space-y-4 animate-in fade-in duration-500">
+              <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                Formules d'adhésion
+              </div>
+              {MEMBERSHIP_TIERS.map((f) => (
+                <div
+                  key={f.id}
+                  className={`rounded-[2rem] p-6 border-2 ${
+                    f.misEnAvant
+                      ? 'bg-slate-900 text-white border-slate-900'
+                      : 'bg-white border-slate-200'
+                  }`}
+                >
+                  <div className="flex items-baseline justify-between gap-3 mb-1">
+                    <h3 className={`font-serif font-bold text-lg m-0 ${f.misEnAvant ? 'text-white' : 'text-slate-900'}`}>
+                      {f.nom}
+                    </h3>
+                    <div className="whitespace-nowrap">
+                      <span className={`font-black text-xl ${f.misEnAvant ? 'text-white' : 'text-slate-900'}`}>
+                        {f.prix}
+                      </span>{" "}
+                      <span className={`text-[11px] ${f.misEnAvant ? 'text-blue-300' : 'text-slate-400'}`}>
+                        {f.devise} {f.periode}
+                      </span>
+                    </div>
+                  </div>
+                  <p className={`text-xs mb-4 italic ${f.misEnAvant ? 'text-slate-300' : 'text-slate-500'}`}>
+                    {f.resume}
+                  </p>
+                  <ul className="space-y-2">
+                    {f.avantages.map((a) => (
+                      <li key={a} className={`flex gap-2.5 text-sm leading-relaxed ${f.misEnAvant ? 'text-slate-200' : 'text-slate-700'}`}>
+                        <svg className={`w-4 h-4 flex-shrink-0 mt-0.5 ${f.misEnAvant ? 'text-emerald-400' : 'text-green-600'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>{a}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+              <p className="text-[11px] text-slate-400 italic leading-relaxed">
+                Le dépôt de votre candidature est gratuit. La cotisation n'est
+                due qu'une fois votre adhésion acceptée, et se règle par Mobile Money.
+              </p>
+            </div>
+          )}
 
           {/* Exemple fort vs exemple faible */}
           <div key={`ex-${formData.profil}`} className="space-y-4 animate-in fade-in duration-500">
