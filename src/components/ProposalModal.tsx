@@ -1,3 +1,4 @@
+import { FORM_ENDPOINTS } from "../config/forms";
 import React, { useMemo, useState } from "react";
 import { COUNTRIES } from "../constants";
 
@@ -80,8 +81,7 @@ const ProposalModal: React.FC<Props> = ({ onClose }) => {
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const GOOGLE_SCRIPT_URL =
-    "https://script.google.com/macros/s/AKfycbz5gO1pZtR9HnMnQbGzzP67c8eYPGUpY335vTAZXgdq4D_XwSnj3L6PFtl0S17r70s7QA/exec";
+  const GOOGLE_SCRIPT_URL = FORM_ENDPOINTS.proposition;
 
   const handleClose = () => {
     if (status === "submitting") return;

@@ -6,6 +6,7 @@ import { Thesis } from '../types';
 import SubmitPublicationModal from './SubmitPublicationModal';
 import SmartLink from './SmartLink';
 import Seo from './Seo';
+import { CONTACT_EMAIL_PUBLIC } from '../config/forms';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -162,10 +163,20 @@ const LibraryView: React.FC<LibraryViewProps> = ({ initialThesisId }) => {
 
   const MailRequestPopup = () => {
     if (!showMailPopup || !selectedThesis) return null;
+    // Les demandes d'accès arrivent à la boîte institutionnelle, jamais sur
+    // un compte personnel : le message doit rester lisible et traitable par
+    // n'importe quel membre du bureau.
     const subject = encodeURIComponent(`Demande d'accès : ${selectedThesis.title.substring(0, 50)}...`);
-    const body = encodeURIComponent(`Bonjour Dr. Nkodia,\n\nJe suis intéressé par votre publication "${selectedThesis.title}" (${selectedThesis.year}).\nPourriez-vous m'envoyer une copie privée ?`);
-    const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=nkodiahardy@gmail.com&su=${subject}&body=${body}`;
-    const mailtoLink = `mailto:nkodiahardy@gmail.com?subject=${subject}&body=${body}`;
+    const body = encodeURIComponent(
+      `Bonjour,\n\nJe souhaite consulter la publication suivante, référencée dans la bibliothèque Kongo Science :\n\n` +
+      `Titre : ${selectedThesis.title}\n` +
+      `Auteur : ${selectedThesis.author}\n` +
+      `Année : ${selectedThesis.year}\n` +
+      `Référence : ${selectedThesis.id}\n\n` +
+      `Pourriez-vous m'indiquer comment y accéder ?\n\nCordialement,`
+    );
+    const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${CONTACT_EMAIL_PUBLIC}&su=${subject}&body=${body}`;
+    const mailtoLink = `mailto:${CONTACT_EMAIL_PUBLIC}?subject=${subject}&body=${body}`;
 
     return (
       <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setShowMailPopup(false)}>

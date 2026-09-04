@@ -1,3 +1,4 @@
+import { FORM_ENDPOINTS } from "../config/forms";
 import React, { useMemo, useState, useEffect } from "react";
 import { COUNTRIES, PROPOSAL_PSYCHOLOGY } from "../constants";
 
@@ -84,8 +85,7 @@ const ProposalView: React.FC<Props> = ({ onBack }) => {
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const GOOGLE_SCRIPT_URL =
-    "https://script.google.com/macros/s/AKfycbz5gO1pZtR9HnMnQbGzzP67c8eYPGUpY335vTAZXgdq4D_XwSnj3L6PFtl0S17r70s7QA/exec";
+  const GOOGLE_SCRIPT_URL = FORM_ENDPOINTS.proposition;
 
   const selectedPsychology = useMemo(() => {
     return (PROPOSAL_PSYCHOLOGY.formats as any)[formData.format] || PROPOSAL_PSYCHOLOGY.formats["Recherche scientifique"];

@@ -10,6 +10,12 @@ import {
   type JoinProfile,
 } from "../constants";
 
+import {
+  FORM_ENDPOINTS,
+  CONTACT_EMAIL as CONTACT_EMAIL_CONFIG,
+  CONTACT_EMAIL_FALLBACK,
+} from "../config/forms";
+
 interface Props {
   onBack: () => void;
 }
@@ -17,20 +23,18 @@ interface Props {
 type Status = "idle" | "submitting" | "success" | "error";
 
 /**
- * Point de collecte des candidatures.
- * Laisser la chaîne vide tant que le Google Apps Script n'est pas déployé :
- * le formulaire bascule alors automatiquement sur un envoi par courriel,
- * sans jamais perdre la saisie du candidat.
- * Procédure complète : docs/rejoindre-apps-script.gs
+ * Point de collecte des candidatures, défini dans src/config/forms.ts.
+ * S'il est vide, le formulaire bascule sur un envoi par courriel plutôt que
+ * de perdre la saisie du candidat.
+ * Code du script : docs/rejoindre-apps-script.gs
  */
-const JOIN_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbxwH3tBvH3ds2v43n9ptWLzm90WPDssEAQg4Z1MKiFvP3zlKCaXicYPtUUyhNhryKgs5A/exec";
+const JOIN_SCRIPT_URL: string = FORM_ENDPOINTS.rejoindre;
 
 /** Adresse principale affichée au candidat. */
-const CONTACT_EMAIL = "contact@kongoscience.com";
+const CONTACT_EMAIL = CONTACT_EMAIL_CONFIG;
 
-/** Boîte de secours mise en copie, pour ne dépendre d'aucune configuration de domaine. */
-const CONTACT_EMAIL_CC = "kongoscience25@gmail.com";
+/** Boîte institutionnelle mise en copie, indépendante du domaine. */
+const CONTACT_EMAIL_CC = CONTACT_EMAIL_FALLBACK;
 
 /** Longueur en dessous de laquelle une motivation reste trop vague pour être départagée. */
 const MOTIVATION_MIN = 180;

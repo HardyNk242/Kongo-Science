@@ -2,6 +2,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import { Conference } from "../types";
 import { COUNTRIES } from "../constants";
 import Seo from "./Seo";
+import { endpointPourConference } from "../config/forms";
 
 interface Props {
   conference: Conference;
@@ -113,13 +114,9 @@ const RegistrationView: React.FC<Props> = ({ conference, onBack }) => {
   const [status, setStatus] = useState<"idle" | "checking" | "submitting" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const DEFAULT_SCRIPT_URL =
-    "https://script.google.com/macros/s/AKfycbw-XKGABUep94GRlVd1X_t1O-8UeuFIlMAz_EGU1KTWjghlvbLrMnm73eT1Eff7jcis/exec";
-  const SCRIPT_URLS: Record<string, string> = {
-    "conf-ingenierie-petroliere":
-      "https://script.google.com/macros/s/AKfycbxj29r4wCZte8QJBBIuE-JCTVQdh404NvuW3Hq6Hdy6ON4ZGw4uyu9jWTfDj3YLMDSKRg/exec"
-  };
-  const GOOGLE_SCRIPT_URL = SCRIPT_URLS[conference.id] ?? DEFAULT_SCRIPT_URL;
+  // Adresse de collecte définie dans src/config/forms.ts, pour que le compte
+  // institutionnel qui reçoit les données se change en un seul endroit.
+  const GOOGLE_SCRIPT_URL = endpointPourConference(conference.id);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

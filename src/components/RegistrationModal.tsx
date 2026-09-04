@@ -78,15 +78,8 @@ const RegistrationModal: React.FC<Props> = ({ conference, onClose }) => {
   const [status, setStatus] = useState<"idle" | "checking" | "submitting" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
-  // MISE À JOUR ICI : Nouvelle URL de déploiement
-  const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby2QOJtSBLXavDoAssvNKFKgj30kG-nKXy8QM_ieicDB1mJmhqI6J5YPo1qewKE2UpM/exec";
-  
-  // Si vous avez des URLs spécifiques, vous pouvez les laisser ou utiliser la nouvelle par défaut
-  const SCRIPT_URLS: Record<string, string> = {
-    // "conf-ingenierie-petroliere": "URL_SPECIFIQUE_SI_BESOIN" 
-  };
-
-  const GOOGLE_SCRIPT_URL = SCRIPT_URLS[conference.id] ?? DEFAULT_SCRIPT_URL;
+  // Adresse de collecte definie dans src/config/forms.ts.
+  const GOOGLE_SCRIPT_URL = endpointPourConference(conference.id);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
