@@ -399,10 +399,15 @@ function buildConfirmationHtml_(nomComplet, titre, format) {
               communication publique, valorisable dans un dossier de promotion
               CAMES.
             </p>
-            <p style="margin:0;font-size:13px;color:#6b7280;line-height:1.6;">
+            <p style="margin:0 0 10px;font-size:13px;color:#6b7280;line-height:1.6;">
               Aucun frais n'est dû si votre intervention est proposée sur
               invitation de Kongo Science, ou si vous êtes membre premium de
               l'association (25 000 FCFA par an).
+            </p>
+            <p style="margin:0;font-size:13px;color:#1f2937;line-height:1.6;">
+              Le règlement se fait au <strong>06 834 78 20</strong> (Hardy NKODIA).
+              <strong style="color:#92400e;"> Ne réglez rien avant d'avoir reçu
+              notre courriel d'acceptation.</strong>
             </p>
           </div>
 

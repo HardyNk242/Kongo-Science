@@ -290,11 +290,18 @@ const ProposalView: React.FC<Props> = ({ onBack }) => {
               <svg className="w-4 h-4 text-slate-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
               </svg>
-              <p className="text-xs text-slate-500 leading-relaxed">
-                Règlement par <strong className="text-slate-700">{PROPOSAL_PRICING.paiement.moyen}</strong>,{" "}
-                {PROPOSAL_PRICING.paiement.quand}. Les coordonnées vous seront communiquées
-                dans le courriel d'acceptation.
-              </p>
+              <div className="text-xs text-slate-500 leading-relaxed">
+                <p className="mb-2">
+                  Règlement par <strong className="text-slate-700">{PROPOSAL_PRICING.paiement.moyen}</strong> :{" "}
+                  <strong className="text-slate-700">{PROPOSAL_PRICING.paiement.numero}</strong>{" "}
+                  ({PROPOSAL_PRICING.paiement.titulaire}).
+                </p>
+                {/* Sans cet avertissement, des intervenants paieraient dès le dépôt,
+                    ce qui obligerait à rembourser les propositions non retenues. */}
+                <p className="text-amber-700 font-semibold">
+                  Ne réglez rien avant d'avoir reçu notre courriel d'acceptation.
+                </p>
+              </div>
             </div>
           </div>
         </div>

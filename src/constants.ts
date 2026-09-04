@@ -326,6 +326,8 @@ export const PROPOSAL_PRICING = {
    */
   paiement: {
     moyen: 'Mobile Money',
+    numero: '06 834 78 20',
+    titulaire: 'Hardy NKODIA',
     quand: "après acceptation de votre proposition, avant l'annonce publique de l'événement",
   },
 };
