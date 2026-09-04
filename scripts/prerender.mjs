@@ -191,6 +191,12 @@ async function prerendre() {
 }
 
 prerendre().catch((err) => {
-  console.error('Pré-rendu interrompu :', err);
-  process.exit(1);
+  // On sort volontairement en succès : un pré-rendu impossible (navigateur
+  // indisponible sur le runner, mémoire insuffisante…) ne doit pas faire
+  // échouer le build et bloquer tout le déploiement. Le site reste servi
+  // par le repli SPA, exactement comme avant l'ajout du pré-rendu.
+  console.error('\n⚠️  PRÉ-RENDU ABANDONNÉ —', err.message);
+  console.error('   Le site sera déployé sans pré-rendu : le contenu restera');
+  console.error('   rendu côté client. À corriger, mais rien n\'est cassé.');
+  process.exit(0);
 });
