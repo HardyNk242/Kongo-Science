@@ -334,9 +334,17 @@ const JoinView: React.FC<Props> = ({ onBack }) => {
                       </span>
                     </div>
                   </div>
-                  <p className={`text-xs mb-4 italic ${f.misEnAvant ? 'text-slate-300' : 'text-slate-500'}`}>
+                  <p className={`text-xs mb-3 italic ${f.misEnAvant ? 'text-slate-300' : 'text-slate-500'}`}>
                     {f.resume}
                   </p>
+                  {/* Sans cette mention, le premium paraît offrir MOINS que
+                      l'adhésion simple, ses avantages propres étant les seuls
+                      listés. */}
+                  {f.inclutPrecedent && (
+                    <p className="text-[11px] font-bold text-blue-300 mb-3 uppercase tracking-wide">
+                      Tout ce que comprend l'adhésion, plus :
+                    </p>
+                  )}
                   <ul className="space-y-2">
                     {f.avantages.map((a) => (
                       <li key={a} className={`flex gap-2.5 text-sm leading-relaxed ${f.misEnAvant ? 'text-slate-200' : 'text-slate-700'}`}>

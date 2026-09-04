@@ -438,10 +438,16 @@ export const MEMBERSHIP_TIERS = [
     prix: '6 500',
     devise: 'FCFA',
     periode: 'par an',
-    resume: "Pour suivre et profiter des activités de l'association.",
+    resume: "Pour suivre les activités de l'association et progresser avec elle.",
     avantages: [
-      "20 % de réduction sur la participation aux conférences",
-      "10 % de réduction sur les formations",
+      "Une attestation de membre, pièce vérifiable pour vos dossiers",
+      "Accès aux inscriptions 48 h avant leur ouverture publique",
+      "Accès aux enregistrements des conférences passées",
+      "Veille mensuelle des bourses, filtrée selon vos domaines",
+      // Remplace l'ancienne remise « 20 % sur la participation aux conférences » :
+      // celles-ci étant gratuites, l'avantage était vide. La remise porte
+      // désormais là où il existe un prix réel, entre 30 000 et 150 000 FCFA.
+      "10 % de réduction sur les bouquets d'accompagnement et les formations",
     ],
   },
   {
@@ -452,10 +458,14 @@ export const MEMBERSHIP_TIERS = [
     periode: 'par an',
     resume: "Pour prendre part à l'organisation et porter ses propres projets.",
     misEnAvant: true,
+    inclutPrecedent: true,
     avantages: [
       "Organiser vos conférences en ligne gratuitement",
-      "Proposer une intervention sans frais de dossier",
-      "Siéger dans les comités d'organisation des activités de Kongo Science",
+      "Proposer une intervention sans frais de dossier (12 500 FCFA offerts)",
+      "Diffuser une annonce à toute la communauté, une fois par an",
+      "La relecture d'un résumé ou d'un abstract par an",
+      "Une lettre de soutien pour une candidature ou une bourse",
+      "Siéger dans les comités d'organisation des activités",
       "Accès au réseau professionnel de l'association",
     ],
   },
