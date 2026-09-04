@@ -22,9 +22,31 @@
  * 1. Dans l'onglet « Campagnes », ajouter une ligne :
  *       Titre, EventId, Date, Heure, Lien affiche, Statut = « À préparer »
  *    (le lien d'inscription est construit automatiquement depuis EventId)
- * 2. Exécuter preparerCampagnes() : la file d'attente est constituée.
- * 3. Exécuter envoyerLot() pour partir tout de suite, ou laisser le
+ * 2. Exécuter preparerCampagnes() : la file d'attente est constituée et le
+ *    statut passe à « En cours ».
+ * 3. Exécuter envoyerTestAMoi() et relire le courriel reçu.
+ * 4. Exécuter envoyerLot() pour partir tout de suite, ou laisser le
  *    déclencheur quotidien s'en charger.
+ *
+ * ---------------------------------------------------------------------
+ * QUI COMMANDE LES ENVOIS
+ * ---------------------------------------------------------------------
+ * Le déclencheur quotidien n'envoie RIEN par lui-même : il exécute
+ * envoyerLot, qui regarde seulement s'il reste des destinataires en attente.
+ * Sans campagne « En cours », rien ne part et personne n'est importuné.
+ *
+ * C'est donc la colonne « Statut » de l'onglet Campagnes qui commande :
+ *
+ *   À préparer  ->  en attente de preparerCampagnes()
+ *   En cours    ->  les envois se poursuivent, jour après jour
+ *   En pause    ->  tout s'arrête ; repasser à « En cours » pour reprendre
+ *   Terminée    ->  posé automatiquement quand la file est vide
+ *   Expirée     ->  posé automatiquement si la date de la conférence
+ *                   est passée : mieux vaut ne rien envoyer qu'annoncer
+ *                   un événement déjà tenu
+ *
+ * Pour tout piloter à la main, exécuter desinstallerDeclencheurEnvoi() :
+ * plus aucun envoi automatique, seul envoyerLot() lancé par vous expédie.
  *
  * ---------------------------------------------------------------------
  * INSTALLATION (une seule fois)
@@ -152,8 +174,20 @@ function envoyerLot() {
   if (file.length <= 1) { Logger.log("File vide."); return; }
 
   const campagnes = indexerCampagnes_();
+  const aujourdhui = Utilities.formatDate(new Date(), ORG_TZ, "yyyy-MM-dd");
 
-  let envoyes = 0, echecs = 0;
+  // Une annonce qui arrive après la conférence est pire que pas d'annonce du
+  // tout : on arrête d'office les campagnes dont la date est passée.
+  for (const id in campagnes) {
+    const c = campagnes[id];
+    if (c.statut === "En cours" && c.dateISO && c.dateISO < aujourdhui) {
+      getSheet_(SHEET_CAMPAGNES).getRange(c.ligne, C_STATUT + 1).setValue("Expirée");
+      c.statut = "Expirée";
+      Logger.log(`Campagne « ${c.titre} » expirée : la date est passée, envois interrompus.`);
+    }
+  }
+
+  let envoyes = 0, echecs = 0, ignores = 0;
 
   for (let i = 1; i < file.length && envoyes < budget; i++) {
     if (String(file[i][F_STATUT] || "").trim() !== "En attente") continue;
@@ -161,6 +195,10 @@ function envoyerLot() {
     const idCampagne = String(file[i][F_CAMPAGNE] || "").trim();
     const campagne = campagnes[idCampagne];
     if (!campagne) continue;
+
+    // Seul le statut « En cours » autorise l'envoi. Mettre « En pause » dans
+    // l'onglet Campagnes suffit à tout arrêter, sans toucher au déclencheur.
+    if (campagne.statut !== "En cours") { ignores++; continue; }
 
     const email = String(file[i][F_EMAIL] || "").trim();
     const nom = String(file[i][F_NOM] || "").trim();
@@ -189,10 +227,18 @@ function envoyerLot() {
   majAvancementCampagnes_();
   updateDashboardSheet_();
 
-  Logger.log(`${envoyes} envoi(s), ${echecs} échec(s). Quota restant : ${MailApp.getRemainingDailyQuota()}.`);
+  if (envoyes === 0 && ignores === 0) Logger.log("Rien à envoyer : aucune campagne en cours.");
+  Logger.log(`${envoyes} envoi(s), ${echecs} échec(s), ${ignores} ignoré(s) (campagne en pause ou terminée). Quota restant : ${MailApp.getRemainingDailyQuota()}.`);
 }
 
-/** À exécuter UNE FOIS : envoi automatique chaque jour à 8 h. */
+/**
+ * Envoi automatique chaque jour à 8 h.
+ *
+ * À NOTER : ce déclencheur n'envoie RIEN par lui-même. Il exécute envoyerLot,
+ * qui se contente de regarder s'il reste des destinataires en attente. Sans
+ * campagne « En cours », la file est vide et aucun message ne part. Il peut
+ * donc rester installé en permanence sans importuner personne.
+ */
 function installerDeclencheurEnvoi() {
   ScriptApp.getProjectTriggers()
     .filter(t => t.getHandlerFunction() === "envoyerLot")
@@ -201,6 +247,44 @@ function installerDeclencheurEnvoi() {
   ScriptApp.newTrigger("envoyerLot").timeBased().atHour(8).everyDays(1)
     .inTimezone(ORG_TZ).create();
   Logger.log("Déclencheur installé : envoyerLot chaque jour à 8 h (Brazzaville).");
+}
+
+/** Retire le déclencheur : plus aucun envoi automatique, tout devient manuel. */
+function desinstallerDeclencheurEnvoi() {
+  const trouves = ScriptApp.getProjectTriggers()
+    .filter(t => t.getHandlerFunction() === "envoyerLot");
+  trouves.forEach(t => ScriptApp.deleteTrigger(t));
+  Logger.log(trouves.length
+    ? `${trouves.length} déclencheur(s) supprimé(s). Les envois ne partiront plus que par exécution manuelle de envoyerLot.`
+    : "Aucun déclencheur à supprimer.");
+}
+
+/**
+ * Envoie l'annonce à la seule boîte de Kongo Science, pour relire le rendu
+ * avant de la diffuser à toute la liste. N'entame pas la file d'attente.
+ *
+ * Une faute de frappe dans un message parti à 237 personnes ne se rattrape
+ * pas : cette relecture coûte deux minutes et évite l'irréparable.
+ */
+function envoyerTestAMoi() {
+  const campagnes = indexerCampagnes_();
+  const id = Object.keys(campagnes).find(k => campagnes[k].statut === "En cours");
+
+  if (!id) {
+    Logger.log("Aucune campagne « En cours ». Préparez-en une avec preparerCampagnes().");
+    return;
+  }
+
+  const c = campagnes[id];
+  MailApp.sendEmail({
+    to: NOTIFY_EMAIL,
+    subject: `[TEST] ${c.titre} — inscription ouverte`,
+    replyTo: NOTIFY_EMAIL,
+    htmlBody: buildAnnonceHtml_("Test Kongo Science", c, NOTIFY_EMAIL)
+  });
+
+  Logger.log(`Test envoyé à ${NOTIFY_EMAIL} pour la campagne « ${c.titre} ». ` +
+             `Relisez-le avant de laisser partir la diffusion.`);
 }
 
 /****************
@@ -441,9 +525,11 @@ function indexerCampagnes_() {
     index[`${date || "sans-date"}__${titre}`.slice(0, 90)] = {
       titre: titre,
       eventId: String(rows[i][C_EVENT] || "").trim(),
+      dateISO: date,
       dateLisible: date ? formaterDate_(date) : "",
       heure: normaliserHeure_(rows[i][C_HEURE]),
       affiche: String(rows[i][C_AFFICHE] || "").trim(),
+      statut: String(rows[i][C_STATUT] || "").trim(),
       ligne: i + 1
     };
   }
