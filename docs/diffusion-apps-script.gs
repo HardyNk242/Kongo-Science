@@ -249,6 +249,39 @@ function installerDeclencheurEnvoi() {
   Logger.log("Déclencheur installé : envoyerLot chaque jour à 8 h (Brazzaville).");
 }
 
+/**
+ * Affiche ce que le script comprend de chaque campagne, sans rien envoyer.
+ *
+ * À exécuter après toute modification de l'onglet Campagnes : c'est le moyen
+ * de vérifier que la date et l'heure sont lues telles que vous les avez
+ * saisies, avant qu'un courriel parte à toute la liste.
+ */
+function verifierCampagnes() {
+  const campagnes = indexerCampagnes_();
+  const cles = Object.keys(campagnes);
+
+  Logger.log(`Fuseau du classeur : ${tzClasseur_()}`);
+  Logger.log(`Fuseau de référence : ${ORG_TZ}`);
+  if (tzClasseur_() !== ORG_TZ) {
+    Logger.log("⚠️  Les deux diffèrent. Les dates sont lues dans le fuseau du " +
+               "classeur, ce qui est correct, mais aligner les deux dans " +
+               "Fichier > Paramètres évite toute ambiguïté.");
+  }
+  Logger.log("");
+
+  if (cles.length === 0) { Logger.log("Aucune campagne."); return; }
+
+  for (const id of cles) {
+    const c = campagnes[id];
+    Logger.log(`— ${c.titre}`);
+    Logger.log(`    statut       : ${c.statut}`);
+    Logger.log(`    date lue     : ${c.dateISO || "(vide)"}  ->  affichée « ${c.dateLisible || "(rien)"} »`);
+    Logger.log(`    heure lue    : ${c.heure || "(vide)"}`);
+    Logger.log(`    lien         : ${c.eventId ? SITE_URL + "/registration/" + c.eventId : SITE_URL + "/agenda"}`);
+    Logger.log(`    affiche      : ${c.affiche || "(aucune)"}`);
+  }
+}
+
 /** Retire le déclencheur : plus aucun envoi automatique, tout devient manuel. */
 function desinstallerDeclencheurEnvoi() {
   const trouves = ScriptApp.getProjectTriggers()
@@ -823,14 +856,34 @@ function getSheet_(nom) {
   return ss.getSheetByName(nom) || ss.insertSheet(nom);
 }
 
+/**
+ * Fuseau horaire du classeur, mis en cache.
+ *
+ * Indispensable pour relire correctement une date saisie dans une cellule :
+ * Sheets enregistre « 2026-09-22 » comme minuit DANS SON PROPRE fuseau. La
+ * relire dans un autre fuseau peut reculer d'un jour — c'est ce qui affichait
+ * « 21 septembre » pour une conférence du 22.
+ *
+ * Sur l'heure, l'effet est plus sournois encore : une heure seule est stockée
+ * au 30 décembre 1899, date à laquelle les fuseaux suivaient l'heure solaire
+ * locale. Un décalage de quelques minutes apparaît alors (19:30 devenu 19:34).
+ */
+let _tzClasseur = null;
+function tzClasseur_() {
+  if (!_tzClasseur) {
+    _tzClasseur = SpreadsheetApp.openById(SPREADSHEET_ID).getSpreadsheetTimeZone() || ORG_TZ;
+  }
+  return _tzClasseur;
+}
+
 function normaliserDate_(v) {
-  if (v instanceof Date && !isNaN(v.getTime())) return Utilities.formatDate(v, ORG_TZ, "yyyy-MM-dd");
+  if (v instanceof Date && !isNaN(v.getTime())) return Utilities.formatDate(v, tzClasseur_(), "yyyy-MM-dd");
   const s = String(v || "").trim();
   return /^\d{4}-\d{2}-\d{2}$/.test(s) ? s : "";
 }
 
 function normaliserHeure_(v) {
-  if (v instanceof Date && !isNaN(v.getTime())) return Utilities.formatDate(v, ORG_TZ, "HH:mm");
+  if (v instanceof Date && !isNaN(v.getTime())) return Utilities.formatDate(v, tzClasseur_(), "HH:mm");
   const s = String(v || "").trim();
   return /^\d{1,2}:\d{2}$/.test(s) ? s : "";
 }

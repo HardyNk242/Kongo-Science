@@ -629,10 +629,29 @@ function ensureHeaders_(sheet) {
   }
 }
 
+/**
+ * Fuseau horaire du classeur, mis en cache.
+ *
+ * Une date écrite dans une cellule est enregistrée par Sheets comme minuit
+ * DANS SON PROPRE fuseau. La relire dans un autre fuseau peut reculer d'un
+ * jour — un rappel partirait alors le mauvais soir, ou jamais.
+ *
+ * Pour une heure seule, le piège est pire : Sheets la stocke au 30 décembre
+ * 1899, époque où les fuseaux suivaient l'heure solaire locale. La conversion
+ * décale de quelques minutes (19:30 devenant 19:34).
+ */
+let _tzClasseur = null;
+function tzClasseur_() {
+  if (!_tzClasseur) {
+    _tzClasseur = SpreadsheetApp.openById(SPREADSHEET_ID).getSpreadsheetTimeZone() || ORG_TZ;
+  }
+  return _tzClasseur;
+}
+
 /** Une date de feuille peut revenir en objet Date ou en texte. */
 function normaliserDate_(v) {
   if (v instanceof Date && !isNaN(v.getTime())) {
-    return Utilities.formatDate(v, ORG_TZ, "yyyy-MM-dd");
+    return Utilities.formatDate(v, tzClasseur_(), "yyyy-MM-dd");
   }
   const s = String(v || "").trim();
   return /^\d{4}-\d{2}-\d{2}$/.test(s) ? s : "";
@@ -640,10 +659,10 @@ function normaliserDate_(v) {
 
 function normaliserHeure_(v) {
   if (v instanceof Date && !isNaN(v.getTime())) {
-    return Utilities.formatDate(v, ORG_TZ, "HH:mm");
+    return Utilities.formatDate(v, tzClasseur_(), "HH:mm");
   }
   const s = String(v || "").trim();
-  return /^\d{2}:\d{2}$/.test(s) ? s : "";
+  return /^\d{1,2}:\d{2}$/.test(s) ? s : "";
 }
 
 function safeParseJson_(raw) {
