@@ -25,7 +25,11 @@ type Status = "idle" | "submitting" | "success" | "error";
  */
 const JOIN_SCRIPT_URL = "";
 
+/** Adresse principale affichée au candidat. */
 const CONTACT_EMAIL = "contact@kongoscience.com";
+
+/** Boîte de secours mise en copie, pour ne dépendre d'aucune configuration de domaine. */
+const CONTACT_EMAIL_CC = "kongoscience25@gmail.com";
 
 /** Longueur en dessous de laquelle une motivation reste trop vague pour être départagée. */
 const MOTIVATION_MIN = 180;
@@ -176,7 +180,8 @@ const JoinView: React.FC<Props> = ({ onBack }) => {
 
     const href =
       `mailto:${CONTACT_EMAIL}` +
-      `?subject=${encodeURIComponent(`Candidature ${p.profil} — ${p.name}`)}` +
+      `?cc=${encodeURIComponent(CONTACT_EMAIL_CC)}` +
+      `&subject=${encodeURIComponent(`Candidature ${p.profil} — ${p.name}`)}` +
       `&body=${encodeURIComponent(corps)}`;
 
     window.location.href = href;
@@ -339,6 +344,9 @@ const JoinView: React.FC<Props> = ({ onBack }) => {
                     S'il ne s'est pas ouvert, écrivez directement à{" "}
                     <a href={`mailto:${CONTACT_EMAIL}`} className="text-blue-600 font-bold hover:underline">
                       {CONTACT_EMAIL}
+                    </a>{" "}ou à{" "}
+                    <a href={`mailto:${CONTACT_EMAIL_CC}`} className="text-blue-600 font-bold hover:underline">
+                      {CONTACT_EMAIL_CC}
                     </a>.
                   </p>
                 ) : (

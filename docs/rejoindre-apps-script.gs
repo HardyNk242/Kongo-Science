@@ -15,7 +15,7 @@
  * ---------------------------------------------------------------------
  * 1. Créer un Google Sheet nommé « Kongo Science — Candidatures ».
  * 2. Menu Extensions > Apps Script. Coller ce fichier entier.
- * 3. Renseigner SHEET_ID et NOTIFY_EMAIL ci-dessous.
+ * 3. Renseigner SHEET_ID ci-dessous (NOTIFY_EMAILS est déjà rempli).
  * 4. Exécuter une fois la fonction initSheet() pour créer les en-têtes
  *    (Google demandera d'autoriser l'accès : accepter).
  * 5. Déployer > Nouveau déploiement > type « Application Web » :
@@ -31,9 +31,21 @@
  */
 
 // --- À RENSEIGNER ---------------------------------------------------
-var SHEET_ID     = "COLLER_ICI_L_ID_DU_GOOGLE_SHEET";
-var SHEET_NAME   = "Candidatures";
-var NOTIFY_EMAIL = "contact@kongoscience.com";
+var SHEET_ID   = "COLLER_ICI_L_ID_DU_GOOGLE_SHEET";
+var SHEET_NAME = "Candidatures";
+
+/**
+ * Destinataires de l'alerte interne, séparés par des virgules.
+ * Les deux adresses reçoivent chaque candidature.
+ */
+var NOTIFY_EMAILS = "contact@kongoscience.com,kongoscience25@gmail.com";
+
+/**
+ * Adresse de réponse affichée aux candidats dans l'accusé de réception.
+ * Si contact@kongoscience.com n'est pas encore opérationnelle,
+ * remplacer cette ligne par "kongoscience25@gmail.com".
+ */
+var REPLY_TO = "contact@kongoscience.com";
 // --------------------------------------------------------------------
 
 /** Colonnes du tableau, dans l'ordre. */
@@ -190,10 +202,10 @@ function notifierBureau(data) {
     (data.motivation || "");
 
   MailApp.sendEmail({
-    to: NOTIFY_EMAIL,
+    to: NOTIFY_EMAILS,
     subject: "[Candidature] " + (data.profil || "Kongo Science") + " — " + nom,
     body: corps,
-    replyTo: data.email || NOTIFY_EMAIL
+    replyTo: data.email || REPLY_TO
   });
 }
 
@@ -217,7 +229,7 @@ function accuserReception(data) {
     to: data.email,
     subject: "Votre candidature Kongo Science a bien été reçue",
     body: corps,
-    replyTo: NOTIFY_EMAIL
+    replyTo: REPLY_TO
   });
 }
 
