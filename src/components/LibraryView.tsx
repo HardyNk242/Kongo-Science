@@ -4,6 +4,8 @@ import { SCIMAGO_DOMAINS } from '../constants';
 import { THESES_LIBRARY } from '../data/library';
 import { Thesis } from '../types';
 import SubmitPublicationModal from './SubmitPublicationModal';
+import SmartLink from './SmartLink';
+import Seo from './Seo';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -194,8 +196,26 @@ const LibraryView: React.FC<LibraryViewProps> = ({ initialThesisId }) => {
   // ====================================================================
   if (selectedThesis) {
     const t = selectedThesis;
+
+    // Chaque fiche devient une page distincte aux yeux d'un moteur de
+    // recherche : titre, résumé et URL canonique qui lui sont propres.
+    const descriptionFiche = [
+      t.author,
+      t.year,
+      t.institution,
+      t.abstract ? t.abstract.replace(/\s+/g, ' ').trim() : '',
+    ]
+      .filter(Boolean)
+      .join(' · ');
+
     return (
       <div className="bg-slate-50 min-h-screen pb-24">
+        <Seo
+          title={t.title}
+          description={descriptionFiche || `${t.type || 'Publication'} disponible dans la bibliothèque Kongo Science.`}
+          path={`/library/${encodeURIComponent(t.id)}`}
+          type="article"
+        />
         {showMailPopup && <MailRequestPopup />}
 
         {/* Bandeau retour */}
@@ -510,11 +530,7 @@ const LibraryView: React.FC<LibraryViewProps> = ({ initialThesisId }) => {
                 <article
                   key={thesis.id}
                   onClick={() => openThesis(thesis)}
-                  onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && openThesis(thesis)}
-                  tabIndex={0}
-                  role="button"
-                  aria-label={`Ouvrir la publication : ${thesis.title}`}
-                  className="group relative bg-white border border-slate-100 hover:border-slate-200 rounded-2xl p-6 transition-all hover:shadow-xl hover:-translate-y-0.5 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
+                  className="group relative bg-white border border-slate-100 hover:border-slate-200 rounded-2xl p-6 transition-all hover:shadow-xl hover:-translate-y-0.5 cursor-pointer focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-2"
                 >
                   {renderZoteroCoins(thesis)}
 
@@ -527,8 +543,16 @@ const LibraryView: React.FC<LibraryViewProps> = ({ initialThesisId }) => {
                         <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{thesis.type || 'Publication'}</span>
                       </div>
 
+                      {/* Le titre est un vrai lien : c'est par lui que Googlebot
+                          découvre les fiches, et son texte sert d'ancre. */}
                       <h3 className="text-xl font-serif font-bold text-slate-900 mb-2 group-hover:text-blue-700 transition-colors leading-snug">
-                        {thesis.title}
+                        <SmartLink
+                          to={`library/${encodeURIComponent(thesis.id)}`}
+                          onNavigate={() => openThesis(thesis)}
+                          className="text-inherit no-underline focus:outline-none"
+                        >
+                          {thesis.title}
+                        </SmartLink>
                       </h3>
 
                       <p className="text-sm text-slate-600 mb-4">

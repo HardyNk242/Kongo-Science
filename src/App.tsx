@@ -20,7 +20,9 @@ import TeamView from './components/TeamView';
 import ProgramsView from './components/ProgramsView';
 import PublicationsView from './components/PublicationsView';
 
-import { OBJECTIFS, CONFERENCES, PARTNERS } from './constants';
+import Seo from './components/Seo';
+
+import { OBJECTIFS, CONFERENCES, PARTNERS, SEO_ROUTES } from './constants';
 import { Conference } from './types';
 
 // --- CONFIGURATION GOOGLE ANALYTICS ---
@@ -394,8 +396,13 @@ const App: React.FC = () => {
     }
   };
 
+  // Métadonnées de la route courante. Les vues de détail (une thèse, un
+  // article) déclarent ensuite leur propre <Seo>, qui prend le dessus.
+  const seo = SEO_ROUTES[currentPath] ?? SEO_ROUTES.home;
+
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 selection:bg-blue-100 selection:text-blue-900">
+      <Seo title={seo.title} description={seo.description} path={seo.path} />
       <Header onNavigate={navigateTo} currentPath={currentPath} />
       <main id="main-content" tabIndex={-1} className="flex-grow focus:outline-none">{renderContent()}</main>
       <ChatAssistant />

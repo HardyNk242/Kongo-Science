@@ -11,6 +11,7 @@ import cimentsCard from './assets/conf-ciments-radioactivite.png';
 import cartographieCard from './assets/conf-cartographie-miniere.png';
 import telecomCard from './assets/conf-telecoms.png'; 
 import dataManagementCard from './assets/conf-data-management.png'; // Nouvelle image pour la formation de Hardy Nkodia
+import mayombeCard from './assets/conf-mayombe-bassin-cotier.png';
 
 // Équipe
 import hardyImg from './assets/hardy.png';
@@ -78,6 +79,19 @@ export const OBJECTIFS = [
 
 // --- CONFÉRENCES ---
 export const CONFERENCES: (Conference & { imageUrl: string })[] = [
+  {
+    id: 'conf-mayombe-bassin-cotier',
+    title: 'Du Mayombe au bassin côtier : intérêts géologiques et économiques',
+    description: "Conférence animée par le Dr Sage KEBI-TSOUMOU, géologue et docteur en géosciences. Comprendre notre sous-sol pour mieux valoriser ses potentialités : eau, hydrocarbures, minéraux et ressources énergétiques, du massif du Mayombe jusqu'au bassin côtier congolais. À 19h30 (Brazzaville), soit 20h30 (Bruxelles).",
+    date: '2026-09-22',
+    time: '19:30',
+    day: '22',
+    month: 'SEP',
+    location: 'En ligne (Zoom) — lien de participation sur invitation',
+    type: 'Webinaire',
+    organizer: 'Kongo Science',
+    imageUrl: mayombeCard
+  },
   {
     id: 'conf-peatlands',
     title: 'Tourbières du Congo : mémoire climatique et enjeux de protection',
@@ -289,6 +303,84 @@ export const TEAM = [
     image: hardyImg,
   },
 ];
+
+// =====================================================================
+// --- MÉTADONNÉES PAR ROUTE (indexation) ---
+// =====================================================================
+
+/**
+ * Titre et description propres à chaque route, consommés par <Seo>.
+ * Une description doit décrire *cette* page : c'est souvent elle que le
+ * moteur de recherche affiche sous le titre dans ses résultats.
+ */
+export const SEO_ROUTES: Record<string, { title: string; description: string; path: string }> = {
+  home: {
+    title: 'Kongo Science | Portail scientifique du Bassin du Congo',
+    description:
+      "Bibliothèque numérique de plus de 2 800 thèses et publications scientifiques du Bassin du Congo, agenda de conférences, programmes de mentorat et accompagnement à la publication.",
+    path: '/',
+  },
+  library: {
+    title: 'Bibliothèque scientifique — thèses et publications',
+    description:
+      "Plus de 2 800 thèses, mémoires et articles scientifiques congolais et d'Afrique centrale, consultables par domaine, année et institution.",
+    path: '/library',
+  },
+  publications: {
+    title: 'Actualité de la recherche',
+    description:
+      "Articles, analyses et actualités de la recherche scientifique au Congo et dans le Bassin du Congo, publiés par Kongo Science.",
+    path: '/publications',
+  },
+  agenda: {
+    title: 'Agenda scientifique — conférences et webinaires',
+    description:
+      "Conférences, webinaires et ateliers scientifiques organisés par Kongo Science. Inscription gratuite, places limitées.",
+    path: '/agenda',
+  },
+  programmes: {
+    title: 'Programmes de renforcement des capacités',
+    description:
+      "Mentorat Master et Doctorat, accompagnement à la publication internationale et formations scientifiques proposés par Kongo Science.",
+    path: '/programmes',
+  },
+  offres: {
+    title: "Offres d'accompagnement scientifique",
+    description:
+      "Cinq bouquets d'accompagnement, du mentorat Master et Doctorat à la publication internationale et la mise aux normes du manuscrit.",
+    path: '/offres',
+  },
+  rejoindre: {
+    title: 'Rejoindre Kongo Science',
+    description:
+      "Devenez relecteur, membre du comité éditorial, membre de l'association ou jeune chercheur accompagné. Candidature en ligne, réponse sous deux semaines.",
+    path: '/rejoindre',
+  },
+  team: {
+    title: 'Notre équipe',
+    description:
+      "Le bureau exécutif et les membres de Kongo Science, association scientifique basée à Brazzaville, République du Congo.",
+    path: '/team',
+  },
+  history: {
+    title: 'Notre histoire',
+    description:
+      "L'histoire de Kongo Science, association née de la volonté d'éveiller la conscience scientifique dans le Bassin du Congo.",
+    path: '/history',
+  },
+  proposal: {
+    title: 'Proposer une intervention scientifique',
+    description:
+      "Proposez une conférence, une formation ou un atelier à Kongo Science et transformez votre événement en référence scientifique.",
+    path: '/proposal',
+  },
+  registration: {
+    title: 'Inscription à une conférence',
+    description:
+      "Inscrivez-vous gratuitement aux conférences et webinaires scientifiques organisés par Kongo Science.",
+    path: '/registration',
+  },
+};
 
 // =====================================================================
 // --- REJOINDRE KONGO SCIENCE ---

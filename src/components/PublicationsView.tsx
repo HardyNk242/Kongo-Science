@@ -4,7 +4,7 @@ import { ARTICLES } from '../data/articles';
 import { SCHOLARSHIPS } from '../data/scholarships'; 
 import ArticleCard from './ArticleCard';
 import { Article } from '../types';
-import { Helmet } from 'react-helmet-async';
+import Seo from './Seo';
 
 // Simulation d'une "Base de données" locale pour la session
 const collectedEmails: string[] = [];
@@ -79,22 +79,16 @@ const PublicationsView: React.FC<PublicationsViewProps> = ({ initialArticleId })
   if (selectedArticle) {
     return (
       <div className="bg-white min-h-screen text-slate-900 font-serif z-[60] relative">
-        <Helmet>
-          <title>{selectedArticle.title} | Kongo Science</title>
-          <meta
-            name="description"
-            content={
-              selectedArticle.excerpt || "Article scientifique de la bibliothèque Kongo Science."
-            }
-          />
-          <meta property="og:title" content={selectedArticle.title} />
-          <meta property="og:description" content={selectedArticle.excerpt} />
-          <meta
-            property="og:image"
-            content={selectedArticle.imageUrl || "https://votre-site.com/image-par-defaut.jpg"}
-          />
-          <meta property="og:type" content="article" />
-        </Helmet>
+        {/* Remplace l'ancien bloc <Helmet>, sans effet sous React 19.
+            Au passage, l'image de partage par défaut pointait encore sur
+            l'adresse d'exemple « votre-site.com ». */}
+        <Seo
+          title={selectedArticle.title}
+          description={selectedArticle.excerpt || "Article scientifique de la bibliothèque Kongo Science."}
+          path={`/publications/${encodeURIComponent(selectedArticle.id)}`}
+          image={selectedArticle.imageUrl || undefined}
+          type="article"
+        />
         
         {/* Navbar Article */}
         <div className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm py-3 px-4 flex justify-between items-center font-sans">

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NAV_ITEMS } from '../constants';
+import SmartLink from './SmartLink';
 
 interface Props {
   onNavigate: (path: string) => void;
@@ -51,10 +52,11 @@ const Header: React.FC<Props> = ({ onNavigate, currentPath }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className={`flex justify-between items-center transition-all duration-300 ${scrolled ? 'h-16' : 'h-20'}`}>
             {/* --- LOGO --- */}
-            <button
-              onClick={() => handleNavClick('home')}
+            <SmartLink
+              to="home"
+              onNavigate={handleNavClick}
               aria-label="Kongo Science — Accueil"
-              className="flex-shrink-0 flex items-center gap-3 rounded-xl hover:opacity-90 active:scale-[0.98] transition-all"
+              className="flex-shrink-0 flex items-center gap-3 rounded-xl hover:opacity-90 active:scale-[0.98] transition-all no-underline"
             >
               <div className="relative">
                 <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white font-serif font-bold text-xl shadow-lg">
@@ -68,7 +70,7 @@ const Header: React.FC<Props> = ({ onNavigate, currentPath }) => {
                   Kongo <span className="text-blue-700 italic">Science</span>
                 </span>
               </div>
-            </button>
+            </SmartLink>
 
             {/* --- DESKTOP MENU --- */}
             <div className="hidden md:flex items-center gap-1">
@@ -77,33 +79,58 @@ const Header: React.FC<Props> = ({ onNavigate, currentPath }) => {
 
                 return (
                   <div key={item.label} className="relative group">
-                    <button
-                      onClick={() => !item.submenu && handleNavClick(item.path)}
-                      aria-current={isActive ? 'page' : undefined}
-                      aria-haspopup={item.submenu ? 'true' : undefined}
-                      className={`relative px-4 py-2 text-sm font-medium rounded-lg transition-all flex items-center gap-1.5 ${
+                    {/* Le contenu est identique que l'entrée soit un lien ou un
+                        simple déclencheur de sous-menu : on ne le duplique pas. */}
+                    {(() => {
+                      const classeCommune = `relative px-4 py-2 text-sm font-medium rounded-lg transition-all flex items-center gap-1.5 ${
                         isActive
                           ? 'text-slate-900'
                           : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                      }`}
-                    >
-                      {item.label}
-                      {item.submenu && (
-                        <svg
-                          className="w-3 h-3 mt-0.5 opacity-50 group-hover:opacity-100 group-hover:rotate-180 transition-all"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          aria-hidden="true"
+                      }`;
+
+                      const contenu = (
+                        <>
+                          {item.label}
+                          {item.submenu && (
+                            <svg
+                              className="w-3 h-3 mt-0.5 opacity-50 group-hover:opacity-100 group-hover:rotate-180 transition-all"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              aria-hidden="true"
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                          )}
+                          {/* Active indicator (underline) */}
+                          {isActive && (
+                            <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-blue-600 rounded-full"></span>
+                          )}
+                        </>
+                      );
+
+                      // « À Propos » n'a pas de page à lui : il ouvre un sous-menu.
+                      // En faire un lien mènerait à /about, route inexistante.
+                      return item.submenu ? (
+                        <button
+                          type="button"
+                          aria-current={isActive ? 'page' : undefined}
+                          aria-haspopup="true"
+                          className={classeCommune}
                         >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      )}
-                      {/* Active indicator (underline) */}
-                      {isActive && (
-                        <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-blue-600 rounded-full"></span>
-                      )}
-                    </button>
+                          {contenu}
+                        </button>
+                      ) : (
+                        <SmartLink
+                          to={item.path}
+                          onNavigate={handleNavClick}
+                          aria-current={isActive ? 'page' : undefined}
+                          className={`${classeCommune} cursor-pointer no-underline`}
+                        >
+                          {contenu}
+                        </SmartLink>
+                      );
+                    })()}
 
                     {/* Dropdown */}
                     {item.submenu && (
@@ -115,19 +142,20 @@ const Header: React.FC<Props> = ({ onNavigate, currentPath }) => {
                           {item.submenu.map((subItem) => {
                             const subActive = currentPath === subItem.path;
                             return (
-                              <button
+                              <SmartLink
                                 key={subItem.path}
-                                onClick={() => handleNavClick(subItem.path)}
+                                to={subItem.path}
+                                onNavigate={handleNavClick}
                                 role="menuitem"
                                 aria-current={subActive ? 'page' : undefined}
-                                className={`block w-full text-left px-4 py-2.5 text-sm rounded-xl transition-all ${
+                                className={`block w-full text-left px-4 py-2.5 text-sm rounded-xl transition-all no-underline ${
                                   subActive
                                     ? 'bg-blue-50 text-blue-700 font-semibold'
                                     : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                                 }`}
                               >
                                 {subItem.label}
-                              </button>
+                              </SmartLink>
                             );
                           })}
                         </div>
@@ -138,9 +166,10 @@ const Header: React.FC<Props> = ({ onNavigate, currentPath }) => {
               })}
 
               {/* CTA Rejoindre */}
-              <button
-                onClick={() => handleNavClick('rejoindre')}
-                className="ml-3 group bg-slate-900 hover:bg-blue-700 text-white px-5 py-2.5 rounded-full font-bold text-sm transition-all shadow-lg shadow-slate-900/10 hover:shadow-blue-500/20 active:scale-95 flex items-center gap-2"
+              <SmartLink
+                to="rejoindre"
+                onNavigate={handleNavClick}
+                className="ml-3 group bg-slate-900 hover:bg-blue-700 text-white px-5 py-2.5 rounded-full font-bold text-sm transition-all shadow-lg shadow-slate-900/10 hover:shadow-blue-500/20 active:scale-95 flex items-center gap-2 no-underline"
               >
                 Rejoindre
                 <svg
@@ -152,7 +181,7 @@ const Header: React.FC<Props> = ({ onNavigate, currentPath }) => {
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
-              </button>
+              </SmartLink>
             </div>
 
             {/* --- MOBILE HAMBURGER --- */}
@@ -211,34 +240,36 @@ const Header: React.FC<Props> = ({ onNavigate, currentPath }) => {
                         {mobileSubmenu === item.label && (
                           <div className="pl-3 mt-1 mb-2 space-y-0.5 border-l-2 border-blue-100 ml-4 animate-in slide-in-from-top-2 duration-200">
                             {item.submenu.map((sub) => (
-                              <button
+                              <SmartLink
                                 key={sub.path}
-                                onClick={() => handleNavClick(sub.path)}
+                                to={sub.path}
+                                onNavigate={handleNavClick}
                                 aria-current={currentPath === sub.path ? 'page' : undefined}
-                                className={`block w-full text-left px-4 py-2.5 text-sm rounded-lg transition-colors ${
+                                className={`block w-full text-left px-4 py-2.5 text-sm rounded-lg transition-colors no-underline ${
                                   currentPath === sub.path
                                     ? 'text-blue-700 font-bold bg-blue-50'
                                     : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
                                 }`}
                               >
                                 {sub.label}
-                              </button>
+                              </SmartLink>
                             ))}
                           </div>
                         )}
                       </div>
                     ) : (
-                      <button
-                        onClick={() => handleNavClick(item.path)}
+                      <SmartLink
+                        to={item.path}
+                        onNavigate={handleNavClick}
                         aria-current={isActive ? 'page' : undefined}
-                        className={`block w-full text-left px-4 py-3.5 text-base font-semibold rounded-xl transition-all ${
+                        className={`block w-full text-left px-4 py-3.5 text-base font-semibold rounded-xl transition-all no-underline ${
                           isActive
                             ? 'text-blue-700 bg-blue-50'
                             : 'text-slate-700 hover:text-slate-900 hover:bg-slate-50'
                         }`}
                       >
                         {item.label}
-                      </button>
+                      </SmartLink>
                     )}
                   </div>
                 );
@@ -246,15 +277,16 @@ const Header: React.FC<Props> = ({ onNavigate, currentPath }) => {
 
               {/* CTA bottom mobile */}
               <div className="pt-6 px-1">
-                <button
-                  onClick={() => handleNavClick('rejoindre')}
-                  className="w-full bg-slate-900 hover:bg-blue-700 text-white py-4 rounded-2xl font-bold shadow-lg transition-colors flex items-center justify-center gap-2"
+                <SmartLink
+                  to="rejoindre"
+                  onNavigate={handleNavClick}
+                  className="w-full bg-slate-900 hover:bg-blue-700 text-white py-4 rounded-2xl font-bold shadow-lg transition-colors flex items-center justify-center gap-2 no-underline"
                 >
                   Rejoindre la communauté
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
-                </button>
+                </SmartLink>
               </div>
             </div>
           </div>
