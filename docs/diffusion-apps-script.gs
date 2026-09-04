@@ -128,15 +128,31 @@ function preparerCampagnes() {
     const titre = String(lignes[i][C_TITRE] || "").trim();
     if (!titre) continue;
 
-    const idCampagne = `${normaliserDate_(lignes[i][C_DATE]) || "sans-date"}__${titre}`.slice(0, 90);
+    const idCampagne = idCampagnePour_(titre, normaliserDate_(lignes[i][C_DATE]), lignes[i][C_EVENT]);
 
     // Les personnes déjà en file pour cette campagne ne sont jamais réinscrites :
     // relancer preparerCampagnes() ne provoque donc aucun doublon.
-    const dejaEnFile = new Set(
-      fileSheet.getDataRange().getValues()
-        .filter(r => String(r[F_CAMPAGNE]) === idCampagne)
-        .map(r => String(r[F_EMAIL]).trim().toLowerCase())
-    );
+    //
+    // On reconnaît aussi les identifiants de l'ancien format « date__titre ».
+    // Sans cela, les personnes déjà servies sous un identifiant devenu
+    // obsolète seraient remises en file et recevraient l'annonce deux fois.
+    // Deux exclusions distinctes, à ne pas confondre :
+    //   — a déjà REÇU l'annonce (quel que soit l'identifiant, ancien ou non)
+    //   — est déjà EN FILE sous l'identifiant courant
+    // Une ligne neutralisée (orpheline, doublon) n'exclut personne : cette
+    // personne n'a rien reçu et doit être remise en file.
+    const suffixeAncien = `__${titre}`;
+    const dejaEnFile = new Set();
+    for (const r of fileSheet.getDataRange().getValues()) {
+      const id = String(r[F_CAMPAGNE] || "").trim();
+      const em = String(r[F_EMAIL] || "").trim().toLowerCase();
+      const st = String(r[F_STATUT] || "").trim();
+      if (!em) continue;
+      const memeConference = id === idCampagne || id.endsWith(suffixeAncien);
+      if (!memeConference) continue;
+      if (st === "Envoyé") dejaEnFile.add(em);
+      else if (st === "En attente" && id === idCampagne) dejaEnFile.add(em);
+    }
 
     const nouvelles = abonnes
       .filter(a => !dejaEnFile.has(a.email))
@@ -161,6 +177,24 @@ function preparerCampagnes() {
     Logger.log(`Statuts trouvés dans l'onglet Campagnes : ${statutsVus.join(" | ") || "(aucune ligne)"}`);
     Logger.log("Pour préparer une campagne, mettez sa colonne Statut à « À préparer », puis relancez.");
   }
+}
+
+
+/**
+ * Identifiant stable d'une campagne.
+ *
+ * Il reposait sur « date__titre ». Corriger la lecture du fuseau horaire a
+ * fait passer la date de 2026-09-21 a 2026-09-22 : le script y a vu une
+ * SECONDE campagne et a remis les 237 abonnes en file par-dessus les
+ * precedents. Une partie aurait recu l'annonce deux fois.
+ *
+ * L'EventId ne change jamais : c'est lui qui identifie desormais la campagne.
+ * Le repli sur date + titre ne sert qu'aux lignes sans EventId.
+ */
+function idCampagnePour_(titre, dateISO, eventId) {
+  const ev = String(eventId || "").trim();
+  if (ev) return ev;
+  return `${dateISO || "sans-date"}__${String(titre || "").trim()}`.slice(0, 90);
 }
 
 /** Statut sans accents ni casse, pour comparer sans piéger l'utilisateur. */
@@ -303,6 +337,67 @@ function verifierCampagnes() {
     Logger.log(`    heure lue    : ${c.heure || "(vide)"}`);
     Logger.log(`    lien         : ${c.eventId ? SITE_URL + "/registration/" + c.eventId : SITE_URL + "/agenda"}`);
     Logger.log(`    affiche      : ${c.affiche || "(aucune)"}`);
+  }
+}
+
+/**
+ * Nettoie la file d'attente : lignes orphelines et doublons.
+ *
+ * À exécuter après tout incident. Rien n'est supprimé — les lignes fautives
+ * sont marquées, donc visibles et réversibles. Seules les lignes « En attente »
+ * partent : neutraliser leur statut suffit à stopper un envoi en trop.
+ *
+ * Deux cas traités :
+ *   Orpheline — sa campagne n'existe plus (identifiant devenu obsolète)
+ *   Doublon   — cette personne est déjà en file pour la même campagne
+ */
+function nettoyerFile() {
+  const fileSheet = getSheet_(SHEET_FILE);
+  const file = fileSheet.getDataRange().getValues();
+  if (file.length <= 1) { Logger.log("File vide, rien à nettoyer."); return; }
+
+  const valides = new Set(Object.keys(indexerCampagnes_()));
+  const vus = new Set();
+  let orphelines = 0, doublons = 0, gardees = 0;
+
+  for (let i = 1; i < file.length; i++) {
+    const id = String(file[i][F_CAMPAGNE] || "").trim();
+    const email = String(file[i][F_EMAIL] || "").trim().toLowerCase();
+    const statut = String(file[i][F_STATUT] || "").trim();
+
+    // Un envoi déjà parti est conservé tel quel : il fait foi.
+    if (statut === "Envoyé") { vus.add(`${id}|${email}`); continue; }
+    if (statut !== "En attente") continue;
+
+    if (!valides.has(id)) {
+      fileSheet.getRange(i + 1, F_STATUT + 1).setValue("Orpheline");
+      fileSheet.getRange(i + 1, F_ERREUR + 1).setValue("Campagne introuvable : " + id);
+      orphelines++;
+      continue;
+    }
+
+    const cle = `${id}|${email}`;
+    if (vus.has(cle)) {
+      fileSheet.getRange(i + 1, F_STATUT + 1).setValue("Doublon");
+      fileSheet.getRange(i + 1, F_ERREUR + 1).setValue("Déjà en file pour cette campagne");
+      doublons++;
+      continue;
+    }
+
+    vus.add(cle);
+    gardees++;
+  }
+
+  SpreadsheetApp.flush();
+  majAvancementCampagnes_();
+  updateDashboardSheet_();
+
+  Logger.log(`Nettoyage terminé.`);
+  Logger.log(`  ${gardees} ligne(s) conservée(s) en attente`);
+  Logger.log(`  ${orphelines} orpheline(s) neutralisée(s)`);
+  Logger.log(`  ${doublons} doublon(s) neutralisé(s)`);
+  if (orphelines + doublons > 0) {
+    Logger.log("Ces lignes ne partiront plus. Elles restent visibles dans l'onglet File.");
   }
 }
 
@@ -746,7 +841,7 @@ function indexerCampagnes_() {
     const titre = String(rows[i][C_TITRE] || "").trim();
     if (!titre) continue;
     const date = normaliserDate_(rows[i][C_DATE]);
-    index[`${date || "sans-date"}__${titre}`.slice(0, 90)] = {
+    index[idCampagnePour_(titre, date, rows[i][C_EVENT])] = {
       titre: titre,
       eventId: String(rows[i][C_EVENT] || "").trim(),
       dateISO: date,
@@ -814,7 +909,7 @@ function getStats_() {
   for (let i = 1; i < camp.length; i++) {
     const titre = String(camp[i][C_TITRE] || "").trim();
     if (!titre) continue;
-    const id = `${normaliserDate_(camp[i][C_DATE]) || "sans-date"}__${titre}`.slice(0, 90);
+    const id = idCampagnePour_(titre, normaliserDate_(camp[i][C_DATE]), camp[i][C_EVENT]);
     const c = parCampagne[id] || { total: 0, envoyes: 0 };
     campagnes.push({
       titre: titre,
