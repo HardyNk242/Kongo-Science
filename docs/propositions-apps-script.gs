@@ -384,6 +384,27 @@ function buildConfirmationHtml_(nomComplet, titre, format) {
             conviendrons ensemble de la date et des modalités techniques.
           </p>
 
+          <!-- Rappel des conditions financières. Le site les annonce déjà avant
+               l'envoi (voir PROPOSAL_PRICING dans src/constants.ts) ; les
+               répéter ici évite toute surprise au moment de l'acceptation. -->
+          <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:16px;margin:18px 0;">
+            <p style="margin:0 0 10px;font-size:14px;color:#92400e;font-weight:700;">
+              Conditions en cas d'acceptation
+            </p>
+            <p style="margin:0 0 10px;font-size:14px;color:#1f2937;line-height:1.6;">
+              Une proposition retenue donne lieu à des frais de
+              <strong>12 500 FCFA</strong>. Ils couvrent la promotion de
+              l'événement sur les réseaux sociaux, l'abonnement Zoom et la
+              délivrance d'un certificat reconnu par le CAMES, volet
+              communication publique.
+            </p>
+            <p style="margin:0;font-size:13px;color:#6b7280;line-height:1.6;">
+              Aucun frais n'est dû si votre intervention est proposée sur
+              invitation de Kongo Science, ou si vous êtes membre premium de
+              l'association (25 000 FCFA par an).
+            </p>
+          </div>
+
           <div style="background:${accent}10;padding:14px;border-radius:10px;margin:18px 0;font-size:14px;">
             💡 Consultez l'agenda des prochaines conférences sur
             <a href="https://kongoscience.com/agenda" style="color:${primary};font-weight:700;">kongoscience.com/agenda</a>.
