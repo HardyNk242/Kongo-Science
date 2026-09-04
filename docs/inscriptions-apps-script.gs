@@ -37,7 +37,7 @@
  ****************/
 // ⚠️ À REMPLACER par l'identifiant du classeur créé sous le compte Kongo Science.
 // C'est la portion entre /d/ et /edit dans l'URL du Google Sheet.
-const SPREADSHEET_ID = "COLLER_ICI_L_ID_DU_NOUVEAU_CLASSEUR";
+const SPREADSHEET_ID = "1Ceb59_MoOsLsvD3kE4V5DxkTZ8JguK7Mnm9JGTsoPho";
 
 const SHEET_REG = "Registrations";
 const SHEET_DASH = "Dashboard";

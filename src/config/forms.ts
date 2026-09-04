@@ -53,20 +53,13 @@ export const FORM_ENDPOINTS = {
     'https://script.google.com/macros/s/AKfycbwJl73n6lUW76SWafjkpQuSp6yMvXSXE222D8iSC8OIWQU8AKbCRxo04EKmlui4LgZtXQ/exec',
 
   /**
-   * Inscriptions aux conférences (page complète et fenêtre modale).
-   * Classeur : 1wEQ2ljHv6ZvVzFVdHly3XSJgiKlm0rMnZjNNFHqF42E
-   * ⚠️  À REDÉPLOYER depuis kongoscience25@gmail.com.
+   * Inscriptions aux conférences.
+   * Code source : docs/inscriptions-apps-script.gs
+   * Classeur : 1Ceb59_MoOsLsvD3kE4V5DxkTZ8JguK7Mnm9JGTsoPho
+   * ✅ Déployé sous kongoscience25@gmail.com.
    */
   inscriptionConference:
-    'https://script.google.com/macros/s/AKfycbw-XKGABUep94GRlVd1X_t1O-8UeuFIlMAz_EGU1KTWjghlvbLrMnm73eT1Eff7jcis/exec',
-
-  /**
-   * Ancien déploiement utilisé par la fenêtre modale d'inscription.
-   * À faire converger vers `inscriptionConference` une fois vérifié que les
-   * deux écrivent bien dans le même classeur.
-   */
-  inscriptionConferenceModale:
-    'https://script.google.com/macros/s/AKfycby2QOJtSBLXavDoAssvNKFKgj30kG-nKXy8QM_ieicDB1mJmhqI6J5YPo1qewKE2UpM/exec',
+    'https://script.google.com/macros/s/AKfycbymRi6d9JFJt7WL43OAbxrgSsT89Bn2xK51vt2tNFakd3NBb7-Hk0Q8rV7n-5-Ymplb/exec',
 
   /**
    * Propositions d'intervention scientifique.
@@ -80,11 +73,12 @@ export const FORM_ENDPOINTS = {
  * Déploiements propres à une conférence donnée.
  * Ne renseigner une entrée que si l'événement doit alimenter un classeur
  * distinct ; sinon `inscriptionConference` s'applique.
+ *
+ * Vidé volontairement : « conf-ingenierie-petroliere » écrivait dans un
+ * classeur hébergé par un autre compte. Toutes les conférences alimentent
+ * désormais le classeur unique de Kongo Science.
  */
-export const CONFERENCE_ENDPOINT_OVERRIDES: Record<string, string> = {
-  'conf-ingenierie-petroliere':
-    'https://script.google.com/macros/s/AKfycbxj29r4wCZte8QJBBIuE-JCTVQdh404NvuW3Hq6Hdy6ON4ZGw4uyu9jWTfDj3YLMDSKRg/exec',
-};
+export const CONFERENCE_ENDPOINT_OVERRIDES: Record<string, string> = {};
 
 /** Point de collecte à utiliser pour une conférence. */
 export function endpointPourConference(conferenceId: string): string {
