@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { Conference } from "../types";
 import { COUNTRIES } from "../constants";
+import Seo from "./Seo";
 
 interface Props {
   conference: Conference;
@@ -218,6 +219,15 @@ const RegistrationView: React.FC<Props> = ({ conference, onBack }) => {
   // --- RENDU IDENTIQUE ---
   return (
     <div className="bg-white min-h-screen">
+      {/* Sans ce bloc, les douze pages d'inscription partageaient le même titre
+          et une canonique pointant toutes vers /registration : un moteur de
+          recherche les aurait fusionnées en une seule. */}
+      <Seo
+        title={`${conference.title} — inscription`}
+        description={`${conference.description} ${formatPrettyDateTime(conference.date, conference.time)}. ${conference.location}. Inscription gratuite.`}
+        path={`/registration/${encodeURIComponent(conference.id)}`}
+        type="article"
+      />
       <div className="max-w-7xl mx-auto px-6 py-8">
         <button
           onClick={onBack}
