@@ -50,7 +50,7 @@ export const FORM_ENDPOINTS = {
    * À déployer depuis kongoscience25@gmail.com.
    */
   rejoindre:
-    'https://script.google.com/macros/s/AKfycbxwH3tBvH3ds2v43n9ptWLzm90WPDssEAQg4Z1MKiFvP3zlKCaXicYPtUUyhNhryKgs5A/exec',
+    'https://script.google.com/macros/s/AKfycbwJl73n6lUW76SWafjkpQuSp6yMvXSXE222D8iSC8OIWQU8AKbCRxo04EKmlui4LgZtXQ/exec',
 
   /**
    * Inscriptions aux conférences (page complète et fenêtre modale).
