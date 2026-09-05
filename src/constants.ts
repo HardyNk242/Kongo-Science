@@ -4,13 +4,9 @@ import { NavItem, Conference } from './types';
 import peatlandsCard from "./assets/conf-peatlands-conferencecard.png";
 import petroleumCard from "./assets/conf-ingenierie-petroliere.png";
 import geotechCard from "./assets/conf-risques-geotech.png";
-import technoGeoCard from "./assets/conf-techno-geo.png";
 import solKoutikaCard from "./assets/conf-sol-koutika.png";
 import eauPotableCard from './assets/conf-eau-potable.jpg';
 import cimentsCard from './assets/conf-ciments-radioactivite.png';
-import cartographieCard from './assets/conf-cartographie-miniere.png';
-import telecomCard from './assets/conf-telecoms.png'; 
-import dataManagementCard from './assets/conf-data-management.png'; // Nouvelle image pour la formation de Hardy Nkodia
 import mayombeCard from './assets/conf-mayombe-bassin-cotier.png';
 
 // Équipe
@@ -149,33 +145,6 @@ export const CONFERENCES: (Conference & { imageUrl: string })[] = [
     imageUrl: geotechCard
   },
   {
-    id: 'conf-atlas-fluvial',
-    title: 'Atlas fluvial du bassin du Congo : cartographie dynamique et crues extremes',
-    description: 'Lecture scientifique sur les nouvelles donnees hydrographiques et leur impact sur la planification territoriale.',
-    date: '2024-09-22',
-    replayUrl: 'https://www.youtube.com/watch?v=1a2b3c4d5e6',
-    time: '18:00',
-    day: '22',
-    month: 'SEP',
-    location: 'Brazzaville (heure locale)',
-    type: 'Hybride',
-    organizer: 'Kongo Science',
-    imageUrl: peatlandsCard
-  },
-  {
-    id: 'conf-technologies-geographiques',
-    title: 'Les technologies géospatiales au service du développement',
-    description: 'Une conférence de Nicy Bazebizonza (Doctorant en Géologie & Cartographe à l\'IGN). Exploration de l\'impact de la géomatique et des SIG sur la planification et le développement.',
-    date: '2026-02-21',
-    time: '20:30',
-    day: '21',
-    month: 'FEV',
-    location: 'Brazzaville (heure locale)',
-    type: 'Webinaire',
-    organizer: 'Kongo Science',
-    imageUrl: technoGeoCard
-  },
-  {
     id: 'conf-sol-koutika',
     title: 'Le Sol : Fondement invisible de la sécurité alimentaire et du développement durable',
     description: 'Keynote par Dr. Lydie-Stella Koutika (Prix Glinka FAO, Prix Kwame Nkrumah UA, Auteure GIEC). Une intervention de haut niveau sur le rôle vital des sols.',
@@ -202,45 +171,6 @@ export const CONFERENCES: (Conference & { imageUrl: string })[] = [
     type: 'Webinaire',
     organizer: 'Kongo Science',
     imageUrl: cimentsCard
-  },
-  {
-    id: 'conf-cartographie-miniere',
-    title: 'Cartographie géologique et ressources minières au Congo : apports de la télédétection et des nouvelles méthodes d’analyse',
-    description: 'La République Démocratique du Congo et l\'Afrique centrale regorgent de ressources minières dont l\'exploration requiert aujourd\'hui des technologies de pointe. Ce webinaire mettra en lumière l\'utilisation de méthodes avancées, telles que la télédétection spatiale et le Machine Learning, pour optimiser la cartographie géologique. Présenté par Matthieu Tshanga (Chercheur et Doctorant, UNISA).',
-    date: '2026-03-31',
-    time: '20:00',
-    day: '31',
-    month: 'MAR',
-    location: 'En ligne',
-    type: 'Webinaire',
-    organizer: 'Kongo Science',
-    imageUrl: cartographieCard
-  },
-  {
-    id: 'conf-telecoms',
-    title: 'Garder l’Afrique Connectée : Les Héros des Télécoms',
-    description: 'Derrière chaque appel et chaque connexion internet en Afrique, des experts travaillent sans relâche. Ce webinaire explore les coulisses des opérations réseaux et le rôle crucial des équipes de terrain. Présenté par Richy Mobongui (MTN CONGO).',
-    date: '2026-04-04',
-    time: '20:30',
-    day: '04',
-    month: 'AVR',
-    location: 'En ligne',
-    type: 'Webinaire',
-    organizer: 'Kongo Science',
-    imageUrl: telecomCard
-  },
-  {
-    id: 'conf-data-management',
-    title: 'Introduction à la gestion des données scientifiques : Structurer pour durer',
-    description: 'Formation animée par le Dr. Hardy Nkodia (PhD), chercheur postdoctoral. Objectif : Maîtriser les bases de l\'organisation des données de recherche (dossiers d\'organisation, nommage intelligent, sauvegarde et réplication).',
-    date: '2026-04-21',
-    time: '10:00',
-    day: '21',
-    month: 'AVR',
-    location: 'En ligne',
-    type: 'Formation',
-    organizer: 'Kongo Science',
-    imageUrl: dataManagementCard
   }
 ];
 
