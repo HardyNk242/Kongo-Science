@@ -355,6 +355,13 @@ const JoinView: React.FC<Props> = ({ onBack }) => {
                       </li>
                     ))}
                   </ul>
+                  {f.note && (
+                    <p className={`text-[11px] mt-4 pt-4 border-t leading-relaxed ${
+                      f.misEnAvant ? 'text-slate-400 border-white/10' : 'text-slate-500 border-slate-100'
+                    }`}>
+                      {f.note}
+                    </p>
+                  )}
                 </div>
               ))}
               <p className="text-[11px] text-slate-400 italic leading-relaxed">

@@ -18,7 +18,7 @@ import { useEffect } from 'react';
  */
 
 const SITE_NAME = 'Kongo Science';
-const BASE_URL = 'https://kongoscience.com';
+const BASE_URL = 'https://www.kongoscience.com';
 const DEFAULT_IMAGE = `${BASE_URL}/social-image.jpg`;
 
 interface SeoProps {

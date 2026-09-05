@@ -24,7 +24,7 @@ LIBRARY_FILE = Path("src/data/library.ts")
 ARTICLES_FILE = Path("src/data/articles.ts")
 CONSTANTS_FILE = Path("src/constants.ts")
 OUTPUT_FILE = Path("public/sitemap.xml")
-BASE_URL = "https://kongoscience.com"
+BASE_URL = "https://www.kongoscience.com"
 
 # Routes fixes servies par le routeur de src/App.tsx.
 # priority : importance relative, changefreq : fréquence de mise à jour.

@@ -73,7 +73,7 @@ const SHEET_FILE = "File";
 const SHEET_DASH = "Dashboard";
 
 const ORG_TZ = "Africa/Brazzaville";
-const SITE_URL = "https://kongoscience.com";
+const SITE_URL = "https://www.kongoscience.com";
 const NOTIFY_EMAIL = "kongoscience25@gmail.com";
 
 // Marge laissée sous le quota : on ne consomme jamais le dernier crédit,

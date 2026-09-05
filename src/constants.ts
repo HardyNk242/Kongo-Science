@@ -440,15 +440,19 @@ export const MEMBERSHIP_TIERS = [
     periode: 'par an',
     resume: "Pour suivre les activités de l'association et progresser avec elle.",
     avantages: [
-      "Une attestation de membre, pièce vérifiable pour vos dossiers",
+      "L'information en premier : conférences, bourses et opportunités annoncées aux membres avant leur diffusion publique",
       "Accès aux inscriptions 48 h avant leur ouverture publique",
-      "Accès aux enregistrements des conférences passées",
       "Veille mensuelle des bourses, filtrée selon vos domaines",
+      "Une attestation de membre, pièce vérifiable pour vos dossiers",
       // Remplace l'ancienne remise « 20 % sur la participation aux conférences » :
       // celles-ci étant gratuites, l'avantage était vide. La remise porte
       // désormais là où il existe un prix réel, entre 30 000 et 150 000 FCFA.
-      "10 % de réduction sur les bouquets d'accompagnement et les formations",
+      "10 % de réduction sur les formations payantes et les bouquets d'accompagnement",
     ],
+    // Dit explicitement ce que l'adhésion ne change pas. Une association
+    // scientifique qui ferme l'accès au savoir à ses non-membres se
+    // contredirait elle-même.
+    note: "Ce qui est gratuit le reste pour tous : conférences, enregistrements et bibliothèque. L'adhésion vous donne l'information en premier, pas un accès réservé.",
   },
   {
     id: 'premium',
