@@ -59,7 +59,7 @@ export const FORM_ENDPOINTS = {
    * ✅ Déployé sous kongoscience25@gmail.com.
    */
   inscriptionConference:
-    'https://script.google.com/macros/s/AKfycbymRi6d9JFJt7WL43OAbxrgSsT89Bn2xK51vt2tNFakd3NBb7-Hk0Q8rV7n-5-Ymplb/exec',
+    'https://script.google.com/macros/s/AKfycbxgyqCdkAEQgVv5zG7W7fPkoUFfFMZ2eF80MGDDomE4TAjGp1xwrpRQOMmke-_RbUVr/exec',
 
   /**
    * Propositions d'intervention scientifique.
