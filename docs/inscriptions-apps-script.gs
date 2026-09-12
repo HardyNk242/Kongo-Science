@@ -57,19 +57,38 @@ const ALERTER_BUREAU = true;
 // qu'il reste au-dessus du seuil suivant.
 //   agenda : le message insiste sur l'ajout à l'agenda (bouton + .ics joint)
 //   zoom   : le message met le lien de connexion en évidence
-// Pour désactiver un jalon, retirez simplement sa ligne.
 //
-// ⚠️ QUOTA : un compte Gmail gratuit envoie 100 courriels par jour. J-0 et
-// H-1 tombent le MÊME jour : ils coûtent 2 × (nombre d'inscrits). Au-delà de
-// 45 inscrits, le quota s'épuise avant H-1 — le rappel le plus décisif.
-// Dans ce cas, retirez la ligne J-0 (J-1 porte déjà le lien Zoom la veille).
+// ⚠️ QUOTA — LISEZ CECI AVANT DE CHOISIR LA SÉQUENCE
+//
+// Un compte Gmail gratuit envoie 100 courriels par jour, par fenêtre
+// glissante de 24 h. Avec plus de 100 inscrits, AUCUN jalon ne se termine
+// en un jour, et deux jalons le même jour se disputent le quota.
+// Le jour de la conférence, J-0 puis H-1 pour 114 personnes = 228 envois
+// pour 100 disponibles : les derniers inscrits ne reçoivent rien.
+//
+// Deux séquences sont donc proposées. Une seule doit être active.
+//
+// --- A. GMAIL GRATUIT (≤ 100/jour) — active par défaut ---------------------
+// Pas de rappel le jour même : impossible à tenir pour tous. À la place,
+// un J-1 dont la fenêtre court jusqu'au début : les 100 premiers le reçoivent
+// la veille au soir, les suivants le matin même, tous avec le lien Zoom.
+// C'est 100 % de couverture à moins de 24 h, plutôt que 86 % à une heure.
 const JALONS = [
   { id: "J-7", seuilMin: 7 * 24 * 60, agenda: true,  zoom: false },
   { id: "J-3", seuilMin: 3 * 24 * 60, agenda: true,  zoom: false },
   { id: "J-1", seuilMin: 24 * 60,     agenda: true,  zoom: true  },
-  { id: "J-0", seuilMin: 8 * 60,      agenda: false, zoom: true  },
-  { id: "H-1", seuilMin: 60,          agenda: false, zoom: true  },
 ];
+
+// --- B. GOOGLE WORKSPACE (1 500/jour) — recommandé au-delà de 100 inscrits --
+// Décommentez ce bloc et commentez le précédent. La séquence complète devient
+// tenable, H-1 compris : le rappel d'une heure avant est celui qui fait venir.
+// const JALONS = [
+//   { id: "J-7", seuilMin: 7 * 24 * 60, agenda: true,  zoom: false },
+//   { id: "J-3", seuilMin: 3 * 24 * 60, agenda: true,  zoom: false },
+//   { id: "J-1", seuilMin: 24 * 60,     agenda: true,  zoom: true  },
+//   { id: "J-0", seuilMin: 8 * 60,      agenda: false, zoom: true  },
+//   { id: "H-1", seuilMin: 60,          agenda: false, zoom: true  },
+// ];
 
 // On ne consomme jamais les derniers crédits du quota quotidien : les
 // confirmations d'inscription doivent toujours pouvoir partir.
@@ -342,8 +361,21 @@ function libelleRestant_(debut, restantMin) {
 function verifierRappels() {
   const rows = getSheetByName_(SHEET_REG).getDataRange().getValues();
   const maintenant = Date.now();
-  Logger.log(`Quota restant aujourd'hui : ${MailApp.getRemainingDailyQuota()}`);
+  const quota = MailApp.getRemainingDailyQuota();
+  const inscrits = rows.slice(1).filter(r => String(r[IDX_EMAIL] || "").trim()).length;
+
+  Logger.log(`Inscrits : ${inscrits}   Quota restant aujourd'hui : ${quota}`);
   Logger.log(`Jalons configurés : ${JALONS.map(j => j.id).join(" → ")}`);
+
+  // Ce que coûte chaque jalon en jours de quota, à 100 par jour hors marge.
+  const parJour = 100 - MARGE_QUOTA_RAPPELS;
+  const joursParJalon = Math.ceil(inscrits / parJour);
+  if (joursParJalon > 1) {
+    Logger.log(`⚠️  ${inscrits} inscrits > ${parJour}/jour : chaque jalon prendra ${joursParJalon} jours à partir.`);
+    Logger.log(`    Les jalons dont la fenêtre est plus courte n'atteindront pas tout le monde.`);
+  }
+  Logger.log(`⚠️  Le script de DIFFUSION partage ce quota. Aucune campagne ne doit tourner`);
+  Logger.log(`    pendant la semaine des rappels : elle affamerait les inscrits.`);
   Logger.log("");
   let aPartir = 0;
   for (let i = 1; i < rows.length; i++) {
