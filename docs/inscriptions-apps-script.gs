@@ -52,9 +52,28 @@ const NOTIFY_EMAIL = "kongoscience25@gmail.com";
 // Passer à false pour ne plus recevoir un courriel par inscription.
 const ALERTER_BUREAU = true;
 
-// Fenêtre de déclenchement des rappels, en minutes avant le début.
-const RAPPEL_AVANT_MIN = 60;
-const RAPPEL_TOLERANCE_MIN = 20; // le déclencheur tourne toutes les 15 min
+// Séquence de rappels, du plus lointain au plus proche. Chaque jalon part une
+// fois par inscrit, dès que le temps restant passe sous son seuil et tant
+// qu'il reste au-dessus du seuil suivant.
+//   agenda : le message insiste sur l'ajout à l'agenda (bouton + .ics joint)
+//   zoom   : le message met le lien de connexion en évidence
+// Pour désactiver un jalon, retirez simplement sa ligne.
+//
+// ⚠️ QUOTA : un compte Gmail gratuit envoie 100 courriels par jour. J-0 et
+// H-1 tombent le MÊME jour : ils coûtent 2 × (nombre d'inscrits). Au-delà de
+// 45 inscrits, le quota s'épuise avant H-1 — le rappel le plus décisif.
+// Dans ce cas, retirez la ligne J-0 (J-1 porte déjà le lien Zoom la veille).
+const JALONS = [
+  { id: "J-7", seuilMin: 7 * 24 * 60, agenda: true,  zoom: false },
+  { id: "J-3", seuilMin: 3 * 24 * 60, agenda: true,  zoom: false },
+  { id: "J-1", seuilMin: 24 * 60,     agenda: true,  zoom: true  },
+  { id: "J-0", seuilMin: 8 * 60,      agenda: false, zoom: true  },
+  { id: "H-1", seuilMin: 60,          agenda: false, zoom: true  },
+];
+
+// On ne consomme jamais les derniers crédits du quota quotidien : les
+// confirmations d'inscription doivent toujours pouvoir partir.
+const MARGE_QUOTA_RAPPELS = 5;
 
 // Colonnes, dans l'ordre. Identiques à l'ancienne feuille.
 const COLS = [
@@ -158,7 +177,7 @@ function doPost(e) {
   try {
     const privateEvent = getPrivateEventData_(eventId);
     const googleUrl = getGoogleCalendarLink_(name, eventLabel, eventDateTime);
-    const icsBlob = buildIcsAttachment_(cleanEmail, name, eventLabel, eventDateTime);
+    const icsBlob = buildIcsAttachment_(cleanEmail, name, eventLabel, eventDateTime, privateEvent);
 
     MailApp.sendEmail({
       to: cleanEmail,
@@ -193,11 +212,23 @@ function doPost(e) {
 }
 
 /****************
- * RAPPELS AUTOMATIQUES
+ * RAPPELS AUTOMATIQUES — SÉQUENCE PAR INSCRIT
  *
- * À exécuter par un déclencheur temporel (voir installerDeclencheurRappels).
- * Envoie un rappel aux inscrits dont la conférence commence dans environ une
- * heure, puis marque la ligne « OUI » pour ne jamais renvoyer deux fois.
+ * Exécuté toutes les 15 minutes par le déclencheur.
+ *
+ * Deux propriétés découlent du choix « seuil » plutôt que « fenêtre » :
+ *   - une personne inscrite tard reçoit directement le jalon en cours, sans
+ *     trou dans sa séquence ni rappel périmé ;
+ *   - un jalon manqué (quota épuisé, incident) est rattrapé au tour suivant
+ *     tant que le seuil suivant n'est pas franchi.
+ *
+ * Les jalons envoyés sont notés par inscrit dans la colonne « Rappel envoyé »,
+ * sous la forme « J-7;J-3 ». L'ancienne valeur « OUI » vaut « H-1 » envoyé.
+ *
+ * Point d'honnêteté sur les agendas : Google Agenda ignore le plus souvent
+ * les alarmes d'un .ics importé et applique celles du compte. Apple Calendar
+ * et Outlook les respectent. La présence effective se joue donc ici, dans
+ * cette séquence de courriels — l'agenda est un renfort, pas la garantie.
  ****************/
 function envoyerRappels() {
   const sheet = getSheetByName_(SHEET_REG);
@@ -205,14 +236,10 @@ function envoyerRappels() {
   if (rows.length <= 1) return;
 
   const maintenant = Date.now();
-  const bornBasse = maintenant + (RAPPEL_AVANT_MIN - RAPPEL_TOLERANCE_MIN) * 60000;
-  const bornHaute = maintenant + (RAPPEL_AVANT_MIN + RAPPEL_TOLERANCE_MIN) * 60000;
+  const compte = {};
+  let quotaEpuise = false;
 
-  let envoyes = 0;
-
-  for (let i = 1; i < rows.length; i++) {
-    if (String(rows[i][IDX_RAPPEL] || "").trim().toUpperCase() === "OUI") continue;
-
+  for (let i = 1; i < rows.length && !quotaEpuise; i++) {
     const eventDate = normaliserDate_(rows[i][IDX_DATE]);
     const eventTime = normaliserHeure_(rows[i][IDX_HEURE]);
     if (!eventDate || !eventTime) continue;
@@ -220,38 +247,121 @@ function envoyerRappels() {
     const debut = new Date(`${eventDate}T${eventTime}:00${ORG_OFFSET_ISO}`);
     if (isNaN(debut.getTime())) continue;
 
-    const t = debut.getTime();
-    if (t < bornBasse || t > bornHaute) continue;
+    const restantMin = (debut.getTime() - maintenant) / 60000;
+    if (restantMin <= 0) continue;                 // conférence commencée ou passée
+
+    const jalon = jalonCourant_(restantMin);
+    if (!jalon) continue;                          // trop tôt : au-delà du premier seuil
+
+    const dejaEnvoyes = lireJalons_(rows[i][IDX_RAPPEL]);
+    if (dejaEnvoyes.has(jalon.id)) continue;
 
     const email = String(rows[i][IDX_EMAIL] || "").trim();
     if (!email) continue;
 
+    if (MailApp.getRemainingDailyQuota() <= MARGE_QUOTA_RAPPELS) {
+      quotaEpuise = true;
+      break;
+    }
+
     const nom = String(rows[i][IDX_NOM] || "").trim();
     const label = String(rows[i][IDX_TITRE] || "").trim() || String(rows[i][IDX_EVENT] || "").trim();
+    const eventId = String(rows[i][IDX_EVENT] || "").trim();
     let tz = String(rows[i][IDX_PARTTZ] || "").trim() || ORG_TZ;
     if (!isValidTimeZone_(tz)) tz = ORG_TZ;
 
     try {
-      const prive = getPrivateEventData_(String(rows[i][IDX_EVENT] || "").trim());
-      MailApp.sendEmail({
+      const prive = getPrivateEventData_(eventId);
+      const libelle = libelleRestant_(debut, restantMin);
+      const message = {
         to: email,
-        subject: `Rappel — ${label} dans 1 heure`,
+        subject: `${libelle} — ${label}`,
         replyTo: NOTIFY_EMAIL,
-        htmlBody: buildRappelHtml_(nom, label, debut, tz, prive)
-      });
-      // Marquage immédiat : un plantage plus loin ne doit pas provoquer
-      // un second envoi au tour suivant.
-      sheet.getRange(i + 1, IDX_RAPPEL + 1).setValue("OUI");
-      envoyes++;
+        htmlBody: buildRappelHtml_(nom, label, debut, tz, prive, jalon, libelle)
+      };
+      // Le .ics (avec ses alarmes) n'accompagne que les jalons « agenda » :
+      // le joindre à chaque rappel alourdirait les messages sans rien ajouter.
+      if (jalon.agenda) message.attachments = [buildIcsAttachment_(email, nom, label, debut, prive)];
+
+      MailApp.sendEmail(message);
+
+      // Marquage immédiat : un plantage plus loin ne doit jamais provoquer
+      // un second envoi à la même personne.
+      dejaEnvoyes.add(jalon.id);
+      sheet.getRange(i + 1, IDX_RAPPEL + 1).setValue([...dejaEnvoyes].join(";"));
+      compte[jalon.id] = (compte[jalon.id] || 0) + 1;
     } catch (err) {
-      console.error(`Rappel non envoyé à ${email} : ${err}`);
+      console.error(`Rappel ${jalon.id} non envoyé à ${email} : ${err}`);
     }
   }
 
-  if (envoyes > 0) {
+  const total = Object.values(compte).reduce((a, b) => a + b, 0);
+  if (total > 0) {
     SpreadsheetApp.flush();
-    console.log(`${envoyes} rappel(s) envoyé(s).`);
+    console.log(`${total} rappel(s) : ` + Object.keys(compte).map(k => `${k} ×${compte[k]}`).join(", "));
   }
+  if (quotaEpuise) {
+    console.warn(`Quota quotidien atteint (marge ${MARGE_QUOTA_RAPPELS}). Reprise au prochain tour.`);
+  }
+}
+
+/** Le jalon dont la bande contient le temps restant, ou null si trop tôt. */
+function jalonCourant_(restantMin) {
+  for (let k = 0; k < JALONS.length; k++) {
+    const haut = JALONS[k].seuilMin;
+    const bas = k + 1 < JALONS.length ? JALONS[k + 1].seuilMin : 0;
+    if (restantMin <= haut && restantMin > bas) return JALONS[k];
+  }
+  return null;
+}
+
+/** Jalons déjà envoyés pour une ligne. Compatible avec l'ancien « OUI ». */
+function lireJalons_(v) {
+  const s = String(v || "").trim().toUpperCase();
+  if (!s || s === "NON") return new Set();
+  if (s === "OUI") return new Set(["H-1"]);
+  return new Set(s.split(";").map(x => x.trim()).filter(Boolean));
+}
+
+/**
+ * Libellé humain du temps restant, calculé en jours calendaires de Brazzaville
+ * plutôt qu'en heures : à 8 h le matin de la conférence, « aujourd'hui » est
+ * juste alors qu'un calcul en heures dirait encore « demain ».
+ */
+function libelleRestant_(debut, restantMin) {
+  if (restantMin <= 90) return "Dans une heure";
+  const jourConf = Utilities.formatDate(debut, ORG_TZ, "yyyy-MM-dd");
+  const jourNow  = Utilities.formatDate(new Date(), ORG_TZ, "yyyy-MM-dd");
+  const jours = Math.round((new Date(jourConf) - new Date(jourNow)) / 86400000);
+  if (jours <= 0) return "C'est aujourd'hui";
+  if (jours === 1) return "C'est demain";
+  return `Dans ${jours} jours`;
+}
+
+/** Diagnostic sans envoi : ce que chaque inscrit recevrait au prochain tour. */
+function verifierRappels() {
+  const rows = getSheetByName_(SHEET_REG).getDataRange().getValues();
+  const maintenant = Date.now();
+  Logger.log(`Quota restant aujourd'hui : ${MailApp.getRemainingDailyQuota()}`);
+  Logger.log(`Jalons configurés : ${JALONS.map(j => j.id).join(" → ")}`);
+  Logger.log("");
+  let aPartir = 0;
+  for (let i = 1; i < rows.length; i++) {
+    const d = normaliserDate_(rows[i][IDX_DATE]), h = normaliserHeure_(rows[i][IDX_HEURE]);
+    if (!d || !h) continue;
+    const debut = new Date(`${d}T${h}:00${ORG_OFFSET_ISO}`);
+    const restantMin = (debut.getTime() - maintenant) / 60000;
+    const jalon = jalonCourant_(restantMin);
+    const deja = lireJalons_(rows[i][IDX_RAPPEL]);
+    const etat = restantMin <= 0 ? "passée"
+               : !jalon ? "trop tôt"
+               : deja.has(jalon.id) ? `${jalon.id} déjà envoyé`
+               : `→ ${jalon.id} À ENVOYER`;
+    if (etat.indexOf("À ENVOYER") >= 0) aPartir++;
+    Logger.log(`${String(rows[i][IDX_EMAIL]).padEnd(36)} ${etat}   (reçus : ${[...deja].join(";") || "aucun"})`);
+  }
+  Logger.log("");
+  Logger.log(`${aPartir} rappel(s) partiraient au prochain tour.`);
 }
 
 /** À exécuter UNE FOIS pour activer les rappels (toutes les 15 minutes). */
@@ -474,37 +584,70 @@ function buildConfirmationHtml_(name, eventLabel, dt, participantTz, googleUrl, 
   </div>`;
 }
 
-function buildRappelHtml_(name, eventLabel, dt, participantTz, privateEvent) {
+function buildRappelHtml_(name, eventLabel, dt, participantTz, privateEvent, jalon, libelle) {
   const esc = escapeHtml_;
-  const primary = "#d97706";
+  const primary = "#d97706", accent = "#dc2626";
   const zoomLink = (privateEvent && privateEvent.visibleInEmail) ? String(privateEvent.zoomLink || "").trim() : "";
   const zoomPass = (privateEvent && privateEvent.visibleInEmail) ? String(privateEvent.passcode || "").trim() : "";
+  const googleUrl = getGoogleCalendarLink_(name, eventLabel, dt);
+
+  // Un seul appel à l'action, tout en haut, avant le moindre paragraphe.
+  // Selon le jalon : rejoindre (proche) ou mettre à l'agenda (lointain).
+  const boutonPrincipal = (jalon.zoom && zoomLink) ? `
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+          <tr><td align="center" style="padding:26px 20px 6px;">
+            <a href="${zoomLink}" target="_blank" rel="noopener noreferrer"
+               style="background:#2563eb;color:#fff;font-family:Arial,sans-serif;font-size:18px;font-weight:bold;text-decoration:none;padding:16px 34px;border-radius:10px;display:inline-block;">
+              🎥 Rejoindre la conférence
+            </a>
+          </td></tr>
+          ${zoomPass ? `<tr><td align="center" style="font-family:Arial,sans-serif;font-size:13px;color:#374151;padding-bottom:6px;">Code : <b>${esc(zoomPass)}</b></td></tr>` : ""}
+          <tr><td align="center" style="font-family:Arial,sans-serif;font-size:12px;color:#6b7280;">Si vous êtes en salle d'attente, c'est le bon endroit : l'organisateur vous admet à l'ouverture.</td></tr>
+        </table>` : jalon.agenda ? `
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+          <tr><td align="center" style="padding:26px 20px 6px;">
+            <a href="${googleUrl}" target="_blank" rel="noopener noreferrer"
+               style="background:#0b6b3a;color:#fff;font-family:Arial,sans-serif;font-size:18px;font-weight:bold;text-decoration:none;padding:16px 34px;border-radius:10px;display:inline-block;">
+              📅 J'ajoute la conférence à mon agenda
+            </a>
+          </td></tr>
+          <tr><td align="center" style="font-family:Arial,sans-serif;font-size:12px;color:#6b7280;">Google Agenda · ou ouvrez le fichier .ics joint pour Apple et Outlook</td></tr>
+        </table>` : "";
+
+  const preparation = (jalon.id === "J-7" || jalon.id === "J-3") ? `
+          <div style="background:#f3f4f6;border-radius:10px;padding:16px;margin:18px 0;font-size:14px;line-height:1.7;">
+            <div style="font-weight:800;margin-bottom:6px;">Avant le jour J</div>
+            • Vérifiez que <b>Zoom</b> est installé sur votre ordinateur ou votre téléphone.<br>
+            • Repérez le lien de connexion : il vous sera renvoyé le jour même, en haut du message.
+          </div>` : "";
 
   return `
   <div style="margin:0;padding:0;background:#fff8e7;width:100%;">
-    <div style="max-width:600px;margin:0 auto;padding:28px 16px;">
+    <div style="max-width:620px;margin:0 auto;padding:28px 16px;">
       <div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.08);">
-        <div style="background:${primary};padding:26px;text-align:center;">
-          <h1 style="margin:0;color:#fff;font-family:Georgia,serif;font-size:24px;">⏰ C'est dans une heure</h1>
+        <div style="background:linear-gradient(135deg, ${primary} 0%, ${accent} 100%);padding:26px;text-align:center;">
+          <div style="color:rgba(255,255,255,.85);font-family:Arial,sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;">Rappel · ${esc(jalon.id)}</div>
+          <h1 style="margin:0;color:#fff;font-family:Georgia,serif;font-size:26px;">⏰ ${esc(libelle)}</h1>
         </div>
-        <div style="padding:28px 24px;font-family:Georgia,serif;color:#1f2937;line-height:1.7;">
+
+        ${boutonPrincipal}
+
+        <div style="padding:20px 24px 28px;font-family:Georgia,serif;color:#1f2937;line-height:1.7;">
           <p style="margin:0 0 14px;font-size:16px;">Bonjour <strong style="color:${primary};">${esc(name)}</strong>,</p>
           <p style="margin:0 0 16px;font-size:16px;">
-            La conférence <strong>${esc(eventLabel)}</strong> commence à
-            <strong>${esc(fmtNice_(dt, participantTz))}</strong> (votre heure locale).
+            Vous êtes inscrit(e) à <strong>${esc(eventLabel)}</strong>.
           </p>
-          ${zoomLink ? `
-          <div style="text-align:center;margin:24px 0;">
-            <a href="${zoomLink}" style="display:inline-block;background:#2563eb;color:#fff;text-decoration:none;padding:14px 24px;border-radius:10px;font-weight:800;font-size:16px;">
-              Rejoindre maintenant
-            </a>
-            ${zoomPass ? `<p style="margin:12px 0 0;font-size:13px;">Code : <b>${esc(zoomPass)}</b></p>` : ""}
-          </div>` : `
-          <p style="font-size:14px;color:#6b7280;">Le lien de participation vous a été transmis séparément.</p>`}
-          <p style="margin:18px 0 0;font-size:14px;color:#6b7280;">À tout de suite.</p>
+          <div style="background:linear-gradient(135deg, ${primary}15 0%, ${accent}10 100%);border-left:4px solid ${primary};border-radius:10px;padding:16px;margin:16px 0;">
+            <p style="margin:0 0 8px;font-size:15px;">📅 <strong>Brazzaville :</strong> ${esc(fmtNice_(dt, ORG_TZ))}</p>
+            <p style="margin:0;font-size:15px;">🕒 <strong>Votre heure locale :</strong> ${esc(fmtNice_(dt, participantTz))} <span style="color:#6b7280;">(${esc(participantTz)})</span></p>
+          </div>
+          ${preparation}
+          ${(!jalon.zoom || !zoomLink) && !jalon.agenda ? `<p style="font-size:14px;color:#6b7280;">Le lien de participation vous sera transmis le jour même.</p>` : ""}
+          <p style="margin:18px 0 0;font-size:14px;color:#6b7280;">À bientôt,<br>L'équipe Kongo Science</p>
         </div>
+
         <div style="background:#fff8e7;padding:16px;text-align:center;border-top:1px solid #e5e7eb;">
-          <p style="margin:0;color:#6b7280;font-size:12px;">Kongo Science — Communauté scientifique</p>
+          <p style="margin:0;color:#6b7280;font-size:12px;">Kongo Science — Communauté scientifique · Brazzaville</p>
         </div>
       </div>
     </div>
@@ -530,7 +673,7 @@ function getStats_() {
     stats.total++;
     stats.byEvent[label] = (stats.byEvent[label] || 0) + 1;
     stats.byCountry[pays] = (stats.byCountry[pays] || 0) + 1;
-    if (String(rows[i][IDX_RAPPEL] || "").trim().toUpperCase() === "OUI") stats.rappels++;
+    stats.rappels += lireJalons_(rows[i][IDX_RAPPEL]).size;
   }
   return stats;
 }
@@ -718,16 +861,42 @@ function escapeIcsText_(t) {
   return String(t || "").replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
 }
 
-function buildIcsAttachment_(email, name, eventLabel, start) {
+/**
+ * Invitation .ics avec alarmes intégrées (J-3, J-1, H-1, 15 min).
+ *
+ * Apple Calendar et Outlook déclenchent ces alarmes telles quelles. Google
+ * Agenda, lui, les ignore le plus souvent à l'import et applique les rappels
+ * par défaut du compte : ne comptez pas dessus pour les utilisateurs Google,
+ * c'est la séquence de courriels qui assure leur présence.
+ */
+function buildIcsAttachment_(email, name, eventLabel, start, privateEvent) {
   const end = new Date(start.getTime() + 3600000);
   const f = d => Utilities.formatDate(d, "UTC", "yyyyMMdd'T'HHmmss'Z'");
   const uid = Utilities.base64EncodeWebSafe(`${email}${eventLabel}`).slice(0, 30);
+
+  const zoomLink = (privateEvent && privateEvent.visibleInEmail) ? String(privateEvent.zoomLink || "").trim() : "";
+  const description = zoomLink
+    ? `Lien Zoom : ${zoomLink}\nInstallez Zoom à l'avance. Participant : ${name}`
+    : `Le lien de participation vous sera transmis par courriel. Participant : ${name}`;
+
+  const alarme = (declencheur, texte) => [
+    "BEGIN:VALARM", `TRIGGER:${declencheur}`, "ACTION:DISPLAY",
+    `DESCRIPTION:${escapeIcsText_(texte)}`, "END:VALARM"
+  ];
+
   const ics = [
     "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//KongoScience//FR", "CALSCALE:GREGORIAN", "METHOD:PUBLISH",
-    "BEGIN:VEVENT", `UID:${uid}@kongoscience`, `DTSTAMP:${f(new Date())}`, `DTSTART:${f(start)}`, `DTEND:${f(end)}`,
+    "BEGIN:VEVENT",
+    `UID:${uid}@kongoscience`, `DTSTAMP:${f(new Date())}`, `DTSTART:${f(start)}`, `DTEND:${f(end)}`,
     `SUMMARY:${escapeIcsText_(eventLabel)}`,
-    `DESCRIPTION:${escapeIcsText_(`Confirmation pour ${eventLabel}. Participant : ${name}`)}`,
-    "LOCATION:En ligne", "END:VEVENT", "END:VCALENDAR"
+    `DESCRIPTION:${escapeIcsText_(description)}`,
+    "LOCATION:En ligne (Zoom)",
+    ...(zoomLink ? [`URL:${zoomLink}`] : []),
+    ...alarme("-P3D",   `${eventLabel} — dans 3 jours`),
+    ...alarme("-P1D",   `${eventLabel} — c'est demain`),
+    ...alarme("-PT1H",  `${eventLabel} — dans 1 heure`),
+    ...alarme("-PT15M", `${eventLabel} — dans 15 minutes`),
+    "END:VEVENT", "END:VCALENDAR"
   ].join("\r\n");
   return Utilities.newBlob(ics, "text/calendar", "invitation.ics");
 }
