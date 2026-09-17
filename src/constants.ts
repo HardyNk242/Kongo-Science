@@ -8,6 +8,7 @@ import solKoutikaCard from "./assets/conf-sol-koutika.png";
 import eauPotableCard from './assets/conf-eau-potable.jpg';
 import cimentsCard from './assets/conf-ciments-radioactivite.png';
 import mayombeCard from './assets/conf-mayombe-bassin-cotier.png';
+import iaAgentiqueCard from './assets/conf-ia-agentique-exploration-miniere.jpg';
 
 // Équipe
 import hardyImg from './assets/hardy.png';
@@ -75,6 +76,19 @@ export const OBJECTIFS = [
 
 // --- CONFÉRENCES ---
 export const CONFERENCES: (Conference & { imageUrl: string })[] = [
+  {
+    id: 'conf-ia-agentique-exploration-miniere',
+    title: "Quand l'IA agentique explore le sous-sol : modélisation gravi-magnétique du bassin de Hamersley, Australie",
+    description: "Keynote du Dr Michel M. Nzikou, géophysicien (PhD Curtin University), fondateur et CEO de DMN SOLUTIONS, Adjunct Research Fellow au Centre for Exploration Targeting (UWA) et Sessional Researcher à Curtin University. Comment un système d'agents intelligents peut préparer les données, orchestrer les outils de modélisation et d'inversion gravimétrique et magnétique, suivre les calculs et faciliter l'interprétation, tout en conservant une validation humaine à chaque étape critique. Étude de cas dans le bassin de Hamersley (Australie-Occidentale). De 20h30 à 21h30 (Brazzaville et Paris).",
+    date: '2026-10-27',
+    time: '20:30',
+    day: '27',
+    month: 'OCT',
+    location: "En ligne (Zoom) — lien envoyé à l'inscription",
+    type: 'Webinaire',
+    organizer: 'Kongo Science',
+    imageUrl: iaAgentiqueCard
+  },
   {
     id: 'conf-mayombe-bassin-cotier',
     title: 'Du Mayombe au bassin côtier : intérêts géologiques et économiques',

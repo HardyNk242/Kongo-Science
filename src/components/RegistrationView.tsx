@@ -92,7 +92,7 @@ function resolveEventId(conference: Conference): string {
 }
 
 const RegistrationView: React.FC<Props> = ({ conference, onBack }) => {
-  useEffect(() => window.scrollTo(0, 0), []);
+  useEffect(() => { window.scrollTo(0, 0); }, []);
 
   const defaultCountry = useMemo(() => {
     const prefer = ["République du Congo", "Congo", "Congo, Republic of the", "Congo (Republic of the)"];
