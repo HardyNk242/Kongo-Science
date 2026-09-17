@@ -28,6 +28,10 @@
  * 4. Exécuter envoyerLot() pour partir tout de suite, ou laisser le
  *    déclencheur quotidien s'en charger.
  *
+ * Après chaque conférence, exécuter importerInscrits() : les participants
+ * qui ne figuraient pas encore dans « Abonnes » y sont ajoutés, et
+ * recevront donc l'annonce suivante.
+ *
  * ---------------------------------------------------------------------
  * QUI COMMANDE LES ENVOIS
  * ---------------------------------------------------------------------
@@ -66,6 +70,11 @@
  * CONFIGURATION
  ****************/
 const SPREADSHEET_ID = "1gbcT8CZWgPUlTVz5ovz5wXsy_u0TO79WwcIZD33sxp8";
+
+// Classeur « Inscriptions » (l'autre script) : importerInscrits() y lit les
+// participants pour les verser dans la banque d'abonnés.
+const SPREADSHEET_INSCRIPTIONS_ID = "1Ceb59_MoOsLsvD3kE4V5DxkTZ8JguK7Mnm9JGTsoPho";
+const SHEET_INSCRIPTIONS = "Registrations";
 
 const SHEET_ABONNES = "Abonnes";
 const SHEET_CAMPAGNES = "Campagnes";
@@ -945,6 +954,85 @@ function updateDashboardSheet_() {
  * HELPERS
  ****************/
 /** À exécuter une fois : crée les onglets manquants. */
+/****************
+ * IMPORT DES INSCRITS AUX CONFÉRENCES
+ ****************/
+/**
+ * Verse dans « Abonnes » les participants du classeur Inscriptions qui n'y
+ * figurent pas encore.
+ *
+ * Quelqu'un qui s'inscrit à une conférence est intéressé par les suivantes :
+ * sans cet import, il ne recevrait jamais l'annonce d'après. On ne touche
+ * pas aux adresses déjà présentes, quel que soit leur statut — une personne
+ * désinscrite qui assiste à une conférence n'a pas pour autant redemandé
+ * les annonces ; seul le formulaire du site (doPost) la réactive.
+ *
+ * Idempotent : relancer la fonction n'ajoute rien de plus. Une inscription
+ * à plusieurs conférences ne crée qu'une ligne, avec le premier EventId.
+ */
+function importerInscrits() {
+  let src;
+  try {
+    src = SpreadsheetApp.openById(SPREADSHEET_INSCRIPTIONS_ID).getSheetByName(SHEET_INSCRIPTIONS);
+  } catch (err) {
+    Logger.log("Classeur Inscriptions inaccessible : " + err);
+    return;
+  }
+  if (!src) { Logger.log("Onglet « " + SHEET_INSCRIPTIONS + " » introuvable."); return; }
+
+  const rows = src.getDataRange().getValues();
+  if (rows.length <= 1) { Logger.log("Aucune inscription."); return; }
+
+  // Colonnes repérées par leur en-tête : l'ordre du classeur Inscriptions
+  // peut évoluer sans casser l'import.
+  const entetes = rows[0].map(v => String(v || "").trim());
+  const col = nom => entetes.indexOf(nom);
+  const iEmail = col("Email"), iNom = col("Nom complet"), iInst = col("Institution"),
+        iPays = col("Pays"), iEvent = col("EventId");
+  if (iEmail < 0) { Logger.log("Colonne « Email » absente de Registrations."); return; }
+
+  const abonnes = getSheet_(SHEET_ABONNES);
+  const connus = new Set();
+  abonnes.getDataRange().getValues().slice(1).forEach(r => {
+    const e = String(r[A_EMAIL] || "").trim().toLowerCase();
+    if (e) connus.add(e);
+  });
+
+  const aujourdhui = Utilities.formatDate(new Date(), ORG_TZ, "yyyy-MM-dd");
+  const nouvelles = [];
+  for (let i = 1; i < rows.length; i++) {
+    const email = String(rows[i][iEmail] || "").trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || connus.has(email)) continue;
+    connus.add(email);
+    const eventId = iEvent >= 0 ? String(rows[i][iEvent] || "").trim() : "";
+    nouvelles.push([
+      email,
+      iNom >= 0 ? String(rows[i][iNom] || "").trim() : "",
+      iInst >= 0 ? String(rows[i][iInst] || "").trim() : "",
+      iPays >= 0 ? String(rows[i][iPays] || "").trim() : "",
+      "Actif",
+      aujourdhui,
+      "Inscription" + (eventId ? " " + eventId : ""),
+      ""
+    ]);
+  }
+
+  if (nouvelles.length === 0) {
+    Logger.log("Aucun nouvel abonné : tous les inscrits sont déjà dans la banque.");
+    return;
+  }
+
+  abonnes.getRange(abonnes.getLastRow() + 1, 1, nouvelles.length, COLS_ABONNES.length)
+    .setValues(nouvelles);
+  SpreadsheetApp.flush();
+  updateDashboardSheet_();
+  Logger.log(nouvelles.length + " abonné(s) ajouté(s) depuis les inscriptions. "
+    + "Total actifs : " + lireAbonnesActifs_().length + ".");
+}
+
+/****************
+ * INITIALISATION
+ ****************/
 function initDiffusion() {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
 
