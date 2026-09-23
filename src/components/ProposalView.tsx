@@ -1,6 +1,6 @@
 import { FORM_ENDPOINTS } from "../config/forms";
 import React, { useMemo, useState, useEffect } from "react";
-import { COUNTRIES, PROPOSAL_PSYCHOLOGY, PROPOSAL_PRICING, DEFAULT_COUNTRY } from "../constants";
+import { PROPOSAL_PSYCHOLOGY, PROPOSAL_PRICING, DEFAULT_COUNTRY } from "../constants";
 
 interface Props {
   onBack: () => void;
