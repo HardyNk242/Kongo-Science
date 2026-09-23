@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { Conference } from "../types";
-import { COUNTRIES } from "../constants";
+import { COUNTRIES, DEFAULT_COUNTRY } from "../constants";
 
 interface Props {
   conference: Conference;
@@ -59,19 +59,10 @@ function jsonp<T>(url: string, timeoutMs = 8000): Promise<T> {
 type CheckResult = { status: "ok" | "error"; exists: boolean; message?: string };
 
 const RegistrationModal: React.FC<Props> = ({ conference, onClose }) => {
-  const defaultCountry = useMemo(() => {
-    const prefer = ["République du Congo", "Congo", "Congo, Republic of the", "Congo (Republic of the)"];
-    for (const p of prefer) {
-      const found = COUNTRIES.find(c => c.name === p);
-      if (found) return found.name;
-    }
-    return COUNTRIES.find(c => c.name === "Congo, The Democratic Republic of the")?.name ?? (COUNTRIES[0]?.name ?? "N/A");
-  }, []);
-
   const [formData, setFormData] = useState({
     nom: "",
     prenoms: "",
-    pays: defaultCountry,
+    pays: DEFAULT_COUNTRY,
     institution: "",
     email: ""
   });

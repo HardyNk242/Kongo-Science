@@ -1,15 +1,5 @@
-import React, { useMemo, useState, useEffect } from "react";
-import {
-  COUNTRIES,
-  JOIN_PROFILES,
-  MEMBERSHIP_PSYCHOLOGY,
-  EXPERTISE_DOMAINS,
-  CONTRIBUTION_AREAS,
-  AVAILABILITY_OPTIONS,
-  ACADEMIC_LEVELS,
-  MEMBERSHIP_TIERS,
-  type JoinProfile,
-} from "../constants";
+import React, { useState, useEffect } from "react";
+import { COUNTRIES, JOIN_PROFILES, MEMBERSHIP_PSYCHOLOGY, EXPERTISE_DOMAINS, CONTRIBUTION_AREAS, AVAILABILITY_OPTIONS, ACADEMIC_LEVELS, MEMBERSHIP_TIERS, type JoinProfile, DEFAULT_COUNTRY } from "../constants";
 
 import {
   FORM_ENDPOINTS,
@@ -62,18 +52,13 @@ function normalize(s: string) {
 const JoinView: React.FC<Props> = ({ onBack }) => {
   useEffect(() => window.scrollTo(0, 0), []);
 
-  const defaultCountry = useMemo(() => {
-    const found = COUNTRIES.find((c) => c.name === "Congo, Republic of");
-    return found?.name ?? COUNTRIES[0]?.name ?? "N/A";
-  }, []);
-
   const [formData, setFormData] = useState({
     profil: JOIN_PROFILES[0] as JoinProfile,
     prenoms: "",
     nom: "",
     email: "",
     whatsapp: "",
-    pays: defaultCountry,
+    pays: DEFAULT_COUNTRY,
     institution: "",
     fonction: "",
     niveau: ACADEMIC_LEVELS[2],

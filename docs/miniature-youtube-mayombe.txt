@@ -1,0 +1,150 @@
+MINIATURE YOUTUBE — CONFÉRENCE DU MAYOMBE
+==========================================
+
+Conférence du 22 septembre 2026 · Dr Sage KEBI-TSOUMOU
+EventId : conf-mayombe-bassin-cotier
+Format  : 1280 x 720 pixels
+
+Rappel : une miniature n'est pas l'affiche recadrée. Elle est vue à
+environ 320 x 180 pixels dans un fil YouTube — tout ce qui est fin y
+disparaît. Il faut donc un fond 16:9 dédié et 4 à 6 mots, très gros.
+
+
+-----------------------------------------------------------------
+1 — PROMPT POUR LE FOND (à générer en IA, 1280 x 720)
+-----------------------------------------------------------------
+
+Illustration éditoriale scientifique, format paysage 16:9, 1280x720 pixels.
+
+SCÈNE
+Un massif forestier ancien aux reliefs plissés s'ouvrant sur une plaine
+côtière et l'océan Atlantique, strates géologiques visibles en coupe dans
+la falaise. Cadrage large et lisible, lumière rasante de fin de journée.
+
+STYLE
+Illustration peinte, texture de papier, formes larges et contrastées.
+Peu d'éléments, très peu de détail fin : l'image doit rester lisible
+réduite à 320x180 pixels. Ni photographie, ni rendu 3D.
+
+PALETTE
+Vert forêt profond, terre de Sienne brûlée, ocre sable, crème chaud,
+bleu océan sourd. Tons naturels et mats, aucune couleur fluorescente.
+
+COMPOSITION — CONTRAINTE ESSENTIELLE
+- Moitié GAUCHE : zone sombre et unie, elle recevra le titre en gros
+- Moitié DROITE : le massif et le littoral, bien contrastés
+- Coin inférieur droit : laisser vide, YouTube y affiche la durée
+
+INTERDICTIONS ABSOLUES
+Aucun texte, aucune lettre, aucun chiffre, aucun logo, aucun visage.
+Aucun cadre ni bordure décorative.
+
+→ Deux ou trois générations suffisent. Gardez celle dont la zone sombre
+  de gauche tombe au bon endroit, pas la plus spectaculaire.
+
+
+-----------------------------------------------------------------
+2 — TEXTE DE LA MINIATURE
+-----------------------------------------------------------------
+
+Recommandé (l'interrogation fait cliquer, et le sujet reste clair) :
+
+    Ligne 1 (énorme)  :  QUE CACHE
+    Ligne 2 (énorme)  :  NOTRE SOUS-SOL ?
+    Ligne 3 (petite)  :  Du Mayombe au bassin côtier
+
+Variantes :
+
+    DU MAYOMBE          /   LE SOUS-SOL
+    À L'OCÉAN           /   DU CONGO
+    Géologie du Congo   /   Du Mayombe au bassin côtier
+
+Ne dépassez jamais 6 mots sur les lignes principales.
+
+
+-----------------------------------------------------------------
+3 — ASSEMBLAGE DANS CANVA
+-----------------------------------------------------------------
+
+Créer un dessin 1280 x 720 px (Canva : Créer un dessin > Taille
+personnalisée > 1280 x 720 px). Le garder comme gabarit réutilisable :
+seuls le fond, le titre et la photo changeront d'une conférence à l'autre.
+
+  1. FOND
+     Le fond IA en calque du bas, occupant toute la surface.
+
+  2. VOILE SOMBRE À GAUCHE
+     Rectangle vert forêt #072719, opacité 70 à 80 %, sur la moitié
+     gauche, dégradé vers la droite si Canva le permet. C'est lui qui
+     garantit la lisibilité du titre quelle que soit l'image générée.
+
+  3. TITRE
+     Moitié gauche, aligné à gauche, marge de 60 px sur le bord.
+     Corps 110 à 130 pt, graisse maximale, MAJUSCULES.
+     Ligne 1 en crème #F3DBC0, ligne 2 en terre de Sienne #A03608 —
+     le même contraste que sur l'affiche.
+     Police : reprenez exactement celle de votre gabarit d'affiche.
+     Dans Canva, cliquez le calque du titre : son nom s'affiche dans
+     la barre d'outils.
+
+  4. SOUS-TITRE
+     Sous le titre, corps 34 à 40 pt, italique, crème #F3DBC0,
+     opacité 85 %. Un filet doré #DAA53D de 3 px au-dessus.
+
+  5. PHOTO DE L'INTERVENANT
+     Portrait du Dr Kebi-Tsoumou détouré, à droite, occupant toute la
+     hauteur ou en cercle de 380 px avec bord doré #DAA53D de 5 px.
+     Un visage humain augmente nettement le taux de clic.
+     ⚠️ Utilisez le fichier photo d'origine, pas le portrait découpé
+     dans l'affiche : il n'y fait que 275 px et remonterait flou.
+
+  6. LOGO
+     Logo Kongo Science en haut à droite, largeur 180 px environ.
+
+  7. COIN INFÉRIEUR DROIT
+     Laisser vide sur 160 x 60 px : YouTube y incruste la durée.
+
+
+-----------------------------------------------------------------
+4 — COULEURS DE LA MARQUE (relevées sur l'affiche du Mayombe)
+-----------------------------------------------------------------
+
+    Vert forêt         #072719     titre, voile, bandeaux
+    Terre de Sienne    #A03608     seconde ligne du titre, accents
+    Crème              #F3DBC0     texte clair, première ligne du titre
+    Doré               #DAA53D     filets, bords de cercle, détails
+
+
+-----------------------------------------------------------------
+5 — EXPORT ET OPTIMISATION
+-----------------------------------------------------------------
+
+Canva : Partager > Télécharger > PNG, taille 1x, sans fond transparent.
+
+Puis, depuis le dossier du projet :
+
+    python scripts/preparer-visuels.py conf-mayombe-bassin-cotier \
+        public/affiches/conf-mayombe-bassin-cotier.jpg \
+        ~/Downloads/miniature-mayombe.png
+
+Le troisième argument est la miniature. Le script produit :
+
+    public/affiches/conf-mayombe-bassin-cotier-yt.jpg   (1280x720, < 350 Ko)
+
+⚠️ Le script réécrit aussi l'affiche et la carte à partir du premier
+argument. En lui redonnant l'affiche déjà optimisée, on la recompresse
+une seconde fois — perte minime mais réelle. Si cela vous gêne, passez
+plutôt l'affiche Canva d'origine en premier argument.
+
+
+-----------------------------------------------------------------
+6 — CONTRÔLE AVANT PUBLICATION
+-----------------------------------------------------------------
+
+[ ] Aucune lettre ni chiffre dans l'image générée par l'IA
+[ ] Titre lisible une fois l'image réduite à 320 x 180 (dézoomez à 25 %
+    dans Canva, ou reculez d'un mètre de l'écran : si vous ne lisez plus,
+    grossissez le texte)
+[ ] Visage de l'intervenant net, non généré, non retouché lourdement
+[ ] Coin inférieur droit libre
+[ ] Fichier sous 2 Mo (limite YouTube) et au format 1280 x 720

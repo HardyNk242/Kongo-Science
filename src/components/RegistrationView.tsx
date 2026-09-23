@@ -1,6 +1,6 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Conference } from "../types";
-import { COUNTRIES } from "../constants";
+import { COUNTRIES, DEFAULT_COUNTRY } from "../constants";
 import Seo from "./Seo";
 import { endpointPourConference } from "../config/forms";
 
@@ -94,19 +94,10 @@ function resolveEventId(conference: Conference): string {
 const RegistrationView: React.FC<Props> = ({ conference, onBack }) => {
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
-  const defaultCountry = useMemo(() => {
-    const prefer = ["République du Congo", "Congo", "Congo, Republic of the", "Congo (Republic of the)"];
-    for (const p of prefer) {
-      const found = COUNTRIES.find(c => c.name === p);
-      if (found) return found.name;
-    }
-    return COUNTRIES.find(c => c.name === "Congo, The Democratic Republic of the")?.name ?? (COUNTRIES[0]?.name ?? "N/A");
-  }, []);
-
   const [formData, setFormData] = useState({
     nom: "",
     prenoms: "",
-    pays: defaultCountry,
+    pays: DEFAULT_COUNTRY,
     institution: "",
     email: ""
   });

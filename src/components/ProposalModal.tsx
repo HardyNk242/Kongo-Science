@@ -1,6 +1,6 @@
 import { FORM_ENDPOINTS } from "../config/forms";
-import React, { useMemo, useState } from "react";
-import { COUNTRIES } from "../constants";
+import React, { useState } from "react";
+import { COUNTRIES, DEFAULT_COUNTRY } from "../constants";
 
 interface Props {
   onClose: () => void;
@@ -46,21 +46,6 @@ function formatWhatsappHint(input: string) {
 }
 
 const ProposalModal: React.FC<Props> = ({ onClose }) => {
-  const defaultCountry = useMemo(() => {
-    const prefer = [
-      "République du Congo",
-      "Congo",
-      "Congo (Republic of the)",
-      "Congo, Republic of the",
-      "Congo, Republic of",
-    ];
-    for (const p of prefer) {
-      const found = COUNTRIES.find((c) => c.name === p);
-      if (found) return found.name;
-    }
-    return COUNTRIES[0]?.name ?? "N/A";
-  }, []);
-
   const [formData, setFormData] = useState({
     nom: "",
     prenoms: "",
@@ -74,7 +59,7 @@ const ProposalModal: React.FC<Props> = ({ onClose }) => {
     format: "Recherche scientifique",
     cvLink: "",
     expertiseSummary: "",
-    pays: defaultCountry,
+    pays: DEFAULT_COUNTRY,
     institution: "",
   });
 
