@@ -1,0 +1,3 @@
+Un compte rendu par séance, nommé d'après son EventId.
+
+Le modèle à copier est docs/compte-rendu-conference-MODELE.txt.

@@ -1,0 +1,93 @@
+COMPTE RENDU DE SÉANCE — KONGO SCIENCE
+=======================================
+À remplir dans les 24 heures. Passé deux jours, les chiffres sont
+introuvables et les questions du public, oubliées.
+
+Copier ce fichier sous : docs/comptes-rendus/<EventId>.txt
+
+
+1. LA SÉANCE
+-----------------------------------------------------------------
+EventId ........... conf-
+Titre .............
+Intervenant .......
+Animateur .........
+Date .............. ____ / ____ / ________
+
+
+2. LES CHIFFRES
+-----------------------------------------------------------------
+Début annoncé ..... ____h____      Début réel ....... ____h____
+Fin annoncée ...... ____h____      Fin réelle ....... ____h____
+
+Inscrits .......... ______         Connectés (pic) .. ______
+                                   Présence ......... ______ %
+                                   (connectés ÷ inscrits × 100)
+
+Questions posées .. ______         Pays représentés . ______
+
+Vues du replay à J+7 ......... ______   (à compléter plus tard)
+
+→ Une présence sous 35 % interroge les rappels ou l'horaire.
+→ Une présence au-dessus de 60 % : noter ce qui a été fait
+  différemment, c'est reproductible.
+
+
+3. CE QUI S'EST PASSÉ
+-----------------------------------------------------------------
+A marché (à refaire) :
+  •
+  •
+
+A coincé (technique, animation, horaire) :
+  •
+  •
+
+Un seul verdict :   ☐ à refaire tel quel   ☐ à ajuster   ☐ à éviter
+
+
+4. QUESTIONS RESTÉES SANS RÉPONSE
+-----------------------------------------------------------------
+À extraire du chat Zoom LE SOIR MÊME, puis à envoyer à l'intervenant.
+
+  1. ....................................... (de ..................)
+  2. ....................................... (de ..................)
+  3. ....................................... (de ..................)
+
+
+5. CE QUE LA SÉANCE A FAIT NAÎTRE
+-----------------------------------------------------------------
+Sujets de séances futures évoqués :
+  •
+  •
+
+Personnes à recontacter (intervenant possible, partenaire,
+institution, université, entreprise) :
+  nom ................ / rôle ............ / pourquoi ............
+  nom ................ / rôle ............ / pourquoi ............
+
+Opportunité concrète (formation, partenariat, financement, terrain) :
+  •
+
+
+6. SUITES — qui, pour quand
+-----------------------------------------------------------------
+☐ Remerciements envoyés à l'intervenant ....... par ...... le ......
+☐ Accord écrit pour publier le replay ......... par ...... le ......
+☐ Diapositives récupérées ..................... par ...... le ......
+☐ Questions sans réponse transmises ........... par ...... le ......
+☐ Replay monté et mis en ligne ................ par ...... le ......
+☐ replayUrl ajouté dans src/constants.ts ...... par ...... le ......
+☐ Inscrits versés dans la banque d'abonnés .... par ...... le ......
+   (importerInscrits() dans le classeur Diffusion)
+☐ Remerciement public publié (canal, Facebook)  par ...... le ......
+
+
+7. EN UNE PHRASE
+-----------------------------------------------------------------
+Ce que cette séance nous a appris, et que la suivante doit retenir :
+
+  ................................................................
+
+
+Rédigé par ................................ le ____/____/________
