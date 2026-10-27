@@ -1,0 +1,129 @@
+AFFICHE — LE NOUVEAU CODE MINIER CONGOLAIS
+===========================================
+
+Formation du mardi 24 novembre 2026 · Boris Brell MALONGA
+EventId : conf-nouveau-code-minier
+
+Rappel de la règle du pipeline : l'IA produit l'atmosphère, le gabarit
+Canva porte les faits. Aucune date, aucune heure, aucun nom, aucun logo
+ne doit sortir d'une IA — elle écrit « CONFÉRENCE SCIENTIFOUE » et des
+heures fausses, et une heure fausse fait manquer la séance.
+
+
+-----------------------------------------------------------------
+1 — PROMPT AFFICHE : FOND SEUL, 1080 x 1080
+-----------------------------------------------------------------
+
+Illustration éditoriale scientifique, format carré 1:1, 1080x1080 pixels.
+
+SCÈNE
+Un paysage minier africain vu de loin, au petit matin : une carrière en
+gradins creusée dans la latérite rouge, des collines boisées à l'arrière-
+plan, une route de terre qui serpente. Au premier plan, très discrètement,
+la silhouette d'une borne de délimitation en pierre. Atmosphère calme et
+documentaire, lumière rasante.
+
+STYLE
+Illustration peinte à la main, texture de papier, précision d'une planche
+scientifique du XIXe siècle revisitée. Ni photographie, ni rendu 3D, ni
+image de banque d'images.
+
+PALETTE
+Ocre latérite, terre de Sienne brûlée, vert forêt profond, crème chaud,
+bleu nuit sourd. Tons naturels et mats, aucune couleur fluorescente.
+
+COMPOSITION — CONTRAINTE ESSENTIELLE
+- Moitié supérieure : ciel large et calme, très peu de détail
+- Tiers inférieur droit : zone sombre et unie
+- Bande basse sur toute la largeur : sobre, sans élément marquant
+Ces trois zones recevront du texte : elles doivent rester lisibles si
+l'on y superpose des lettres claires.
+
+INTERDICTIONS ABSOLUES
+Aucun texte, aucune lettre, aucun chiffre, aucun logo, aucun filigrane.
+Aucun visage, aucun personnage, aucun engin de chantier reconnaissable.
+Aucun cadre ni bordure décorative.
+Aucun drapeau, aucun emblème national, aucun symbole de justice
+(balance, marteau de juge, colonnes de tribunal) : le sujet est un texte
+de loi, pas un procès, et ces symboles rendraient l'affiche accusatrice.
+
+
+-----------------------------------------------------------------
+2 — VARIANTE : SI LA PREMIÈRE PISTE DÉÇOIT
+-----------------------------------------------------------------
+
+Remplacez le bloc SCÈNE par celui-ci, qui joue le dessous plutôt que le
+paysage :
+
+SCÈNE
+Coupe géologique stylisée vue de face : strates horizontales d'ocre, de
+grès et de schiste sombre, traversées par de fines veines minéralisées
+dorées. Dans la partie haute, la ligne du sol et quelques arbres en
+silhouette. Composition graphique et sobre, presque cartographique.
+
+Cette variante a un avantage : les strates horizontales créent
+naturellement des bandes calmes où poser le texte.
+
+
+-----------------------------------------------------------------
+3 — TEXTE À POSER DANS CANVA (jamais par l'IA)
+-----------------------------------------------------------------
+
+Bandeau supérieur    FORMATION SCIENTIFIQUE   + logo Kongo Science
+
+Titre, deux lignes   LE NOUVEAU CODE MINIER CONGOLAIS
+                     (seconde ligne en terre de Sienne)
+
+Sous-titre italique  Outil de développement ou slogan ?
+                     avec un filet de part et d'autre
+
+Portrait             Boris Brell MALONGA, cercle, bord doré, en bas
+                     à gauche. Utilisez la photo du bureau déjà
+                     envoyée, détourée ou recadrée serré sur le visage.
+
+Sous le portrait     Boris Brell MALONGA
+                     Géologue · Attaché aux mines et aux industries
+                     minières · Ministère des industries minières
+                     et de la géologie
+
+Bloc informations    24 NOVEMBRE 2026
+(en bas à droite)    19 h 30 — Brazzaville
+                     20 h 30 — Paris / Bruxelles
+                     SUR ZOOM
+                     Lien envoyé à l'inscription
+                     Contact : 06 834 78 20
+
+Bande basse          « Ce que la loi promet, ce que le terrain reçoit »
+italique             (ou une accroche de votre choix)
+
+⚠️ Vérifiez les deux fuseaux sur le rendu final. Le 24 novembre,
+l'Europe est à l'heure d'hiver : Paris et Bruxelles sont à UTC+1,
+comme Brazzaville. 19 h 30 à Brazzaville = 19 h 30 à Paris.
+La ligne « 20 h 30 — Paris » ci-dessus est donc FAUSSE en novembre :
+remplacez-la par « 19 h 30 — Paris / Bruxelles », ou supprimez la
+seconde ligne de fuseau.
+
+
+-----------------------------------------------------------------
+4 — APRÈS L'EXPORT CANVA
+-----------------------------------------------------------------
+
+    python scripts/preparer-visuels.py conf-nouveau-code-minier \
+        ~/Downloads/affiche-code-minier.png
+
+Le script remplacera le visuel provisoire (le portrait recadré) par
+l'affiche, aux deux emplacements, sans rien changer d'autre.
+
+Lien de l'affiche pour l'onglet Campagnes :
+https://www.kongoscience.com/affiches/conf-nouveau-code-minier.jpg
+
+
+-----------------------------------------------------------------
+5 — CONTRÔLE
+-----------------------------------------------------------------
+
+[ ] Aucune lettre ni chiffre dans l'image générée
+[ ] Zones destinées au texte restées calmes
+[ ] Date, heure et fuseaux relus sur l'affiche finale
+[ ] Portrait : accord de l'intervenant obtenu
+[ ] Affiche sous 200 Ko après le script

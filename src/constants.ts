@@ -9,6 +9,7 @@ import eauPotableCard from './assets/conf-eau-potable.jpg';
 import cimentsCard from './assets/conf-ciments-radioactivite.png';
 import mayombeCard from './assets/conf-mayombe-bassin-cotier.png';
 import iaAgentiqueCard from './assets/conf-ia-agentique-exploration-miniere.jpg';
+import codeMinierCard from './assets/conf-nouveau-code-minier.jpg';
 
 // Équipe
 import hardyImg from './assets/hardy.png';
@@ -76,6 +77,19 @@ export const OBJECTIFS = [
 
 // --- CONFÉRENCES ---
 export const CONFERENCES: (Conference & { imageUrl: string })[] = [
+  {
+    id: 'conf-nouveau-code-minier',
+    title: 'Le nouveau code minier congolais : outil de développement ou slogan ?',
+    description: "Formation animée par Boris Brell MALONGA, géologue, Attaché aux mines et aux industries minières au Ministère des industries minières et de la géologie, ancien Chef de service de la Géologie et du Cadastre minier. Ce que le nouveau code change pour l'octroi des titres, la négociation des contrats, les obligations environnementales et l'attraction des investissements — et ce qu'il faudra pour que le texte produise des effets sur le terrain. Une lecture critique par un praticien de l'administration minière. À 19h30 (Brazzaville).",
+    date: '2026-11-24',
+    time: '19:30',
+    day: '24',
+    month: 'NOV',
+    location: "En ligne (Zoom) — lien envoyé à l'inscription",
+    type: 'Webinaire',
+    organizer: 'Kongo Science',
+    imageUrl: codeMinierCard
+  },
   {
     id: 'conf-ia-agentique-exploration-miniere',
     title: "Quand l'IA agentique explore le sous-sol : modélisation gravi-magnétique du bassin de Hamersley, Australie",
