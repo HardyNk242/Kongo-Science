@@ -1,0 +1,182 @@
+PROMPT CHATGPT — AFFICHE DU NOUVEAU CODE MINIER
+================================================
+
+Formation du mardi 24 novembre 2026 · Boris Brell MALONGA
+EventId : conf-nouveau-code-minier
+
+La première version était bonne à deux détails près, tous deux dans le
+texte : le logo était inventé, et « environnsementales » comportait une
+faute. Ce sont les deux choses qu'une IA rate systématiquement.
+
+D'où deux prompts ci-dessous :
+
+  PROMPT A  — affiche complète, logo mis à part. À privilégier : vous
+              récupérez la mise en page d'un coup et ne posez que le
+              logo dans Canva, par-dessus l'emplacement réservé.
+
+  PROMPT B  — fond seul, méthode du pipeline maison. Plus sûr encore,
+              mais tout le texte reste à composer dans Canva.
+
+Dans les deux cas : le logo ne sort JAMAIS d'une IA. Il existe en
+fichier, et une variante approchante abîme la marque.
+
+
+=================================================================
+PROMPT A — AFFICHE COMPLÈTE, EMPLACEMENT DU LOGO LAISSÉ VIDE
+=================================================================
+
+Crée une affiche carrée 1080x1080 pixels pour une formation
+scientifique en ligne. Style : illustration éditoriale professionnelle,
+sobre et institutionnelle.
+
+IMAGE DE FOND
+Une mine à ciel ouvert en gradins, creusée dans la latérite ocre-rouge,
+au cœur d'une forêt tropicale dense. Vue en légère plongée depuis une
+colline boisée. Soleil bas en fin de journée, brume douce sur les
+collines à l'arrière-plan. Pistes de terre serpentant dans les gradins.
+Atmosphère calme et documentaire, jamais spectaculaire.
+
+PALETTE
+Bleu marine profond #0D2C44, or #E1AC4A, brique #9F3D19, crème chaud.
+Ocre et vert forêt pour le paysage. Tons mats, aucune couleur saturée.
+
+STRUCTURE, DE HAUT EN BAS
+
+1. Bandeau supérieur gauche : un rectangle bleu marine aux bords
+   irréguliers, façon coup de pinceau, contenant en capitales blanches :
+   FORMATION SCIENTIFIQUE
+
+2. ANGLE SUPÉRIEUR DROIT : laisse une zone ENTIÈREMENT VIDE de
+   300 x 150 pixels, sans aucun élément graphique, sans logo, sans
+   texte, sans ornement. Le fond du ciel doit y rester uni et clair.
+   Cette zone recevra un logo ajouté ensuite.
+
+3. Titre sur deux lignes, centré, très grande taille, capitales grasses :
+   ligne 1 en bleu marine  : LE NOUVEAU CODE MINIER
+   ligne 2 en brique       : CONGOLAIS
+
+4. Sous-titre centré, italique, bleu marine, encadré de deux filets
+   horizontaux dorés de part et d'autre :
+   Outil de développement ou slogan ?
+
+5. Moitié basse : un grand panneau bleu marine occupant la partie
+   inférieure gauche et toute la bande du bas.
+
+6. Dans ce panneau, à gauche : un portrait circulaire vide — un simple
+   cercle au contour doré épais, rempli d'un gris neutre uni. Aucun
+   visage, aucune silhouette. La photo sera insérée ensuite.
+
+7. À droite du cercle, texte blanc aligné à gauche :
+   « Boris Brell » en blanc, puis « MALONGA » en or, plus gros, dessous.
+   En dessous, en plus petit et sur trois lignes :
+   Géologue · Attaché aux mines
+   et aux industries minières ·
+   Ministère des industries minières et de la géologie
+
+8. Sous le portrait, dans le panneau, un paragraphe en blanc, petit :
+   Après plusieurs années au Cadastre minier, où il a contribué à la
+   gestion du domaine minier, Boris Brell MALONGA met aujourd'hui son
+   expérience au service de la mise en œuvre du nouveau code minier.
+
+9. À droite, un encadré crème aux coins arrondis, avec trois lignes
+   précédées chacune d'une icône bleu marine simple (calendrier,
+   horloge, caméra) :
+   Mardi 24 novembre 2026
+   20 h 30 — Brazzaville
+   Zoom
+   et dessous, en italique plus petit : Lien envoyé à l'inscription
+
+10. Sous cet encadré, un titre en or, capitales :
+    UN PARCOURS, QUATRE ANGLES
+    puis quatre pastilles circulaires alignées, avec sous chacune un
+    libellé blanc sur deux lignes :
+    - pastille or, icône document : Octroi / des titres
+    - pastille brique, icône poignée de main : Négociation / des contrats
+    - pastille verte, icône feuille : Obligations / environnementales
+    - pastille bleue, icône graphique croissant : Attraction / des
+      investissements
+
+11. Bande inférieure dorée sur toute la largeur, avec au centre, en
+    bleu marine, italique serif, entre guillemets français :
+    « Ce que la loi promet, ce que le terrain reçoit »
+    et, en dessous, en plus petit :
+    Inscriptions : kongoscience.com/agenda · 06 834 78 20
+
+EXIGENCE ABSOLUE SUR LE TEXTE
+Reproduis chaque texte ci-dessus EXACTEMENT, caractère par caractère,
+avec tous les accents et la ponctuation française. Ne corrige rien,
+n'abrège rien, ne reformule rien, n'ajoute aucun mot. Vérifie en
+particulier l'orthographe de « environnementales ».
+
+INTERDICTIONS
+Aucun logo, aucun emblème, aucune marque, aucun monogramme, aucun
+globe, aucun sigle, nulle part sur l'image.
+Aucun visage, aucune personne.
+Aucun drapeau ni symbole national.
+Aucune balance, aucun marteau de juge, aucune colonne de tribunal.
+Aucun filigrane, aucune signature, aucun cadre décoratif.
+
+
+-----------------------------------------------------------------
+À FAIRE ENSUITE DANS CANVA
+-----------------------------------------------------------------
+
+1. Poser le VRAI logo Kongo Science dans la zone vide en haut à droite
+   (éclaboussure bleue, Afrique orange, « KONGO » orange, « SCIENCE »
+   blanc sur bloc bleu, « Communauté Scientifique » en script).
+2. Insérer la photo de Boris Brell MALONGA dans le cercle gris.
+3. Relire la date, l'heure et les quatre libellés sur le rendu final.
+
+
+=================================================================
+PROMPT B — FOND SEUL (méthode du pipeline)
+=================================================================
+
+Illustration éditoriale scientifique, format carré 1:1, 1080x1080 pixels.
+
+SCÈNE
+Une mine à ciel ouvert en gradins creusée dans la latérite ocre-rouge,
+au cœur d'une forêt tropicale dense, vue depuis une colline boisée.
+Soleil bas de fin de journée, brume douce sur les collines lointaines.
+Atmosphère calme et documentaire.
+
+STYLE
+Illustration peinte à la main, texture de papier, précision d'une
+planche scientifique du XIXe siècle revisitée. Ni photographie, ni
+rendu 3D, ni image de banque d'images.
+
+PALETTE
+Ocre latérite, terre de Sienne brûlée, vert forêt profond, crème chaud,
+bleu nuit sourd. Tons naturels et mats, aucune couleur fluorescente.
+
+COMPOSITION — CONTRAINTE ESSENTIELLE
+- Moitié supérieure : ciel large et calme, très peu de détail
+- Tiers inférieur gauche : zone sombre et unie
+- Bande basse sur toute la largeur : sobre, sans élément marquant
+Ces trois zones recevront du texte : elles doivent rester lisibles si
+l'on y superpose des lettres claires.
+
+INTERDICTIONS ABSOLUES
+Aucun texte, aucune lettre, aucun chiffre, aucun logo, aucun filigrane.
+Aucun visage, aucun personnage, aucun engin de chantier reconnaissable.
+Aucun drapeau, aucun emblème national, aucun symbole de justice.
+Aucun cadre ni bordure décorative.
+
+
+-----------------------------------------------------------------
+CONTRÔLE AVANT DIFFUSION — dans les deux cas
+-----------------------------------------------------------------
+
+[ ] Le logo est le vrai fichier Kongo Science, pas une création de l'IA
+[ ] « environnementales » : relire lettre à lettre
+[ ] Mardi 24 novembre 2026 — c'est bien un mardi
+[ ] 20 h 30, cohérent avec la fiche du site
+[ ] Le moyen de s'inscrire figure sur l'affiche
+[ ] Aucun second fuseau : le 24 novembre, Paris et Brazzaville sont
+    à la même heure
+[ ] Photo de l'intervenant : accord obtenu
+
+Puis :
+
+    python scripts/preparer-visuels.py conf-nouveau-code-minier \
+        ~/Downloads/affiche-code-minier.png
