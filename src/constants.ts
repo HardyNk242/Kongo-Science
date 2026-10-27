@@ -80,7 +80,7 @@ export const CONFERENCES: (Conference & { imageUrl: string })[] = [
   {
     id: 'conf-nouveau-code-minier',
     title: 'Le nouveau code minier congolais : outil de développement ou slogan ?',
-    description: "Formation animée par Boris Brell MALONGA, géologue, Attaché aux mines et aux industries minières au Ministère des industries minières et de la géologie, ancien Chef de service de la Géologie et du Cadastre minier. Ce que le nouveau code change pour l'octroi des titres, la négociation des contrats, les obligations environnementales et l'attraction des investissements — et ce qu'il faudra pour que le texte produise des effets sur le terrain. Une lecture critique par un praticien de l'administration minière. À 19h30 (Brazzaville).",
+    description: "Formation animée par Boris Brell MALONGA, géologue, Attaché aux mines et aux industries minières au Ministère des industries minières et de la géologie, ancien Chef de service de la Géologie et du Cadastre minier. La loi n° 1-2026 du 18 avril 2026 abroge le code minier de 2005 et réécrit les règles du secteur : participation de l'État, partage de production, obligation de transformation avant export, contenu local, publication des bénéficiaires réels, provision de réhabilitation. Ce que le texte change réellement, et ce qu'il faudra pour qu'il produise ses effets sur le terrain. À 19h30 (Brazzaville).",
     date: '2026-11-24',
     time: '19:30',
     day: '24',
