@@ -5633,6 +5633,20 @@ export const THESES_LIBRARY = [
 
   // --- EARTH AND PLANETARY SCIENCES ---
 {
+    id: 'th-moukolo-1984',
+    title: "Ressources en eau souterraine et approvisionnement : essai d'analyse socio-économique en région équatoriale humide (régions de Brazzaville et Pointe-Noire, Congo)",
+    author: 'Noël Moukolo',
+    year: '1984',
+    institution: 'Université des Sciences et Techniques du Languedoc, Montpellier',
+    domain: 'Earth and Planetary Sciences',
+    type: 'Thèse de Doctorat (3e cycle)',
+    abstract: `Ce travail est un essai d'analyse de l'économie des ressources en eaux souterraines en zone équatoriale humide. La région retenue est celle de Brazzaville — Pointe-Noire, au Congo, qui à bien des égards est représentative des aspects hydrogéologiques et des contraintes socio-économiques de l'Afrique équatoriale. La première partie, technique, analyse les caractéristiques des différents aquifères et leurs possibilités de production : structure des magasins, paramètres hydrodynamiques et qualité chimique des eaux souterraines, le bilan hydrique étant calculé pour chaque nappe. La seconde partie traite des aspects socio-économiques de l'exploitation de ces ressources : le coût de l'eau souterraine à la distribution y est calculé en tenant compte des investissements et des coûts d'exploitation, dont certains aspects sont spécifiques du contexte africain. Une réflexion sur les impacts sociaux de l'approvisionnement et du prix de vente de l'eau clôt cette partie et constitue l'un des principaux volets de la conclusion générale. Thèse de Doctorat de 3e cycle en géologie appliquée, soutenue le 30 mai 1984 au Laboratoire d'Hydrogéologie, devant un jury présidé par C. Drogue.`,
+    pages: 201,
+    isRestricted: false,
+    isExclusive: true,
+    pdfUrl: 'https://www.kongoscience.com/theses/th-moukolo-1984.pdf',
+  },
+{
     id: 'th-hardy-2017',
     title: 'Style structural et tectonique de la Formation de l\'Inkisi',
     author: 'Hardy M. D.-V. Nkodia',
