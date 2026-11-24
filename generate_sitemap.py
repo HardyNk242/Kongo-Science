@@ -102,6 +102,8 @@ def generate_sitemap() -> None:
 
     theses = extract_ids(LIBRARY_FILE)
     articles = extract_ids(ARTICLES_FILE)
+    for rapport in sorted(Path("src/data/rapports").glob("*.ts")):
+        articles += extract_ids(rapport)
     conferences = extract_conference_ids(CONSTANTS_FILE)
     print(f"{len(theses)} thèses, {len(articles)} articles et {len(conferences)} conférences trouvés.")
 
