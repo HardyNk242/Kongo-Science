@@ -155,7 +155,7 @@ const PublicationsView: React.FC<PublicationsViewProps> = ({ initialArticleId })
               className="w-full h-auto object-cover"
             />
             <figcaption className="mt-2 text-xs text-slate-500 font-sans text-right px-6 md:px-0">
-              Source : Black Seeds Publishing / Kongo Science
+              Source : {selectedArticle.imageCredit ?? 'Black Seeds Publishing / Kongo Science'}
             </figcaption>
           </figure>
 

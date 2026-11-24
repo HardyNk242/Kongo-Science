@@ -7,6 +7,8 @@ export interface Article {
   author: string;
   date: string;
   imageUrl: string;
+  /** Crédit affiché sous l'image de l'article. */
+  imageCredit?: string;
   content?: string;
 }
 

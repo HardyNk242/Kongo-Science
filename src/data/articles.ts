@@ -1,10 +1,12 @@
 import { Article } from '../types';
+import { RAPPORT_ROUTES_BRAZZAVILLE } from './rapports/routesBrazzaville';
 
 // --- IMPORT DES IMAGES ---
 import arseneImg from '../assets/arsenenganaloango.png';
 
 // --- ARTICLES ---
 export const ARTICLES: Article[] = [
+  RAPPORT_ROUTES_BRAZZAVILLE,
   {
     id: 'art-1',
     title: 'Impact des érosions à Brazzaville : Cas des quartiers Mfilou et Jacques Opangault',
