@@ -22,7 +22,7 @@ export const RAPPORT_ROUTES_POINTE_NOIRE: Article = {
   id: 'routes-pointe-noire-2026',
   title: 'Pointe-Noire : peu de routes, et des routes détruites',
   excerpt:
-    "Étude pilote : 403 403 bâtiments, le réseau routier, l'état des chaussées et la croissance de la ville croisés pour comprendre les bouchons de Pointe-Noire, de Thystère à Patra, et chiffrer les liaisons qui manquent.",
+    "Étude pilote : 403 403 bâtiments, le réseau routier, l'état des chaussées et la croissance de la ville croisés pour comprendre les bouchons de Pointe-Noire, de Thystère à Patra, et chiffrer les liaisons qui manquent, dont une sortie nord pour les camions du port.",
   category: 'Géosciences',
   author: 'Hardy Nkodia',
   date: 'Nov. 2026',
@@ -97,7 +97,25 @@ ${table(['Scénario', 'Temps moyen des trajets', 'Trajets améliorés (> 5 %)', 
 <p style="font-family:sans-serif;font-size:.85rem;line-height:1.6;color:#475569">Thystère et Nkouikou : part des trajets simulés qui y passent. Les gains de temps dépendent de l'hypothèse de ralentissement des voies en terre : ce sont des ordres de grandeur.</p>
 <p><strong>Réparer seul déplace le bouchon.</strong> Une route réparée attire du trafic : Thystère passerait de 10 % à 16 % des trajets simulés. <strong>Réparer et relier</strong> donne presque le même gain que tout bitumer (−27 % contre −30 %), pour environ trois fois moins cher, et Thystère reste proche d'aujourd'hui (11 %). Nkouikou, sur l'avenue Mâ-Loango, reste le point le plus chargé dans tous les scénarios : ce carrefour doit être réaménagé.</p>
 <p><strong>La rocade Est</strong> traverse la réserve de terrain de l'est (section 7). Seule, elle agit peu ; elle prépare surtout la ville de 2040. Prolongée vers Ngoyo, elle traverserait un quartier dense (118 bâtiments sur 4,9 km) : là, mieux vaut bitumer les rues existantes.</p>
-<p><strong>Les camions du port.</strong> Contourner Thystère par la RN4 puis la rocade ne leur fait gagner qu'environ 4 % dans notre modèle. Ils resteront sur la RN1 tant que le port n'aura pas d'autre sortie vers le nord-est.</p>
+<p><strong>Les camions du port : une sortie nord.</strong> Aujourd'hui, un camion qui va du port à la RN1 fait 23,4 km et traverse quatre points noirs : Lumumba, Nkouikou, Thystère et Mongo-Kamba. Un autre chemin existe presque : la RN4 bitumée le long de la côte, puis une piste au nord de la ville, jusqu'à la RN1 après le péage de Mengo. Il fait <strong>28,4 km</strong>, 5 km de plus, mais ne traverse qu'un point noir, Siafoumou.</p>
+${fig('sortie_nord.jpg', 'Sortie nord pour les camions du port', "Itinéraire actuel (rouge) et sortie nord (bitume en noir, terre en ocre, piste à peine tracée en pointillés). État contrôlé un point par kilomètre sur imagerie Maxar (via Esri) et Google Earth Pro.")}
+${table(['Tronçon de la sortie nord', 'État', 'Constructions dans 12 m'], [
+  ['Km 0 – 9 : port, RN4 jusqu\'au sud de Siafoumou', 'bitume', '7'],
+  ['Km 9 – 13 : traversée de Siafoumou', 'terre, rue étroite bordée de maisons', '43'],
+  ['Km 13 – 26 : nord de la ville', 'piste en terre, dont environ 6 km à peine tracés', '9'],
+  ['Km 26 – 28 : RN1', 'bitume', '0'],
+])}
+<p>Environ 17 km sont à aménager pour des poids lourds : <strong>21 à 47 milliards de FCFA</strong>, plutôt la borne haute, car il faut une chaussée renforcée.</p>
+<p><strong>Pourquoi c'est urgent.</strong> Ce terrain encore presque vide est exactement là où la ville pousse : la rosace montre la croissance vers le nord et le nord-nord-est. Les images historiques de Google Earth Pro le confirment. Au km 20, il n'y avait en 2013 que des plantations et des pistes ; en 2022, quelques parcelles ; en avril 2026, des lotissements des deux côtés, et une large piste vient d'être ouverte à environ 50 m de notre tracé. Si on n'y réserve pas l'emprise maintenant, des maisons l'occuperont d'ici quelques années, comme à Siafoumou aujourd'hui.</p>
+${fig('sortie_nord_2013_2026.jpg', 'Sortie nord en 2013 et en 2026', "Le même endroit de la sortie nord (km 20) en août 2013 et en avril 2026. Google Earth Pro, images historiques (CNES/Airbus 2013, Airbus 2026).")}
+<p><strong>Et Siafoumou ?</strong> Nous avons comparé trois passages entre le sud de Siafoumou et le km 15.</p>
+${table(['Passage', 'Longueur', 'Constructions touchées (emprise 12 m)', 'Remarque'], [
+  ['<strong>Centre : élargir la RN4 existante</strong>', '6,0 km', '43 à 75 selon la méthode', 'rue déjà ouverte ; la moins mauvaise option'],
+  ['Ouest, côté mer', '7,9 km', 'environ 95', 'longe des zones humides et une lagune'],
+  ['Est', '8,7 km', 'environ 123', 'quartiers denses, petits cours d\'eau'],
+])}
+<p style="font-family:sans-serif;font-size:.85rem;line-height:1.6;color:#475569">Méthodes : 43 en comptant les emprises réelles des bâtiments (Overture), 75 en comptant leurs rectangles englobants, comme pour les deux variantes. Images de Siafoumou : juin 2025.</p>
+<p>Pour Siafoumou, nous recommandons donc d'élargir la RN4 en libérant l'emprise, et, en attendant, de faire passer les camions la nuit. Le chemin de fer reste l'autre grande réponse : chaque conteneur mis sur le train est un camion de moins à Thystère.</p>
 
 <h3>6. Thystère</h3>
 <p>La Congolaise des routes a lancé le 12 décembre 2025 la réhabilitation du giratoire et de 200 m de chaussée, annoncée pour un mois (ADIAC). Un conteneur s'y est renversé le 28 février 2024, jour du lancement des voiries de la ville (La Semaine Africaine). Un nouveau marché y est annoncé (ADIAC, février 2026). Nos vidéos du 26 novembre 2026 montrent un marché sur les bords du giratoire, des citernes et des porte-conteneurs mêlés aux taxis.</p>
@@ -126,7 +144,7 @@ ${liste([
 <li style="margin-bottom:.7rem"><strong>Réparer les axes signalés</strong> : avenue de l'Indépendance Fond Tié-Tié – Patra, RN1 Loandjili – Thystère, avenue Marien-Ngouabi « Bord-Bord », avenue Thystère à Mongo-Kamba, RN4 vers Ngoyo. <strong>En même temps</strong>, réaménager Thystère et Nkouikou.</li>
 <li style="margin-bottom:.7rem"><strong>Bitumer quatre axes sur des rues existantes</strong> : L4 Mongo-Kamba – Voungou d'abord (le plus efficace, le moins de constructions touchées), puis L1, L3 et L2, en libérant les emprises occupées.</li>
 <li style="margin-bottom:.7rem"><strong>Bitumer progressivement</strong> les autres grandes voies en terre de Loandjili, Mongo-Mpoukou, Tié-Tié et Ngoyo, avec leur drainage.</li>
-<li style="margin-bottom:.7rem"><strong>Réserver l'emprise de la rocade Est</strong>, de Vindoulou à Patra, dès maintenant.</li>
+<li style="margin-bottom:.7rem"><strong>Réserver dès maintenant</strong> l'emprise de la rocade Est, de Vindoulou à Patra, et celle de la <strong>sortie nord des camions</strong>, avant que les lotissements ne la ferment.</li>
 <li style="margin-bottom:.7rem"><strong>Compter</strong> le trafic à Thystère, à Nkouikou et sur la RN1, avant toute décision d'échangeur.</li>
 </ol>
 
@@ -134,7 +152,7 @@ ${liste([
 ${liste([
   'Aucun comptage de véhicules ni relevé GPS ; capacités, ralentissements et effets de saturation sont des hypothèses.',
   'Le contrôle du revêtement porte sur 52 points ; la date des images n\'est pas connue ; certaines routes ont pu être refaites ou détruites depuis.',
-  'Les camions ne sont pas simulés à part ; le port, les marchés et les horaires réels non plus.',
+  'Les camions ne sont pas simulés à part ; le nombre de camions qui prendraient la sortie nord n'est pas connu ; le port, les marchés et les horaires réels non plus.',
   'GHSL surestime la ville ancienne ; les directions d\'étalement sont plus solides que les surfaces.',
   'La rocade et les axes L1 à L4 n\'ont pas été vus sur le terrain ; propriété foncière, zones humides, réseaux et état des constructions dans l\'emprise ne sont pas vérifiés.',
   'Les articles de presse ont été lus en ligne ; les reportages ont été transcrits automatiquement.',
@@ -146,7 +164,8 @@ ${liste([
   'Cartographier l\'état de toutes les routes de Pointe-Noire par images et par téléphone, avec les habitants.',
   'Concevoir des chaussées et un drainage durables sur les sables de Pointe-Noire.',
   'Chiffrer ce que coûtent aux familles les routes détruites : tarifs doublés, temps perdu, véhicules abîmés.',
-  'Trouver une nouvelle sortie pour les camions du port, sans traverser la ville.',
+  'Dimensionner la sortie nord des camions : comptages au port, chaussée pour poids lourds, foncier.',
+  'Suivre l'avancée des lotissements au nord de la ville, image par image, pour réserver les routes à temps.',
   'Réaménager les marchés de bord de route : Thystère, Fond Tié-Tié, Tié-Tié.',
   'Cartographier l\'étalement de Pointe-Noire année par année, et réserver les emprises des routes de demain.',
 ])}
