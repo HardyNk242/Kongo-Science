@@ -152,7 +152,7 @@ ${liste([
 ${liste([
   'Aucun comptage de véhicules ni relevé GPS ; capacités, ralentissements et effets de saturation sont des hypothèses.',
   'Le contrôle du revêtement porte sur 52 points ; la date des images n\'est pas connue ; certaines routes ont pu être refaites ou détruites depuis.',
-  'Les camions ne sont pas simulés à part ; le nombre de camions qui prendraient la sortie nord n'est pas connu ; le port, les marchés et les horaires réels non plus.',
+  'Les camions ne sont pas simulés à part ; le nombre de camions qui prendraient la sortie nord n\'est pas connu ; le port, les marchés et les horaires réels non plus.',
   'GHSL surestime la ville ancienne ; les directions d\'étalement sont plus solides que les surfaces.',
   'La rocade et les axes L1 à L4 n\'ont pas été vus sur le terrain ; propriété foncière, zones humides, réseaux et état des constructions dans l\'emprise ne sont pas vérifiés.',
   'Les articles de presse ont été lus en ligne ; les reportages ont été transcrits automatiquement.',
@@ -165,7 +165,7 @@ ${liste([
   'Concevoir des chaussées et un drainage durables sur les sables de Pointe-Noire.',
   'Chiffrer ce que coûtent aux familles les routes détruites : tarifs doublés, temps perdu, véhicules abîmés.',
   'Dimensionner la sortie nord des camions : comptages au port, chaussée pour poids lourds, foncier.',
-  'Suivre l'avancée des lotissements au nord de la ville, image par image, pour réserver les routes à temps.',
+  'Suivre l\'avancée des lotissements au nord de la ville, image par image, pour réserver les routes à temps.',
   'Réaménager les marchés de bord de route : Thystère, Fond Tié-Tié, Tié-Tié.',
   'Cartographier l\'étalement de Pointe-Noire année par année, et réserver les emprises des routes de demain.',
 ])}
