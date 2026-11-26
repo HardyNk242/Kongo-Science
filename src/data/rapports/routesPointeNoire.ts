@@ -22,20 +22,20 @@ export const RAPPORT_ROUTES_POINTE_NOIRE: Article = {
   id: 'routes-pointe-noire-2026',
   title: 'Pointe-Noire : peu de routes, et des routes détruites',
   excerpt:
-    "Étude pilote : 403 403 bâtiments, le réseau routier, l'état des chaussées et la croissance de la ville croisés pour comprendre les bouchons de Pointe-Noire, de Thystère à Patra, et chiffrer trois chantiers.",
+    "Étude pilote : 403 403 bâtiments, le réseau routier, l'état des chaussées et la croissance de la ville croisés pour comprendre les bouchons de Pointe-Noire, de Thystère à Patra, et chiffrer les liaisons qui manquent.",
   category: 'Géosciences',
   author: 'Hardy Nkodia',
   date: 'Nov. 2026',
   imageUrl: `${D}/plans.jpg`,
   imageCredit: 'Kongo Science. © contributeurs OpenStreetMap ; bâti Overture Maps',
   content: `
-<p><strong>En bref.</strong> Pointe-Noire souffre de deux maux à la fois. <strong>Il manque des routes</strong> : à Loandjili, 56 % des bâtiments sont à plus de 500 mètres d'une grande voie, contre 1 % à Mvou-Mvou. <strong>Et les routes existantes sont détruites</strong> : sur 52 points contrôlés sur image satellite, 21 grandes voies sont en terre ou en sable. Notre simulation retrouve d'elle-même les points noirs cités par les habitants : la RN1 entre Loandjili et Thystère, Nkouikou, Mongo-Kamba, la RN4 vers Ngoyo. Réparer les 34 km d'axes signalés détruits raccourcirait les trajets d'environ 13 %, mais ramènerait encore plus de voitures vers Thystère. Ce carrefour doit être traité en même temps.</p>
+<p><strong>En bref.</strong> Pointe-Noire souffre de deux maux à la fois. <strong>Il manque des routes</strong> : à Loandjili, 56 % des bâtiments sont à plus de 500 mètres d'une grande voie, contre 1 % à Mvou-Mvou. <strong>Et les routes existantes sont détruites</strong> : sur 52 points contrôlés sur image satellite, 21 grandes voies sont en terre ou en sable. Notre simulation retrouve d'elle-même les points noirs cités par les habitants : la RN1 entre Loandjili et Thystère, Nkouikou, Mongo-Kamba, la RN4 vers Ngoyo. Réparer seul déplacerait le bouchon vers Thystère. <strong>Réparer les axes détruits, bitumer quatre axes sur des rues existantes et réserver une rocade Est</strong> raccourcirait les trajets d'environ un quart, pour 83 à 186 milliards de FCFA, soit environ trois fois moins que tout bitumer.</p>
 
 <p><strong>Ceci est une étude pilote, non évaluée par les pairs.</strong> Le trafic est simulé, il n'a pas été compté. Les tracés sont à étudier, ce ne sont pas des projets de construction.</p>
 
 <h3>1. Ce que disent les habitants</h3>
 <p>Après notre étude sur Brazzaville, des Ponténégrins nous ont écrit. Ils citent les bouchons de Siafoumou, de Tié-Tié, de Thystère, de Nkouikou et de Patra, toujours aux mêmes heures, et surtout de « mauvaises routes ». Nous avons filmé le 26 novembre 2026 devant la mairie de Loandjili et au rond-point Thystère : taxis, bus, motos, camions porte-conteneurs et citernes y partagent la même chaussée.</p>
-<p>Deux reportages télévisés décrivent l'axe Fond Tié-Tié – Patra, sur l'avenue de l'Indépendance (MCRTV NF, 5 novembre 2026, et une seconde chaîne). Chauffeurs, commerçants et passagers y parlent de trous profonds, de bourbiers les jours de pluie, de clients déposés avant la destination et de tarifs qui montent. La presse le dit depuis des années : bouchons de deux à trois heures et tarif doublé les jours de pluie sur l'avenue Thystère à Mongo-Kamba (La Semaine Africaine, 2023) ; Fond Tié-Tié, « Bord-Bord » et avenue de l'Indépendance dégradés (ADIAC, 2025) ; route de Djeno décrite par le préfet comme un « parcours de combattant » (ADIAC, 2026).</p>
+<p>Deux reportages télévisés décrivent l'axe Fond Tié-Tié – Patra, sur l'avenue de l'Indépendance (TPT PLUS TV, et MCRTV NF le 5 novembre 2026). Chauffeurs, commerçants et passagers y parlent de trous profonds, de bourbiers les jours de pluie, de clients déposés avant la destination et de tarifs qui montent. La presse le dit depuis des années : bouchons de deux à trois heures et tarif doublé les jours de pluie sur l'avenue Thystère à Mongo-Kamba (La Semaine Africaine, 2023) ; Fond Tié-Tié, « Bord-Bord » et avenue de l'Indépendance dégradés (ADIAC, 2025) ; route de Djeno décrite par le préfet comme un « parcours de combattant » (ADIAC, 2026).</p>
 
 <h3>2. Données et méthode</h3>
 ${liste([
@@ -75,19 +75,29 @@ ${table(['Trajet', "Vol d'oiseau", 'Par grandes voies', 'Détour'], [
 ${fig('trafic_etat.jpg', "Trafic simulé avec l'état réel des routes", "Même simulation, avec les voies en terre ou détruites ralenties. Les points noirs restent les mêmes ; c'est la durée des trajets qui change.")}
 <p>Peu, pour les lieux : <strong>les points noirs restent les mêmes</strong>. Ce qui change, c'est la durée de tous les trajets, et un report vers Fond Tié-Tié et le marché de Tié-Tié. Quand une grande voie est détruite, les chauffeurs fuient par les ruelles, comme le racontent les reportages ; mais les ruelles sont en sable elles aussi.</p>
 
-<h3>5. Trois chantiers, et leur effet</h3>
-${fig('plans.jpg', 'Trois chantiers pour décongestionner Pointe-Noire', "1. Réparer les axes signalés détruits ; 2. bitumer les grandes voies en terre ; 3. réserver une rocade Est de Vindoulou à Patra. Tracé de la rocade sur une grille de 40 m, bâti évité.")}
+<h3>5. Les plans : réparer, relier, réserver</h3>
+${fig('plans.jpg', 'Plans pour décongestionner Pointe-Noire', "Réparations (rouge), quatre axes à bitumer sur des rues existantes (bleu, L1 à L4) et rocade Est à réserver (vert). Tracés calculés sur le réseau OSM et le bâti Overture.")}
+<p><strong>Pointe-Noire a déjà des rues partout</strong> (3 700 km), mais étroites et en sable. Il ne s'agit donc pas surtout d'ouvrir des routes neuves, mais de <strong>choisir des rues existantes et d'en faire de vrais axes bitumés</strong>, qui contournent les passages obligés. Leur emprise est large : 30 à 39 m en moyenne de façade à façade. Mais des constructions s'y sont installées : une chaussée de 12 m en touche entre 32 et 144 par axe, petites pour la plupart (36 à 43 m² en valeur médiane : boutiques, kiosques, annexes).</p>
+${table(['Axe', 'Longueur', "Vol d'oiseau", 'Déjà grande voie', 'Constructions dans 12 m', 'Effet seul (trajets améliorés)', 'Ordre de grandeur'], [
+  ['<strong>L1</strong> Siafoumou – Mongo-Kamba, au nord de Thystère', '6,5 km', '5,2 km', '0 km', '142', '16 %', '7,8 – 17,6 Mds FCFA'],
+  ['<strong>L2</strong> Nkouikou – Voungou', '4,5 km', '3,8 km', '0,1 km', '144', '18 %', '5,3 – 12,0 Mds'],
+  ["<strong>L3</strong> Fond Tié-Tié – Tchimbamba, par le nord-ouest de l'aéroport", '6,2 km', '3,1 km', '1,2 km', '83', '13 %', '6,7 – 14,8 Mds'],
+  ["<strong>L4</strong> Mongo-Kamba – Voungou, parallèle à l'avenue Thystère", '6,8 km', '5,3 km', '4,3 km', '32', '23 %', '5,6 – 11,9 Mds'],
+  ['<strong>R</strong> Rocade Est Vindoulou – Patra, à réserver', '14,2 km', '–', '–', '164 (emprise 20 m)', '40 %', '17 – 38 Mds'],
+])}
+<p style="font-family:sans-serif;font-size:.85rem;line-height:1.6;color:#475569">Coût : 1,2 à 2,7 milliards de FCFA par km de voie à bitumer, la moitié sur les tronçons déjà classés grande voie. Hors expropriations. L2 seul attire du trafic vers Nkouikou : il doit venir avec le réaménagement de ce carrefour.</p>
 ${table(['Scénario', 'Temps moyen des trajets', 'Trajets améliorés (> 5 %)', 'Thystère', 'Nkouikou', 'Ordre de grandeur'], [
   ["Aujourd'hui", '–', '–', '10,1 %', '12,7 %', '–'],
-  ['1. Réparer les axes signalés (34 km)', '−13 %', '68 %', '15,6 %', '18,3 %', '41 – 92 Mds FCFA'],
-  ['2. Bitumer les grandes voies sans bitume connu (jusqu\'à 192 km)', '−30 %', '95 %', '16,7 %', '18,2 %', '230 – 519 Mds'],
-  ['3. Rocade Est seule (14,2 km)', '−7 %', '40 %', '9,9 %', '12,2 %', '17 – 38 Mds'],
-  ['2 + 3', '−35 %', '96 %', '14,9 %', '17,6 %', '247 – 557 Mds'],
+  ['Réparer les 34 km signalés', '−13 %', '68 %', '15,6 %', '18,3 %', '41 – 92 Mds'],
+  ['Les quatre axes L1 à L4', '−11 %', '68 %', '12,0 %', '14,1 %', '25 – 56 Mds'],
+  ['<strong>Réparations + L1 à L4</strong>', '<strong>−22 %</strong>', '89 %', '12,6 %', '18,4 %', '66 – 148 Mds'],
+  ['<strong>Réparations + L1 à L4 + rocade</strong>', '<strong>−27 %</strong>', '91 %', '11,4 %', '17,4 %', '83 – 186 Mds'],
+  ['Bitumer toutes les grandes voies sans bitume connu', '−30 %', '95 %', '16,7 %', '18,2 %', '230 – 519 Mds'],
 ])}
-<p style="font-family:sans-serif;font-size:.85rem;line-height:1.6;color:#475569">Thystère et Nkouikou : part des trajets simulés qui y passent. Les gains de temps dépendent de l'hypothèse de ralentissement : ce sont des ordres de grandeur. Le chantier 2 inclut le chantier 1.</p>
-<p><strong>Réparer coûte moins cher et sert presque tout le monde.</strong> Mais une route réparée attire du trafic : Thystère passerait de 10 % à 16 % des trajets simulés, Nkouikou de 13 % à 18 %. <strong>Réparer sans traiter Thystère déplacerait le bouchon, pas le supprimer.</strong></p>
-<p><strong>La rocade Est</strong> traverse la réserve de terrain de l'est (section 7). Elle touche environ 164 bâtiments sur une emprise de 20 m, pour une pente de 8 % au plus. Seule, elle agit peu ; elle prépare surtout la ville de 2040. Prolongée vers Ngoyo, elle traverserait un quartier dense (118 bâtiments sur 4,9 km) : là, mieux vaut bitumer les rues existantes.</p>
-<p><strong>Les camions du port.</strong> Le contournement de Thystère par la RN4 puis la rocade ne fait gagner qu'environ 4 % aux camions dans notre modèle. Les camions resteront sur la RN1 tant que le port n'aura pas d'autre sortie vers le nord-est.</p>
+<p style="font-family:sans-serif;font-size:.85rem;line-height:1.6;color:#475569">Thystère et Nkouikou : part des trajets simulés qui y passent. Les gains de temps dépendent de l'hypothèse de ralentissement des voies en terre : ce sont des ordres de grandeur.</p>
+<p><strong>Réparer seul déplace le bouchon.</strong> Une route réparée attire du trafic : Thystère passerait de 10 % à 16 % des trajets simulés. <strong>Réparer et relier</strong> donne presque le même gain que tout bitumer (−27 % contre −30 %), pour environ trois fois moins cher, et Thystère reste proche d'aujourd'hui (11 %). Nkouikou, sur l'avenue Mâ-Loango, reste le point le plus chargé dans tous les scénarios : ce carrefour doit être réaménagé.</p>
+<p><strong>La rocade Est</strong> traverse la réserve de terrain de l'est (section 7). Seule, elle agit peu ; elle prépare surtout la ville de 2040. Prolongée vers Ngoyo, elle traverserait un quartier dense (118 bâtiments sur 4,9 km) : là, mieux vaut bitumer les rues existantes.</p>
+<p><strong>Les camions du port.</strong> Contourner Thystère par la RN4 puis la rocade ne leur fait gagner qu'environ 4 % dans notre modèle. Ils resteront sur la RN1 tant que le port n'aura pas d'autre sortie vers le nord-est.</p>
 
 <h3>6. Thystère</h3>
 <p>La Congolaise des routes a lancé le 12 décembre 2025 la réhabilitation du giratoire et de 200 m de chaussée, annoncée pour un mois (ADIAC). Un conteneur s'y est renversé le 28 février 2024, jour du lancement des voiries de la ville (La Semaine Africaine). Un nouveau marché y est annoncé (ADIAC, février 2026). Nos vidéos du 26 novembre 2026 montrent un marché sur les bords du giratoire, des citernes et des porte-conteneurs mêlés aux taxis.</p>
@@ -114,7 +124,8 @@ ${liste([
 <h3>9. Priorités proposées</h3>
 <ol style="list-style:decimal;padding-left:1.6rem;margin:0 0 2rem">
 <li style="margin-bottom:.7rem"><strong>Réparer les axes signalés</strong> : avenue de l'Indépendance Fond Tié-Tié – Patra, RN1 Loandjili – Thystère, avenue Marien-Ngouabi « Bord-Bord », avenue Thystère à Mongo-Kamba, RN4 vers Ngoyo. <strong>En même temps</strong>, réaménager Thystère et Nkouikou.</li>
-<li style="margin-bottom:.7rem"><strong>Bitumer progressivement</strong> les grandes voies en terre de Loandjili, Mongo-Mpoukou, Tié-Tié et Ngoyo, avec leur drainage.</li>
+<li style="margin-bottom:.7rem"><strong>Bitumer quatre axes sur des rues existantes</strong> : L4 Mongo-Kamba – Voungou d'abord (le plus efficace, le moins de constructions touchées), puis L1, L3 et L2, en libérant les emprises occupées.</li>
+<li style="margin-bottom:.7rem"><strong>Bitumer progressivement</strong> les autres grandes voies en terre de Loandjili, Mongo-Mpoukou, Tié-Tié et Ngoyo, avec leur drainage.</li>
 <li style="margin-bottom:.7rem"><strong>Réserver l'emprise de la rocade Est</strong>, de Vindoulou à Patra, dès maintenant.</li>
 <li style="margin-bottom:.7rem"><strong>Compter</strong> le trafic à Thystère, à Nkouikou et sur la RN1, avant toute décision d'échangeur.</li>
 </ol>
@@ -125,7 +136,7 @@ ${liste([
   'Le contrôle du revêtement porte sur 52 points ; la date des images n\'est pas connue ; certaines routes ont pu être refaites ou détruites depuis.',
   'Les camions ne sont pas simulés à part ; le port, les marchés et les horaires réels non plus.',
   'GHSL surestime la ville ancienne ; les directions d\'étalement sont plus solides que les surfaces.',
-  'La rocade n\'a pas été vue sur le terrain ; propriété foncière, zones humides et réseaux ne sont pas vérifiés.',
+  'La rocade et les axes L1 à L4 n\'ont pas été vus sur le terrain ; propriété foncière, zones humides, réseaux et état des constructions dans l\'emprise ne sont pas vérifiés.',
   'Les articles de presse ont été lus en ligne ; les reportages ont été transcrits automatiquement.',
 ])}
 
@@ -147,7 +158,7 @@ ${liste([
   'ADIAC / Les Dépêches de Brazzaville : giratoire de Thystère (23 décembre 2025) ; routes en lamentable état (6 mars 2025) ; marchés de Thystère et Fond Tié-Tié (19 février 2026) ; route Pointe-Noire – Djeno (10 février 2026).',
   'La Semaine Africaine : réseau routier « très lamentable » (1er mai 2023) ; conteneur renversé au rond-point Thystère (8 mars 2024) ; réhabilitation attendue (3 juin 2025).',
   'Les Échos du Congo-Brazzaville : lancement des travaux de voirie (29 février 2024).',
-  'MCRTV NF : « Voiries urbaines, le tronçon Fond Tié-Tié – Patra à l\'agonie » (5 novembre 2026) ; second reportage télévisé sur le même axe.',
+  'MCRTV NF : « Voiries urbaines, le tronçon Fond Tié-Tié – Patra à l\'agonie » (5 novembre 2026) ; TPT PLUS TV : « Circulation routière, route dégradée axe Fond de Tié-Tié à Patra ».',
   'Vidéos de terrain : H. Nkodia, Loandjili et Thystère, 26 novembre 2026.',
   'Banque mondiale (2023). <em>DURQuaP, Implementation Completion and Results Report</em>, ICR00006200.',
   'Données : © contributeurs OpenStreetMap (ODbL) ; Overture Maps ; ALOS World 3D 30 m (JAXA) ; GHSL GHS-BUILT-S R2023A (Commission européenne, JRC) ; imagerie Maxar via Esri World Imagery (contrôle visuel).',
