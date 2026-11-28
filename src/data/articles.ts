@@ -1,12 +1,14 @@
 import { Article } from '../types';
 import { RAPPORT_ROUTES_BRAZZAVILLE } from './rapports/routesBrazzaville';
 import { RAPPORT_ROUTES_POINTE_NOIRE } from './rapports/routesPointeNoire';
+import { RAPPORT_OR_ELOGO } from './rapports/orElogo';
 
 // --- IMPORT DES IMAGES ---
 import arseneImg from '../assets/arsenenganaloango.png';
 
 // --- ARTICLES ---
 export const ARTICLES: Article[] = [
+  RAPPORT_OR_ELOGO,
   RAPPORT_ROUTES_POINTE_NOIRE,
   RAPPORT_ROUTES_BRAZZAVILLE,
   {
